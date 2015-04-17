@@ -1,0 +1,20 @@
+Func . Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
+separator Arg "," ;
+terminator Stm ";" ;
+
+SDecl . Stm ::= Type Id ";" ;
+SDecls . Stm ::= Type Id "," [Id] ";" ;
+separator Id "," ;
+SInit . Stm ::= Type Id "=" Exp ";" ;
+
+SReturn . Stm ::= "return" Exp ";" ;
+SWhile . Stm ::= "while" "(" Exp ")" Stm ";" ;
+SDo . Stm ::= "do" Stm ";" "while" "(" Exp ")" ";" ;
+SFor . Stm ::= "for" "(" Type Id "=" Exp ";" Exp ";" Stm ")" Stm ";" ;
+SIf . Stm ::= "if" "(" Exp ")" Stm ";" ;
+SIfElse . Stm ::= "if" "(" Exp ")" Stm ";" "else" Stm ";" ;
+SBlock . Stm ::= "{" [Stm] "}" ;
+
+Defi . Stm ::= Exp ";" ;
+
+
