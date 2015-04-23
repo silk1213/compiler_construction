@@ -1,36 +1,41 @@
-Func . Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
+Function . Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
 separator Arg "," ;
 terminator Stm "" ;
 
-SDecl . Stm ::= Type Id ";" ;
-SDecls . Stm ::= Type Id "," [Id] ";" ;
+StatementDeclaration . Stm ::= Type Id ";" ;
+StatementDeclarations . Stm ::= Type Id "," [Id] ";" ;
 separator Id "," ;
-SInit . Stm ::= Type Id "=" Exp ";" ;
+StatementInitialization . Stm ::= Type Id "=" Exp ";" ;
 
-SReturn . Stm ::= "return" Exp ";" ;
-SWhile . Stm ::= "while" "(" Exp ")" Stm ";" ;
-SDo . Stm ::= "do" Stm ";" "while" "(" Exp ")" ";" ;
-SFor . Stm ::= "for" "(" Type Id "=" Exp ";" Exp ";" Stm ")" Stm ";" ;
-SIf . Stm ::= "if" "(" Exp ")" Stm ";" ;
-SIfElse . Stm ::= "if" "(" Exp ")" Stm ";" "else" Stm ";" ;
-SBlock . Stm ::= "{" [Stm] "}" ;
-STypedef . Stm ::= "typedef" Type "<" Type ">" Id ";" ;
-SStruct. Stm ::= "struct" Id "{" [Stm] "}" ";" ;
+StatementReturn . Stm ::= "return" Exp ";" ;
+StatementWhile . Stm ::= "while" "(" Exp ")" Stm ";" ;
+StatementDo . Stm ::= "do" Stm ";" "while" "(" Exp ")" ";" ;
+StatementFor . Stm ::= "for" "(" Type Id "=" Exp ";" Exp ";" Stm ")" Stm ";" ;
+StatementIf . Stm ::= "if" "(" Exp ")" Stm ";" ;
+StatementIfElse . Stm ::= "if" "(" Exp ")" Stm ";" "else" Stm ";" ;
+StatementBlock . Stm ::= "{" [Stm] "}" ;
+StatementTypedef . Stm ::= "typedef" Type "<" Type ">" Id ";" ;
+StatementStruct. Stm ::= "struct" Id "{" [Stm] "}" ";" ;
 
-Defi . Stm ::= Exp ";" ;
+TemplateInstantiations . Stm ::= "ident" "<" [Type] ">" ";" ;
+separator Type "," ;
 
-??EAtom . Exp16 ::= Exp ;
+StatementDefinition . Stm ::= Exp ";" ;
+ArgumentDefinition . Arg ::= Exp ;
+
+
+EAtom . Exp16 ::= ChS ;
 EInde . Exp15 ::= Exp "[" Id "]" ;
 EQCon . Exp15 ::= Exp "::" Id ;
 EFunC . Exp15 ::= Exp "(" [Exp] ")" ;
 separator Exp "," ;
-EStrE . Exp14 ::= Exp "." Exp ;
-EStrE . Exp14 ::= Exp "->" Exp ;
-EIncr . Exp14 ::= Exp "++" ;
-EDecr . Exp14 ::= Exp "--" ;
+EStPP . Exp14 ::= Exp "." Exp ;
+EStPA . Exp14 ::= Exp "->" Exp ;
+EInEP . Exp14 ::= Exp "++" ;
+EDeEM . Exp14 ::= Exp "--" ;
 EDere . Exp14 ::= "*" Exp ;
-EIncr . Exp13 ::= "++" Exp ;
-EDecr . Exp13 ::= "--" Exp ;
+EInPE . Exp13 ::= "++" Exp ;
+EDeME . Exp13 ::= "--" Exp ;
 ENega . Exp13 ::= "!" Exp ;
 EMult . Exp12 ::= Exp "*" Exp ;
 EDivi . Exp12 ::= Exp "/" Exp ;
@@ -39,27 +44,39 @@ EAddi . Exp11 ::= Exp "+" Exp ;
 ESubt . Exp11 ::= Exp "-" Exp ;
 ELShi . Exp10 ::= Exp "<<" Exp ;
 ERShi . Exp10 ::= Exp ">>" Exp ;
-EComp . Exp9 ::= Exp "<" Exp ;
-EComp . Exp9 ::= Exp ">" Exp ;
-EComp . Exp9 ::= Exp "<=" Exp ;
-EComp . Exp9 ::= Exp ">=" Exp ;
+ECoSm . Exp9 ::= Exp "<" Exp ;
+ECoGr . Exp9 ::= Exp ">" Exp ;
+ECoSE . Exp9 ::= Exp "<=" Exp ;
+ECoGE . Exp9 ::= Exp ">=" Exp ;
 EInEq . Exp8 ::= Exp "!=" Exp ;
 EEqua . Exp8 ::= Exp "==" Exp ;
 EConj . Exp4 ::= Exp "&&" Exp ;
 EDisj . Exp3 ::= Exp "||" Exp ;
 EAssi . Exp2 ::= Exp "=" Exp ;
-EAssi . Exp2 ::= Exp "+=" Exp ;
-EAssi . Exp2 ::= Exp "-=" Exp ;
+EAsPl . Exp2 ::= Exp "+=" Exp ;
+EAsMi . Exp2 ::= Exp "-=" Exp ;
 ECond . Exp2 ::= Exp "?" Exp ":" Exp ;
 EExce . Exp1 ::= "throw" Exp ;
 
 TInt . Type ::= "int" ;
-Tbool . Type ::= "bool" ;
-Tdouble . Type ::= "double" ;
-Tvoid . Type ::= "void" ;
+TBool . Type ::= "bool" ;
+TDouble . Type ::= "double" ;
+TVoid . Type ::= "void" ;
+TString . Type ::= "string" ;
+
+StatementQualifiedId . Stm ::= Spe Id ;
+SecifierDefinition . Spe ::= NNa "::" Spe ;
+NamespaceName . NNa ::= Id ;
+
+LiteralStringDefinition . SLi ::= "\"" CSe "\"" ;
+CharacterSeq . CSe ::= ChS ;
+CharacterSequence . CSe ::= CSe ChS ;
 
 comment "//" ;
 comment "#" ;
 comment "/*" "*/" ;
+
+token Id (letter (letter | digit | '_')*) ;
+token ChS (letter | digit (letter | digit | '_')*) ;
 
 coercions Exp 16;

@@ -1,0 +1,312 @@
+#ifndef PRINTER_HEADER
+#define PRINTER_HEADER
+
+#include "Absyn.H"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+
+/* Certain applications may improve performance by changing the buffer size */
+#define BUFFER_INITIAL 2000
+/* You may wish to change _L_PAREN or _R_PAREN */
+#define _L_PAREN '('
+#define _R_PAREN ')'
+
+class PrintAbsyn : public Visitor
+{
+ protected:
+  int _n_, _i_;
+  /* The following are simple heuristics for rendering terminals */
+  /* You may wish to change them */
+  void render(Char c);
+  void render(String s);
+  void indent(void);
+  void backup(void);
+ public:
+  PrintAbsyn(void);
+  ~PrintAbsyn(void);
+  char* print(Visitable* v);
+
+  void visitDef(Def *p); /* abstract class */
+  void visitFunction(Function *p);
+  void visitListArg(ListArg* p);
+  void visitListStm(ListStm* p);
+  void visitStm(Stm *p); /* abstract class */
+  void visitStatementDeclaration(StatementDeclaration *p);
+  void visitStatementDeclarations(StatementDeclarations *p);
+  void visitStatementInitialization(StatementInitialization *p);
+  void visitStatementReturn(StatementReturn *p);
+  void visitStatementWhile(StatementWhile *p);
+  void visitStatementDo(StatementDo *p);
+  void visitStatementFor(StatementFor *p);
+  void visitStatementIf(StatementIf *p);
+  void visitStatementIfElse(StatementIfElse *p);
+  void visitStatementBlock(StatementBlock *p);
+  void visitStatementTypedef(StatementTypedef *p);
+  void visitStatementStruct(StatementStruct *p);
+  void visitTemplateInstantiations(TemplateInstantiations *p);
+  void visitStatementDefinition(StatementDefinition *p);
+  void visitStatementQualifiedId(StatementQualifiedId *p);
+  void visitListId(ListId* p);
+  void visitListType(ListType* p);
+  void visitArg(Arg *p); /* abstract class */
+  void visitArgumentDefinition(ArgumentDefinition *p);
+  void visitExp(Exp *p); /* abstract class */
+  void visitEAtom(EAtom *p);
+  void visitEInde(EInde *p);
+  void visitEQCon(EQCon *p);
+  void visitEFunC(EFunC *p);
+  void visitEStPP(EStPP *p);
+  void visitEStPA(EStPA *p);
+  void visitEInEP(EInEP *p);
+  void visitEDeEM(EDeEM *p);
+  void visitEDere(EDere *p);
+  void visitEInPE(EInPE *p);
+  void visitEDeME(EDeME *p);
+  void visitENega(ENega *p);
+  void visitEMult(EMult *p);
+  void visitEDivi(EDivi *p);
+  void visitERema(ERema *p);
+  void visitEAddi(EAddi *p);
+  void visitESubt(ESubt *p);
+  void visitELShi(ELShi *p);
+  void visitERShi(ERShi *p);
+  void visitECoSm(ECoSm *p);
+  void visitECoGr(ECoGr *p);
+  void visitECoSE(ECoSE *p);
+  void visitECoGE(ECoGE *p);
+  void visitEInEq(EInEq *p);
+  void visitEEqua(EEqua *p);
+  void visitEConj(EConj *p);
+  void visitEDisj(EDisj *p);
+  void visitEAssi(EAssi *p);
+  void visitEAsPl(EAsPl *p);
+  void visitEAsMi(EAsMi *p);
+  void visitECond(ECond *p);
+  void visitEExce(EExce *p);
+  void visitListExp(ListExp* p);
+  void visitType(Type *p); /* abstract class */
+  void visitTInt(TInt *p);
+  void visitTBool(TBool *p);
+  void visitTDouble(TDouble *p);
+  void visitTVoid(TVoid *p);
+  void visitTString(TString *p);
+  void visitSpe(Spe *p); /* abstract class */
+  void visitSecifierDefinition(SecifierDefinition *p);
+  void visitNNa(NNa *p); /* abstract class */
+  void visitNamespaceName(NamespaceName *p);
+  void visitSLi(SLi *p); /* abstract class */
+  void visitLiteralStringDefinition(LiteralStringDefinition *p);
+  void visitCSe(CSe *p); /* abstract class */
+  void visitCharacterSeq(CharacterSeq *p);
+  void visitCharacterSequence(CharacterSequence *p);
+
+  void visitInteger(Integer i);
+  void visitDouble(Double d);
+  void visitChar(Char c);
+  void visitString(String s);
+  void visitIdent(String s);
+  void visitId(String s);
+  void visitChS(String s);
+ protected:
+  void inline bufAppend(const char* s)
+  {
+    int len = strlen(s);
+    while (cur_ + len > buf_size)
+    {
+      buf_size *= 2; /* Double the buffer size */
+      resizeBuffer();
+    }
+    for(int n = 0; n < len; n++)
+    {
+      buf_[cur_ + n] = s[n];
+    }
+    cur_ += len;
+    buf_[cur_] = 0;
+  }
+  void inline bufAppend(const char c)
+  {
+    if (cur_ == buf_size)
+    {
+      buf_size *= 2; /* Double the buffer size */
+      resizeBuffer();
+    }
+    buf_[cur_] = c;
+    cur_++;
+    buf_[cur_] = 0;
+  }
+  void inline bufReset(void)
+  {
+    cur_ = 0;
+    buf_size = BUFFER_INITIAL;
+    resizeBuffer();
+    memset(buf_, 0, buf_size);
+  }
+  void inline resizeBuffer(void)
+  {
+    char* temp = (char*) malloc(buf_size);
+    if (!temp)
+    {
+      fprintf(stderr, "Error: Out of memory while attempting to grow buffer!\n");
+      exit(1);
+    }
+    if (buf_)
+    {
+      strcpy(temp, buf_);
+      free(buf_);
+    }
+    buf_ = temp;
+  }
+  char *buf_;
+  int cur_, buf_size;
+};
+
+
+
+class ShowAbsyn : public Visitor
+{
+ public:
+  ShowAbsyn(void);
+  ~ShowAbsyn(void);
+  char* show(Visitable* v);
+
+  void visitDef(Def *p); /* abstract class */
+  void visitFunction(Function *p);
+  void visitListArg(ListArg* p);
+  void visitListStm(ListStm* p);
+  void visitStm(Stm *p); /* abstract class */
+  void visitStatementDeclaration(StatementDeclaration *p);
+  void visitStatementDeclarations(StatementDeclarations *p);
+  void visitStatementInitialization(StatementInitialization *p);
+  void visitStatementReturn(StatementReturn *p);
+  void visitStatementWhile(StatementWhile *p);
+  void visitStatementDo(StatementDo *p);
+  void visitStatementFor(StatementFor *p);
+  void visitStatementIf(StatementIf *p);
+  void visitStatementIfElse(StatementIfElse *p);
+  void visitStatementBlock(StatementBlock *p);
+  void visitStatementTypedef(StatementTypedef *p);
+  void visitStatementStruct(StatementStruct *p);
+  void visitTemplateInstantiations(TemplateInstantiations *p);
+  void visitStatementDefinition(StatementDefinition *p);
+  void visitStatementQualifiedId(StatementQualifiedId *p);
+  void visitListId(ListId* p);
+  void visitListType(ListType* p);
+  void visitArg(Arg *p); /* abstract class */
+  void visitArgumentDefinition(ArgumentDefinition *p);
+  void visitExp(Exp *p); /* abstract class */
+  void visitEAtom(EAtom *p);
+  void visitEInde(EInde *p);
+  void visitEQCon(EQCon *p);
+  void visitEFunC(EFunC *p);
+  void visitEStPP(EStPP *p);
+  void visitEStPA(EStPA *p);
+  void visitEInEP(EInEP *p);
+  void visitEDeEM(EDeEM *p);
+  void visitEDere(EDere *p);
+  void visitEInPE(EInPE *p);
+  void visitEDeME(EDeME *p);
+  void visitENega(ENega *p);
+  void visitEMult(EMult *p);
+  void visitEDivi(EDivi *p);
+  void visitERema(ERema *p);
+  void visitEAddi(EAddi *p);
+  void visitESubt(ESubt *p);
+  void visitELShi(ELShi *p);
+  void visitERShi(ERShi *p);
+  void visitECoSm(ECoSm *p);
+  void visitECoGr(ECoGr *p);
+  void visitECoSE(ECoSE *p);
+  void visitECoGE(ECoGE *p);
+  void visitEInEq(EInEq *p);
+  void visitEEqua(EEqua *p);
+  void visitEConj(EConj *p);
+  void visitEDisj(EDisj *p);
+  void visitEAssi(EAssi *p);
+  void visitEAsPl(EAsPl *p);
+  void visitEAsMi(EAsMi *p);
+  void visitECond(ECond *p);
+  void visitEExce(EExce *p);
+  void visitListExp(ListExp* p);
+  void visitType(Type *p); /* abstract class */
+  void visitTInt(TInt *p);
+  void visitTBool(TBool *p);
+  void visitTDouble(TDouble *p);
+  void visitTVoid(TVoid *p);
+  void visitTString(TString *p);
+  void visitSpe(Spe *p); /* abstract class */
+  void visitSecifierDefinition(SecifierDefinition *p);
+  void visitNNa(NNa *p); /* abstract class */
+  void visitNamespaceName(NamespaceName *p);
+  void visitSLi(SLi *p); /* abstract class */
+  void visitLiteralStringDefinition(LiteralStringDefinition *p);
+  void visitCSe(CSe *p); /* abstract class */
+  void visitCharacterSeq(CharacterSeq *p);
+  void visitCharacterSequence(CharacterSequence *p);
+
+  void visitInteger(Integer i);
+  void visitDouble(Double d);
+  void visitChar(Char c);
+  void visitString(String s);
+  void visitIdent(String s);
+  void visitId(String s);
+  void visitChS(String s);
+ protected:
+  void inline bufAppend(const char* s)
+  {
+    int len = strlen(s);
+    while (cur_ + len > buf_size)
+    {
+      buf_size *= 2; /* Double the buffer size */
+      resizeBuffer();
+    }
+    for(int n = 0; n < len; n++)
+    {
+      buf_[cur_ + n] = s[n];
+    }
+    cur_ += len;
+    buf_[cur_] = 0;
+  }
+  void inline bufAppend(const char c)
+  {
+    if (cur_ == buf_size)
+    {
+      buf_size *= 2; /* Double the buffer size */
+      resizeBuffer();
+    }
+    buf_[cur_] = c;
+    cur_++;
+    buf_[cur_] = 0;
+  }
+  void inline bufReset(void)
+  {
+    cur_ = 0;
+    buf_size = BUFFER_INITIAL;
+    resizeBuffer();
+    memset(buf_, 0, buf_size);
+  }
+  void inline resizeBuffer(void)
+  {
+    char* temp = (char*) malloc(buf_size);
+    if (!temp)
+    {
+      fprintf(stderr, "Error: Out of memory while attempting to grow buffer!\n");
+      exit(1);
+    }
+    if (buf_)
+    {
+      strcpy(temp, buf_);
+      free(buf_);
+    }
+    buf_ = temp;
+  }
+  char *buf_;
+  int cur_, buf_size;
+};
+
+
+
+
+#endif
+
