@@ -47,13 +47,13 @@ class PrintAbsyn : public Visitor
   void visitStatementStruct(StatementStruct *p);
   void visitTemplateInstantiations(TemplateInstantiations *p);
   void visitStatementDefinition(StatementDefinition *p);
-  void visitStatementQualifiedId(StatementQualifiedId *p);
   void visitListId(ListId* p);
   void visitListType(ListType* p);
   void visitArg(Arg *p); /* abstract class */
   void visitArgumentDefinition(ArgumentDefinition *p);
   void visitExp(Exp *p); /* abstract class */
-  void visitEAtom(EAtom *p);
+  void visitEInteger(EInteger *p);
+  void visitEString(EString *p);
   void visitEInde(EInde *p);
   void visitEQCon(EQCon *p);
   void visitEFunC(EFunC *p);
@@ -85,6 +85,7 @@ class PrintAbsyn : public Visitor
   void visitEAsMi(EAsMi *p);
   void visitECond(ECond *p);
   void visitEExce(EExce *p);
+  void visitSpecifierDefinition(SpecifierDefinition *p);
   void visitListExp(ListExp* p);
   void visitType(Type *p); /* abstract class */
   void visitTInt(TInt *p);
@@ -92,15 +93,8 @@ class PrintAbsyn : public Visitor
   void visitTDouble(TDouble *p);
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
-  void visitSpe(Spe *p); /* abstract class */
-  void visitSecifierDefinition(SecifierDefinition *p);
   void visitNNa(NNa *p); /* abstract class */
   void visitNamespaceName(NamespaceName *p);
-  void visitSLi(SLi *p); /* abstract class */
-  void visitLiteralStringDefinition(LiteralStringDefinition *p);
-  void visitCSe(CSe *p); /* abstract class */
-  void visitCharacterSeq(CharacterSeq *p);
-  void visitCharacterSequence(CharacterSequence *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);
@@ -108,7 +102,6 @@ class PrintAbsyn : public Visitor
   void visitString(String s);
   void visitIdent(String s);
   void visitId(String s);
-  void visitChS(String s);
  protected:
   void inline bufAppend(const char* s)
   {
@@ -190,13 +183,13 @@ class ShowAbsyn : public Visitor
   void visitStatementStruct(StatementStruct *p);
   void visitTemplateInstantiations(TemplateInstantiations *p);
   void visitStatementDefinition(StatementDefinition *p);
-  void visitStatementQualifiedId(StatementQualifiedId *p);
   void visitListId(ListId* p);
   void visitListType(ListType* p);
   void visitArg(Arg *p); /* abstract class */
   void visitArgumentDefinition(ArgumentDefinition *p);
   void visitExp(Exp *p); /* abstract class */
-  void visitEAtom(EAtom *p);
+  void visitEInteger(EInteger *p);
+  void visitEString(EString *p);
   void visitEInde(EInde *p);
   void visitEQCon(EQCon *p);
   void visitEFunC(EFunC *p);
@@ -228,6 +221,7 @@ class ShowAbsyn : public Visitor
   void visitEAsMi(EAsMi *p);
   void visitECond(ECond *p);
   void visitEExce(EExce *p);
+  void visitSpecifierDefinition(SpecifierDefinition *p);
   void visitListExp(ListExp* p);
   void visitType(Type *p); /* abstract class */
   void visitTInt(TInt *p);
@@ -235,15 +229,8 @@ class ShowAbsyn : public Visitor
   void visitTDouble(TDouble *p);
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
-  void visitSpe(Spe *p); /* abstract class */
-  void visitSecifierDefinition(SecifierDefinition *p);
   void visitNNa(NNa *p); /* abstract class */
   void visitNamespaceName(NamespaceName *p);
-  void visitSLi(SLi *p); /* abstract class */
-  void visitLiteralStringDefinition(LiteralStringDefinition *p);
-  void visitCSe(CSe *p); /* abstract class */
-  void visitCharacterSeq(CharacterSeq *p);
-  void visitCharacterSequence(CharacterSequence *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);
@@ -251,7 +238,6 @@ class ShowAbsyn : public Visitor
   void visitString(String s);
   void visitIdent(String s);
   void visitId(String s);
-  void visitChS(String s);
  protected:
   void inline bufAppend(const char* s)
   {

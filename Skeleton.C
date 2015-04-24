@@ -13,10 +13,7 @@ void Skeleton::visitStm(Stm* t) {} //abstract class
 void Skeleton::visitArg(Arg* t) {} //abstract class
 void Skeleton::visitExp(Exp* t) {} //abstract class
 void Skeleton::visitType(Type* t) {} //abstract class
-void Skeleton::visitSpe(Spe* t) {} //abstract class
 void Skeleton::visitNNa(NNa* t) {} //abstract class
-void Skeleton::visitSLi(SLi* t) {} //abstract class
-void Skeleton::visitCSe(CSe* t) {} //abstract class
 
 void Skeleton::visitFunction(Function *function)
 {
@@ -159,15 +156,6 @@ void Skeleton::visitStatementDefinition(StatementDefinition *statementdefinition
 
 }
 
-void Skeleton::visitStatementQualifiedId(StatementQualifiedId *statementqualifiedid)
-{
-  /* Code For StatementQualifiedId Goes Here */
-
-  statementqualifiedid->spe_->accept(this);
-  visitId(statementqualifiedid->id_);
-
-}
-
 void Skeleton::visitArgumentDefinition(ArgumentDefinition *argumentdefinition)
 {
   /* Code For ArgumentDefinition Goes Here */
@@ -211,53 +199,19 @@ void Skeleton::visitTString(TString *tstring)
 
 }
 
-void Skeleton::visitSecifierDefinition(SecifierDefinition *secifierdefinition)
+void Skeleton::visitEInteger(EInteger *einteger)
 {
-  /* Code For SecifierDefinition Goes Here */
+  /* Code For EInteger Goes Here */
 
-  secifierdefinition->nna_->accept(this);
-  secifierdefinition->spe_->accept(this);
+  visitInteger(einteger->integer_);
 
 }
 
-void Skeleton::visitNamespaceName(NamespaceName *namespacename)
+void Skeleton::visitEString(EString *estring)
 {
-  /* Code For NamespaceName Goes Here */
+  /* Code For EString Goes Here */
 
-  visitId(namespacename->id_);
-
-}
-
-void Skeleton::visitLiteralStringDefinition(LiteralStringDefinition *literalstringdefinition)
-{
-  /* Code For LiteralStringDefinition Goes Here */
-
-  literalstringdefinition->cse_->accept(this);
-
-}
-
-void Skeleton::visitCharacterSeq(CharacterSeq *characterseq)
-{
-  /* Code For CharacterSeq Goes Here */
-
-  visitChS(characterseq->chs_);
-
-}
-
-void Skeleton::visitCharacterSequence(CharacterSequence *charactersequence)
-{
-  /* Code For CharacterSequence Goes Here */
-
-  charactersequence->cse_->accept(this);
-  visitChS(charactersequence->chs_);
-
-}
-
-void Skeleton::visitEAtom(EAtom *eatom)
-{
-  /* Code For EAtom Goes Here */
-
-  visitChS(eatom->chs_);
+  visitString(estring->string_);
 
 }
 
@@ -534,6 +488,23 @@ void Skeleton::visitEExce(EExce *eexce)
 
 }
 
+void Skeleton::visitSpecifierDefinition(SpecifierDefinition *specifierdefinition)
+{
+  /* Code For SpecifierDefinition Goes Here */
+
+  specifierdefinition->nna_->accept(this);
+  visitId(specifierdefinition->id_);
+
+}
+
+void Skeleton::visitNamespaceName(NamespaceName *namespacename)
+{
+  /* Code For NamespaceName Goes Here */
+
+  visitId(namespacename->id_);
+
+}
+
 
 void Skeleton::visitListArg(ListArg* listarg)
 {
@@ -579,11 +550,6 @@ void Skeleton::visitListExp(ListExp* listexp)
 void Skeleton::visitId(Id x)
 {
   /* Code for Id Goes Here */
-}
-
-void Skeleton::visitChS(ChS x)
-{
-  /* Code for ChS Goes Here */
 }
 
 void Skeleton::visitInteger(Integer x)

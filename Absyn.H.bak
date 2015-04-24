@@ -25,25 +25,26 @@ class Stm;
 class Arg;
 class Exp;
 class Type;
-class Lit;
-class Func;
-class SDecl;
-class SDecls;
-class SInit;
-class SReturn;
-class SWhile;
-class SDo;
-class SFor;
-class SIf;
-class SIfElse;
-class SBlock;
-class STypedef;
-class SStruct;
+class NNa;
+class Function;
+class StatementDeclaration;
+class StatementDeclarations;
+class StatementInitialization;
+class StatementInclude;
+class StatementReturn;
+class StatementWhile;
+class StatementDo;
+class StatementFor;
+class StatementIf;
+class StatementIfElse;
+class StatementBlock;
+class StatementTypedef;
+class StatementStruct;
 class TemplateInstantiations;
-class QualifiedConstants;
 class StatementDefinition;
 class ArgumentDefinition;
-class EAtom;
+class EInteger;
+class EString;
 class EInde;
 class EQCon;
 class EFunC;
@@ -80,8 +81,8 @@ class TBool;
 class TDouble;
 class TVoid;
 class TString;
-class LString;
-class LInt;
+class SpecifierDefinition;
+class NamespaceName;
 class ListArg;
 class ListStm;
 class ListId;
@@ -99,25 +100,26 @@ public:
   virtual void visitArg(Arg *p) = 0;
   virtual void visitExp(Exp *p) = 0;
   virtual void visitType(Type *p) = 0;
-  virtual void visitLit(Lit *p) = 0;
-  virtual void visitFunc(Func *p) = 0;
-  virtual void visitSDecl(SDecl *p) = 0;
-  virtual void visitSDecls(SDecls *p) = 0;
-  virtual void visitSInit(SInit *p) = 0;
-  virtual void visitSReturn(SReturn *p) = 0;
-  virtual void visitSWhile(SWhile *p) = 0;
-  virtual void visitSDo(SDo *p) = 0;
-  virtual void visitSFor(SFor *p) = 0;
-  virtual void visitSIf(SIf *p) = 0;
-  virtual void visitSIfElse(SIfElse *p) = 0;
-  virtual void visitSBlock(SBlock *p) = 0;
-  virtual void visitSTypedef(STypedef *p) = 0;
-  virtual void visitSStruct(SStruct *p) = 0;
+  virtual void visitNNa(NNa *p) = 0;
+  virtual void visitFunction(Function *p) = 0;
+  virtual void visitStatementDeclaration(StatementDeclaration *p) = 0;
+  virtual void visitStatementDeclarations(StatementDeclarations *p) = 0;
+  virtual void visitStatementInitialization(StatementInitialization *p) = 0;
+  virtual void visitStatementInclude(StatementInclude *p) = 0;
+  virtual void visitStatementReturn(StatementReturn *p) = 0;
+  virtual void visitStatementWhile(StatementWhile *p) = 0;
+  virtual void visitStatementDo(StatementDo *p) = 0;
+  virtual void visitStatementFor(StatementFor *p) = 0;
+  virtual void visitStatementIf(StatementIf *p) = 0;
+  virtual void visitStatementIfElse(StatementIfElse *p) = 0;
+  virtual void visitStatementBlock(StatementBlock *p) = 0;
+  virtual void visitStatementTypedef(StatementTypedef *p) = 0;
+  virtual void visitStatementStruct(StatementStruct *p) = 0;
   virtual void visitTemplateInstantiations(TemplateInstantiations *p) = 0;
-  virtual void visitQualifiedConstants(QualifiedConstants *p) = 0;
   virtual void visitStatementDefinition(StatementDefinition *p) = 0;
   virtual void visitArgumentDefinition(ArgumentDefinition *p) = 0;
-  virtual void visitEAtom(EAtom *p) = 0;
+  virtual void visitEInteger(EInteger *p) = 0;
+  virtual void visitEString(EString *p) = 0;
   virtual void visitEInde(EInde *p) = 0;
   virtual void visitEQCon(EQCon *p) = 0;
   virtual void visitEFunC(EFunC *p) = 0;
@@ -154,8 +156,8 @@ public:
   virtual void visitTDouble(TDouble *p) = 0;
   virtual void visitTVoid(TVoid *p) = 0;
   virtual void visitTString(TString *p) = 0;
-  virtual void visitLString(LString *p) = 0;
-  virtual void visitLInt(LInt *p) = 0;
+  virtual void visitSpecifierDefinition(SpecifierDefinition *p) = 0;
+  virtual void visitNamespaceName(NamespaceName *p) = 0;
   virtual void visitListArg(ListArg *p) = 0;
   virtual void visitListStm(ListStm *p) = 0;
   virtual void visitListId(ListId *p) = 0;
@@ -218,16 +220,16 @@ public:
 
 };
 
-class Lit : public Visitable
+class NNa : public Visitable
 {
 public:
-  virtual Lit *clone() const = 0;
+  virtual NNa *clone() const = 0;
 
 };
 
 
 
-class Func : public Def
+class Function : public Def
 {
 public:
   Type *type_;
@@ -235,107 +237,121 @@ public:
   ListArg *listarg_;
   ListStm *liststm_;
 
-  Func(const Func &);
-  Func &operator=(const Func &);
-  Func(Type *p1, Id p2, ListArg *p3, ListStm *p4);
-  ~Func();
+  Function(const Function &);
+  Function &operator=(const Function &);
+  Function(Type *p1, Id p2, ListArg *p3, ListStm *p4);
+  ~Function();
   virtual void accept(Visitor *v);
-  virtual Func *clone() const;
-  void swap(Func &);
+  virtual Function *clone() const;
+  void swap(Function &);
 };
 
-class SDecl : public Stm
+class StatementDeclaration : public Stm
 {
 public:
   Type *type_;
   Id id_;
 
-  SDecl(const SDecl &);
-  SDecl &operator=(const SDecl &);
-  SDecl(Type *p1, Id p2);
-  ~SDecl();
+  StatementDeclaration(const StatementDeclaration &);
+  StatementDeclaration &operator=(const StatementDeclaration &);
+  StatementDeclaration(Type *p1, Id p2);
+  ~StatementDeclaration();
   virtual void accept(Visitor *v);
-  virtual SDecl *clone() const;
-  void swap(SDecl &);
+  virtual StatementDeclaration *clone() const;
+  void swap(StatementDeclaration &);
 };
 
-class SDecls : public Stm
+class StatementDeclarations : public Stm
 {
 public:
   Type *type_;
   Id id_;
   ListId *listid_;
 
-  SDecls(const SDecls &);
-  SDecls &operator=(const SDecls &);
-  SDecls(Type *p1, Id p2, ListId *p3);
-  ~SDecls();
+  StatementDeclarations(const StatementDeclarations &);
+  StatementDeclarations &operator=(const StatementDeclarations &);
+  StatementDeclarations(Type *p1, Id p2, ListId *p3);
+  ~StatementDeclarations();
   virtual void accept(Visitor *v);
-  virtual SDecls *clone() const;
-  void swap(SDecls &);
+  virtual StatementDeclarations *clone() const;
+  void swap(StatementDeclarations &);
 };
 
-class SInit : public Stm
+class StatementInitialization : public Stm
 {
 public:
   Type *type_;
   Id id_;
   Exp *exp_;
 
-  SInit(const SInit &);
-  SInit &operator=(const SInit &);
-  SInit(Type *p1, Id p2, Exp *p3);
-  ~SInit();
+  StatementInitialization(const StatementInitialization &);
+  StatementInitialization &operator=(const StatementInitialization &);
+  StatementInitialization(Type *p1, Id p2, Exp *p3);
+  ~StatementInitialization();
   virtual void accept(Visitor *v);
-  virtual SInit *clone() const;
-  void swap(SInit &);
+  virtual StatementInitialization *clone() const;
+  void swap(StatementInitialization &);
 };
 
-class SReturn : public Stm
+class StatementInclude : public Stm
 {
 public:
   Exp *exp_;
 
-  SReturn(const SReturn &);
-  SReturn &operator=(const SReturn &);
-  SReturn(Exp *p1);
-  ~SReturn();
+  StatementInclude(const StatementInclude &);
+  StatementInclude &operator=(const StatementInclude &);
+  StatementInclude(Exp *p1);
+  ~StatementInclude();
   virtual void accept(Visitor *v);
-  virtual SReturn *clone() const;
-  void swap(SReturn &);
+  virtual StatementInclude *clone() const;
+  void swap(StatementInclude &);
 };
 
-class SWhile : public Stm
+class StatementReturn : public Stm
+{
+public:
+  Exp *exp_;
+
+  StatementReturn(const StatementReturn &);
+  StatementReturn &operator=(const StatementReturn &);
+  StatementReturn(Exp *p1);
+  ~StatementReturn();
+  virtual void accept(Visitor *v);
+  virtual StatementReturn *clone() const;
+  void swap(StatementReturn &);
+};
+
+class StatementWhile : public Stm
 {
 public:
   Exp *exp_;
   Stm *stm_;
 
-  SWhile(const SWhile &);
-  SWhile &operator=(const SWhile &);
-  SWhile(Exp *p1, Stm *p2);
-  ~SWhile();
+  StatementWhile(const StatementWhile &);
+  StatementWhile &operator=(const StatementWhile &);
+  StatementWhile(Exp *p1, Stm *p2);
+  ~StatementWhile();
   virtual void accept(Visitor *v);
-  virtual SWhile *clone() const;
-  void swap(SWhile &);
+  virtual StatementWhile *clone() const;
+  void swap(StatementWhile &);
 };
 
-class SDo : public Stm
+class StatementDo : public Stm
 {
 public:
   Stm *stm_;
   Exp *exp_;
 
-  SDo(const SDo &);
-  SDo &operator=(const SDo &);
-  SDo(Stm *p1, Exp *p2);
-  ~SDo();
+  StatementDo(const StatementDo &);
+  StatementDo &operator=(const StatementDo &);
+  StatementDo(Stm *p1, Exp *p2);
+  ~StatementDo();
   virtual void accept(Visitor *v);
-  virtual SDo *clone() const;
-  void swap(SDo &);
+  virtual StatementDo *clone() const;
+  void swap(StatementDo &);
 };
 
-class SFor : public Stm
+class StatementFor : public Stm
 {
 public:
   Type *type_;
@@ -345,89 +361,89 @@ public:
   Stm *stm_1;
   Stm *stm_2;
 
-  SFor(const SFor &);
-  SFor &operator=(const SFor &);
-  SFor(Type *p1, Id p2, Exp *p3, Exp *p4, Stm *p5, Stm *p6);
-  ~SFor();
+  StatementFor(const StatementFor &);
+  StatementFor &operator=(const StatementFor &);
+  StatementFor(Type *p1, Id p2, Exp *p3, Exp *p4, Stm *p5, Stm *p6);
+  ~StatementFor();
   virtual void accept(Visitor *v);
-  virtual SFor *clone() const;
-  void swap(SFor &);
+  virtual StatementFor *clone() const;
+  void swap(StatementFor &);
 };
 
-class SIf : public Stm
+class StatementIf : public Stm
 {
 public:
   Exp *exp_;
   Stm *stm_;
 
-  SIf(const SIf &);
-  SIf &operator=(const SIf &);
-  SIf(Exp *p1, Stm *p2);
-  ~SIf();
+  StatementIf(const StatementIf &);
+  StatementIf &operator=(const StatementIf &);
+  StatementIf(Exp *p1, Stm *p2);
+  ~StatementIf();
   virtual void accept(Visitor *v);
-  virtual SIf *clone() const;
-  void swap(SIf &);
+  virtual StatementIf *clone() const;
+  void swap(StatementIf &);
 };
 
-class SIfElse : public Stm
+class StatementIfElse : public Stm
 {
 public:
   Exp *exp_;
   Stm *stm_1;
   Stm *stm_2;
 
-  SIfElse(const SIfElse &);
-  SIfElse &operator=(const SIfElse &);
-  SIfElse(Exp *p1, Stm *p2, Stm *p3);
-  ~SIfElse();
+  StatementIfElse(const StatementIfElse &);
+  StatementIfElse &operator=(const StatementIfElse &);
+  StatementIfElse(Exp *p1, Stm *p2, Stm *p3);
+  ~StatementIfElse();
   virtual void accept(Visitor *v);
-  virtual SIfElse *clone() const;
-  void swap(SIfElse &);
+  virtual StatementIfElse *clone() const;
+  void swap(StatementIfElse &);
 };
 
-class SBlock : public Stm
+class StatementBlock : public Stm
 {
 public:
   ListStm *liststm_;
 
-  SBlock(const SBlock &);
-  SBlock &operator=(const SBlock &);
-  SBlock(ListStm *p1);
-  ~SBlock();
+  StatementBlock(const StatementBlock &);
+  StatementBlock &operator=(const StatementBlock &);
+  StatementBlock(ListStm *p1);
+  ~StatementBlock();
   virtual void accept(Visitor *v);
-  virtual SBlock *clone() const;
-  void swap(SBlock &);
+  virtual StatementBlock *clone() const;
+  void swap(StatementBlock &);
 };
 
-class STypedef : public Stm
+class StatementTypedef : public Stm
 {
 public:
   Type *type_1;
   Type *type_2;
   Id id_;
 
-  STypedef(const STypedef &);
-  STypedef &operator=(const STypedef &);
-  STypedef(Type *p1, Type *p2, Id p3);
-  ~STypedef();
+  StatementTypedef(const StatementTypedef &);
+  StatementTypedef &operator=(const StatementTypedef &);
+  StatementTypedef(Type *p1, Type *p2, Id p3);
+  ~StatementTypedef();
   virtual void accept(Visitor *v);
-  virtual STypedef *clone() const;
-  void swap(STypedef &);
+  virtual StatementTypedef *clone() const;
+  void swap(StatementTypedef &);
 };
 
-class SStruct : public Stm
+class StatementStruct : public Stm
 {
 public:
   Id id_;
   ListStm *liststm_;
 
-  SStruct(const SStruct &);
-  SStruct &operator=(const SStruct &);
-  SStruct(Id p1, ListStm *p2);
-  ~SStruct();
+  StatementStruct(const StatementStruct &);
+  StatementStruct &operator=(const StatementStruct &);
+  StatementStruct(Id p1, ListStm *p2);
+  ~StatementStruct();
   virtual void accept(Visitor *v);
-  virtual SStruct *clone() const;
-  void swap(SStruct &);
+  virtual StatementStruct *clone() const;
+  void swap(StatementStruct &);
 };
 
 class TemplateInstantiations : public Stm
@@ -442,21 +458,6 @@ public:
   virtual void accept(Visitor *v);
   virtual TemplateInstantiations *clone() const;
   void swap(TemplateInstantiations &);
-};
-
-class QualifiedConstants : public Stm
-{
-public:
-  Id id_;
-  ListId *listid_;
-
-  QualifiedConstants(const QualifiedConstants &);
-  QualifiedConstants &operator=(const QualifiedConstants &);
-  QualifiedConstants(Id p1, ListId *p2);
-  ~QualifiedConstants();
-  virtual void accept(Visitor *v);
-  virtual QualifiedConstants *clone() const;
-  void swap(QualifiedConstants &);
 };
 
 class StatementDefinition : public Stm
@@ -552,44 +553,32 @@ public:
   void swap(TString &);
 };
 
-class LString : public Lit
+class EInteger : public Exp
 {
 public:
+  Integer integer_;
 
-  LString(const LString &);
-  LString &operator=(const LString &);
-  LString();
-  ~LString();
+  EInteger(const EInteger &);
+  EInteger &operator=(const EInteger &);
+  EInteger(Integer p1);
+  ~EInteger();
   virtual void accept(Visitor *v);
-  virtual LString *clone() const;
-  void swap(LString &);
+  virtual EInteger *clone() const;
+  void swap(EInteger &);
 };
 
-class LInt : public Lit
+class EString : public Exp
 {
 public:
+  String string_;
 
-  LInt(const LInt &);
-  LInt &operator=(const LInt &);
-  LInt();
-  ~LInt();
+  EString(const EString &);
+  EString &operator=(const EString &);
+  EString(String p1);
+  ~EString();
   virtual void accept(Visitor *v);
-  virtual LInt *clone() const;
-  void swap(LInt &);
-};
-
-class EAtom : public Exp
-{
-public:
-  Lit *lit_;
-
-  EAtom(const EAtom &);
-  EAtom &operator=(const EAtom &);
-  EAtom(Lit *p1);
-  ~EAtom();
-  virtual void accept(Visitor *v);
-  virtual EAtom *clone() const;
-  void swap(EAtom &);
+  virtual EString *clone() const;
+  void swap(EString &);
 };
 
 class EInde : public Exp
@@ -1049,6 +1038,35 @@ public:
   virtual void accept(Visitor *v);
   virtual EExce *clone() const;
   void swap(EExce &);
+};
+
+class SpecifierDefinition : public Exp
+{
+public:
+  NNa *nna_;
+  Id id_;
+
+  SpecifierDefinition(const SpecifierDefinition &);
+  SpecifierDefinition &operator=(const SpecifierDefinition &);
+  SpecifierDefinition(NNa *p1, Id p2);
+  ~SpecifierDefinition();
+  virtual void accept(Visitor *v);
+  virtual SpecifierDefinition *clone() const;
+  void swap(SpecifierDefinition &);
+};
+
+class NamespaceName : public NNa
+{
+public:
+  Id id_;
+
+  NamespaceName(const NamespaceName &);
+  NamespaceName &operator=(const NamespaceName &);
+  NamespaceName(Id p1);
+  ~NamespaceName();
+  virtual void accept(Visitor *v);
+  virtual NamespaceName *clone() const;
+  void swap(NamespaceName &);
 };
 
 

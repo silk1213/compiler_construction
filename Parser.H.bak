@@ -14,8 +14,8 @@ class ListType;
 class Arg;
 class ListExp;
 class Type;
-class Lit;
 class Exp;
+class NNa;
 
 typedef union
 {
@@ -32,8 +32,8 @@ typedef union
   Arg* arg_;
   ListExp* listexp_;
   Type* type_;
-  Lit* lit_;
   Exp* exp_;
+  NNa* nna_;
 } YYSTYPE;
 
 Def* pDef(FILE *inp);
@@ -54,10 +54,10 @@ ListExp* pListExp(FILE *inp);
 ListExp* pListExp(const char *str);
 Type* pType(FILE *inp);
 Type* pType(const char *str);
-Lit* pLit(FILE *inp);
-Lit* pLit(const char *str);
 Exp* pExp(FILE *inp);
 Exp* pExp(const char *str);
+NNa* pNNa(FILE *inp);
+NNa* pNNa(const char *str);
 
 
 
@@ -113,6 +113,8 @@ Exp* pExp(const char *str);
 #define _SYMB_48 307
 #define _SYMB_49 308
 #define _SYMB_50 309
+#define _STRING_ 310
+#define _INTEGER_ 311
 
 extern YYSTYPE yylval;
 

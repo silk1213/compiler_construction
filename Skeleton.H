@@ -13,10 +13,7 @@ public:
   void visitArg(Arg* p);
   void visitExp(Exp* p);
   void visitType(Type* p);
-  void visitSpe(Spe* p);
   void visitNNa(NNa* p);
-  void visitSLi(SLi* p);
-  void visitCSe(CSe* p);
   void visitFunction(Function* p);
   void visitStatementDeclaration(StatementDeclaration* p);
   void visitStatementDeclarations(StatementDeclarations* p);
@@ -33,7 +30,8 @@ public:
   void visitTemplateInstantiations(TemplateInstantiations* p);
   void visitStatementDefinition(StatementDefinition* p);
   void visitArgumentDefinition(ArgumentDefinition* p);
-  void visitEAtom(EAtom* p);
+  void visitEInteger(EInteger* p);
+  void visitEString(EString* p);
   void visitEInde(EInde* p);
   void visitEQCon(EQCon* p);
   void visitEFunC(EFunC* p);
@@ -70,12 +68,8 @@ public:
   void visitTDouble(TDouble* p);
   void visitTVoid(TVoid* p);
   void visitTString(TString* p);
-  void visitStatementQualifiedId(StatementQualifiedId* p);
-  void visitSecifierDefinition(SecifierDefinition* p);
+  void visitSpecifierDefinition(SpecifierDefinition* p);
   void visitNamespaceName(NamespaceName* p);
-  void visitLiteralStringDefinition(LiteralStringDefinition* p);
-  void visitCharacterSeq(CharacterSeq* p);
-  void visitCharacterSequence(CharacterSequence* p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
   void visitListId(ListId* p);
@@ -83,7 +77,6 @@ public:
   void visitListExp(ListExp* p);
 
   void visit"Id"("Id" x);
-  void visit"ChS"("ChS" x);
   void visit"Integer"("Integer" x);
   void visit"Char"("Char" x);
   void visit"Double"("Double" x);

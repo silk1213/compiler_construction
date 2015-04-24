@@ -23,8 +23,8 @@ separator Type "," ;
 StatementDefinition . Stm ::= Exp ";" ;
 ArgumentDefinition . Arg ::= Exp ;
 
-
-EAtom . Exp16 ::= ChS ;
+EInteger . Exp16 ::= Integer ;
+EString . Exp16 ::= String ;
 EInde . Exp15 ::= Exp "[" Id "]" ;
 EQCon . Exp15 ::= Exp "::" Id ;
 EFunC . Exp15 ::= Exp "(" [Exp] ")" ;
@@ -64,19 +64,13 @@ TDouble . Type ::= "double" ;
 TVoid . Type ::= "void" ;
 TString . Type ::= "string" ;
 
-StatementQualifiedId . Stm ::= Spe Id ;
-SecifierDefinition . Spe ::= NNa "::" Spe ;
+SpecifierDefinition . Exp ::= NNa "::" Id ;
 NamespaceName . NNa ::= Id ;
 
-LiteralStringDefinition . SLi ::= "\"" CSe "\"" ;
-CharacterSeq . CSe ::= ChS ;
-CharacterSequence . CSe ::= CSe ChS ;
-
 comment "//" ;
-comment "#" ;
 comment "/*" "*/" ;
+comment "#" ;
 
 token Id (letter (letter | digit | '_')*) ;
-token ChS (letter | digit (letter | digit | '_')*) ;
 
 coercions Exp 16;

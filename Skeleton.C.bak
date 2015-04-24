@@ -13,130 +13,138 @@ void Skeleton::visitStm(Stm* t) {} //abstract class
 void Skeleton::visitArg(Arg* t) {} //abstract class
 void Skeleton::visitExp(Exp* t) {} //abstract class
 void Skeleton::visitType(Type* t) {} //abstract class
-void Skeleton::visitLit(Lit* t) {} //abstract class
+void Skeleton::visitNNa(NNa* t) {} //abstract class
 
-void Skeleton::visitFunc(Func *func)
+void Skeleton::visitFunction(Function *function)
 {
-  /* Code For Func Goes Here */
+  /* Code For Function Goes Here */
 
-  func->type_->accept(this);
-  visitId(func->id_);
-  func->listarg_->accept(this);
-  func->liststm_->accept(this);
+  function->type_->accept(this);
+  visitId(function->id_);
+  function->listarg_->accept(this);
+  function->liststm_->accept(this);
 
 }
 
-void Skeleton::visitSDecl(SDecl *sdecl)
+void Skeleton::visitStatementDeclaration(StatementDeclaration *statementdeclaration)
 {
-  /* Code For SDecl Goes Here */
+  /* Code For StatementDeclaration Goes Here */
 
-  sdecl->type_->accept(this);
-  visitId(sdecl->id_);
+  statementdeclaration->type_->accept(this);
+  visitId(statementdeclaration->id_);
 
 }
 
-void Skeleton::visitSDecls(SDecls *sdecls)
+void Skeleton::visitStatementDeclarations(StatementDeclarations *statementdeclarations)
 {
-  /* Code For SDecls Goes Here */
+  /* Code For StatementDeclarations Goes Here */
 
-  sdecls->type_->accept(this);
-  visitId(sdecls->id_);
-  sdecls->listid_->accept(this);
+  statementdeclarations->type_->accept(this);
+  visitId(statementdeclarations->id_);
+  statementdeclarations->listid_->accept(this);
 
 }
 
-void Skeleton::visitSInit(SInit *sinit)
+void Skeleton::visitStatementInitialization(StatementInitialization *statementinitialization)
 {
-  /* Code For SInit Goes Here */
+  /* Code For StatementInitialization Goes Here */
 
-  sinit->type_->accept(this);
-  visitId(sinit->id_);
-  sinit->exp_->accept(this);
+  statementinitialization->type_->accept(this);
+  visitId(statementinitialization->id_);
+  statementinitialization->exp_->accept(this);
 
 }
 
-void Skeleton::visitSReturn(SReturn *sreturn)
+void Skeleton::visitStatementInclude(StatementInclude *statementinclude)
 {
-  /* Code For SReturn Goes Here */
+  /* Code For StatementInclude Goes Here */
 
-  sreturn->exp_->accept(this);
+  statementinclude->exp_->accept(this);
 
 }
 
-void Skeleton::visitSWhile(SWhile *swhile)
+void Skeleton::visitStatementReturn(StatementReturn *statementreturn)
 {
-  /* Code For SWhile Goes Here */
+  /* Code For StatementReturn Goes Here */
 
-  swhile->exp_->accept(this);
-  swhile->stm_->accept(this);
+  statementreturn->exp_->accept(this);
 
 }
 
-void Skeleton::visitSDo(SDo *sdo)
+void Skeleton::visitStatementWhile(StatementWhile *statementwhile)
 {
-  /* Code For SDo Goes Here */
+  /* Code For StatementWhile Goes Here */
 
-  sdo->stm_->accept(this);
-  sdo->exp_->accept(this);
+  statementwhile->exp_->accept(this);
+  statementwhile->stm_->accept(this);
 
 }
 
-void Skeleton::visitSFor(SFor *sfor)
+void Skeleton::visitStatementDo(StatementDo *statementdo)
 {
-  /* Code For SFor Goes Here */
+  /* Code For StatementDo Goes Here */
 
-  sfor->type_->accept(this);
-  visitId(sfor->id_);
-  sfor->exp_1->accept(this);
-  sfor->exp_2->accept(this);
-  sfor->stm_1->accept(this);
-  sfor->stm_2->accept(this);
+  statementdo->stm_->accept(this);
+  statementdo->exp_->accept(this);
 
 }
 
-void Skeleton::visitSIf(SIf *sif)
+void Skeleton::visitStatementFor(StatementFor *statementfor)
 {
-  /* Code For SIf Goes Here */
+  /* Code For StatementFor Goes Here */
 
-  sif->exp_->accept(this);
-  sif->stm_->accept(this);
+  statementfor->type_->accept(this);
+  visitId(statementfor->id_);
+  statementfor->exp_1->accept(this);
+  statementfor->exp_2->accept(this);
+  statementfor->stm_1->accept(this);
+  statementfor->stm_2->accept(this);
 
 }
 
-void Skeleton::visitSIfElse(SIfElse *sifelse)
+void Skeleton::visitStatementIf(StatementIf *statementif)
 {
-  /* Code For SIfElse Goes Here */
+  /* Code For StatementIf Goes Here */
 
-  sifelse->exp_->accept(this);
-  sifelse->stm_1->accept(this);
-  sifelse->stm_2->accept(this);
+  statementif->exp_->accept(this);
+  statementif->stm_->accept(this);
 
 }
 
-void Skeleton::visitSBlock(SBlock *sblock)
+void Skeleton::visitStatementIfElse(StatementIfElse *statementifelse)
 {
-  /* Code For SBlock Goes Here */
+  /* Code For StatementIfElse Goes Here */
 
-  sblock->liststm_->accept(this);
+  statementifelse->exp_->accept(this);
+  statementifelse->stm_1->accept(this);
+  statementifelse->stm_2->accept(this);
 
 }
 
-void Skeleton::visitSTypedef(STypedef *stypedef)
+void Skeleton::visitStatementBlock(StatementBlock *statementblock)
 {
-  /* Code For STypedef Goes Here */
+  /* Code For StatementBlock Goes Here */
 
-  stypedef->type_1->accept(this);
-  stypedef->type_2->accept(this);
-  visitId(stypedef->id_);
+  statementblock->liststm_->accept(this);
 
 }
 
-void Skeleton::visitSStruct(SStruct *sstruct)
+void Skeleton::visitStatementTypedef(StatementTypedef *statementtypedef)
 {
-  /* Code For SStruct Goes Here */
+  /* Code For StatementTypedef Goes Here */
 
-  visitId(sstruct->id_);
-  sstruct->liststm_->accept(this);
+  statementtypedef->type_1->accept(this);
+  statementtypedef->type_2->accept(this);
+  visitId(statementtypedef->id_);
+
+}
+
+void Skeleton::visitStatementStruct(StatementStruct *statementstruct)
+{
+  /* Code For StatementStruct Goes Here */
+
+  visitId(statementstruct->id_);
+  statementstruct->liststm_->accept(this);
 
 }
 
@@ -145,15 +153,6 @@ void Skeleton::visitTemplateInstantiations(TemplateInstantiations *templateinsta
   /* Code For TemplateInstantiations Goes Here */
 
   templateinstantiations->listtype_->accept(this);
-
-}
-
-void Skeleton::visitQualifiedConstants(QualifiedConstants *qualifiedconstants)
-{
-  /* Code For QualifiedConstants Goes Here */
-
-  visitId(qualifiedconstants->id_);
-  qualifiedconstants->listid_->accept(this);
 
 }
 
@@ -208,25 +207,19 @@ void Skeleton::visitTString(TString *tstring)
 
 }
 
-void Skeleton::visitLString(LString *lstring)
+void Skeleton::visitEInteger(EInteger *einteger)
 {
-  /* Code For LString Goes Here */
+  /* Code For EInteger Goes Here */
 
+  visitInteger(einteger->integer_);
 
 }
 
-void Skeleton::visitLInt(LInt *lint)
+void Skeleton::visitEString(EString *estring)
 {
-  /* Code For LInt Goes Here */
+  /* Code For EString Goes Here */
 
-
-}
-
-void Skeleton::visitEAtom(EAtom *eatom)
-{
-  /* Code For EAtom Goes Here */
-
-  eatom->lit_->accept(this);
+  visitString(estring->string_);
 
 }
 
@@ -500,6 +493,23 @@ void Skeleton::visitEExce(EExce *eexce)
   /* Code For EExce Goes Here */
 
   eexce->exp_->accept(this);
+
+}
+
+void Skeleton::visitSpecifierDefinition(SpecifierDefinition *specifierdefinition)
+{
+  /* Code For SpecifierDefinition Goes Here */
+
+  specifierdefinition->nna_->accept(this);
+  visitId(specifierdefinition->id_);
+
+}
+
+void Skeleton::visitNamespaceName(NamespaceName *namespacename)
+{
+  /* Code For NamespaceName Goes Here */
+
+  visitId(namespacename->id_);
 
 }
 

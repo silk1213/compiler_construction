@@ -29,31 +29,32 @@ class PrintAbsyn : public Visitor
   char* print(Visitable* v);
 
   void visitDef(Def *p); /* abstract class */
-  void visitFunc(Func *p);
+  void visitFunction(Function *p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
   void visitStm(Stm *p); /* abstract class */
-  void visitSDecl(SDecl *p);
-  void visitSDecls(SDecls *p);
-  void visitSInit(SInit *p);
-  void visitSReturn(SReturn *p);
-  void visitSWhile(SWhile *p);
-  void visitSDo(SDo *p);
-  void visitSFor(SFor *p);
-  void visitSIf(SIf *p);
-  void visitSIfElse(SIfElse *p);
-  void visitSBlock(SBlock *p);
-  void visitSTypedef(STypedef *p);
-  void visitSStruct(SStruct *p);
+  void visitStatementDeclaration(StatementDeclaration *p);
+  void visitStatementDeclarations(StatementDeclarations *p);
+  void visitStatementInitialization(StatementInitialization *p);
+  void visitStatementInclude(StatementInclude *p);
+  void visitStatementReturn(StatementReturn *p);
+  void visitStatementWhile(StatementWhile *p);
+  void visitStatementDo(StatementDo *p);
+  void visitStatementFor(StatementFor *p);
+  void visitStatementIf(StatementIf *p);
+  void visitStatementIfElse(StatementIfElse *p);
+  void visitStatementBlock(StatementBlock *p);
+  void visitStatementTypedef(StatementTypedef *p);
+  void visitStatementStruct(StatementStruct *p);
   void visitTemplateInstantiations(TemplateInstantiations *p);
-  void visitQualifiedConstants(QualifiedConstants *p);
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
   void visitListType(ListType* p);
   void visitArg(Arg *p); /* abstract class */
   void visitArgumentDefinition(ArgumentDefinition *p);
   void visitExp(Exp *p); /* abstract class */
-  void visitEAtom(EAtom *p);
+  void visitEInteger(EInteger *p);
+  void visitEString(EString *p);
   void visitEInde(EInde *p);
   void visitEQCon(EQCon *p);
   void visitEFunC(EFunC *p);
@@ -85,6 +86,7 @@ class PrintAbsyn : public Visitor
   void visitEAsMi(EAsMi *p);
   void visitECond(ECond *p);
   void visitEExce(EExce *p);
+  void visitSpecifierDefinition(SpecifierDefinition *p);
   void visitListExp(ListExp* p);
   void visitType(Type *p); /* abstract class */
   void visitTInt(TInt *p);
@@ -92,9 +94,8 @@ class PrintAbsyn : public Visitor
   void visitTDouble(TDouble *p);
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
-  void visitLit(Lit *p); /* abstract class */
-  void visitLString(LString *p);
-  void visitLInt(LInt *p);
+  void visitNNa(NNa *p); /* abstract class */
+  void visitNamespaceName(NamespaceName *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);
@@ -165,31 +166,32 @@ class ShowAbsyn : public Visitor
   char* show(Visitable* v);
 
   void visitDef(Def *p); /* abstract class */
-  void visitFunc(Func *p);
+  void visitFunction(Function *p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
   void visitStm(Stm *p); /* abstract class */
-  void visitSDecl(SDecl *p);
-  void visitSDecls(SDecls *p);
-  void visitSInit(SInit *p);
-  void visitSReturn(SReturn *p);
-  void visitSWhile(SWhile *p);
-  void visitSDo(SDo *p);
-  void visitSFor(SFor *p);
-  void visitSIf(SIf *p);
-  void visitSIfElse(SIfElse *p);
-  void visitSBlock(SBlock *p);
-  void visitSTypedef(STypedef *p);
-  void visitSStruct(SStruct *p);
+  void visitStatementDeclaration(StatementDeclaration *p);
+  void visitStatementDeclarations(StatementDeclarations *p);
+  void visitStatementInitialization(StatementInitialization *p);
+  void visitStatementInclude(StatementInclude *p);
+  void visitStatementReturn(StatementReturn *p);
+  void visitStatementWhile(StatementWhile *p);
+  void visitStatementDo(StatementDo *p);
+  void visitStatementFor(StatementFor *p);
+  void visitStatementIf(StatementIf *p);
+  void visitStatementIfElse(StatementIfElse *p);
+  void visitStatementBlock(StatementBlock *p);
+  void visitStatementTypedef(StatementTypedef *p);
+  void visitStatementStruct(StatementStruct *p);
   void visitTemplateInstantiations(TemplateInstantiations *p);
-  void visitQualifiedConstants(QualifiedConstants *p);
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
   void visitListType(ListType* p);
   void visitArg(Arg *p); /* abstract class */
   void visitArgumentDefinition(ArgumentDefinition *p);
   void visitExp(Exp *p); /* abstract class */
-  void visitEAtom(EAtom *p);
+  void visitEInteger(EInteger *p);
+  void visitEString(EString *p);
   void visitEInde(EInde *p);
   void visitEQCon(EQCon *p);
   void visitEFunC(EFunC *p);
@@ -221,6 +223,7 @@ class ShowAbsyn : public Visitor
   void visitEAsMi(EAsMi *p);
   void visitECond(ECond *p);
   void visitEExce(EExce *p);
+  void visitSpecifierDefinition(SpecifierDefinition *p);
   void visitListExp(ListExp* p);
   void visitType(Type *p); /* abstract class */
   void visitTInt(TInt *p);
@@ -228,9 +231,8 @@ class ShowAbsyn : public Visitor
   void visitTDouble(TDouble *p);
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
-  void visitLit(Lit *p); /* abstract class */
-  void visitLString(LString *p);
-  void visitLInt(LInt *p);
+  void visitNNa(NNa *p); /* abstract class */
+  void visitNamespaceName(NamespaceName *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);

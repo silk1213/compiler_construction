@@ -742,53 +742,6 @@ StatementDefinition *StatementDefinition::clone() const
 
 
 
-/********************   StatementQualifiedId    ********************/
-StatementQualifiedId::StatementQualifiedId(Spe *p1, Id p2)
-{
-  spe_ = p1;
-  id_ = p2;
-
-}
-
-StatementQualifiedId::StatementQualifiedId(const StatementQualifiedId & other)
-{
-  spe_ = other.spe_->clone();
-  id_ = other.id_;
-
-}
-
-StatementQualifiedId &StatementQualifiedId::operator=(const StatementQualifiedId & other)
-{
-  StatementQualifiedId tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void StatementQualifiedId::swap(StatementQualifiedId & other)
-{
-  std::swap(spe_, other.spe_);
-  std::swap(id_, other.id_);
-
-}
-
-StatementQualifiedId::~StatementQualifiedId()
-{
-  delete(spe_);
-
-}
-
-void StatementQualifiedId::accept(Visitor *v)
-{
-  v->visitStatementQualifiedId(this);
-}
-
-StatementQualifiedId *StatementQualifiedId::clone() const
-{
-  return new StatementQualifiedId(*this);
-}
-
-
-
 /********************   ArgumentDefinition    ********************/
 ArgumentDefinition::ArgumentDefinition(Exp *p1)
 {
@@ -1033,270 +986,88 @@ TString *TString::clone() const
 
 
 
-/********************   SecifierDefinition    ********************/
-SecifierDefinition::SecifierDefinition(NNa *p1, Spe *p2)
+/********************   EInteger    ********************/
+EInteger::EInteger(Integer p1)
 {
-  nna_ = p1;
-  spe_ = p2;
+  integer_ = p1;
 
 }
 
-SecifierDefinition::SecifierDefinition(const SecifierDefinition & other)
+EInteger::EInteger(const EInteger & other)
 {
-  nna_ = other.nna_->clone();
-  spe_ = other.spe_->clone();
+  integer_ = other.integer_;
 
 }
 
-SecifierDefinition &SecifierDefinition::operator=(const SecifierDefinition & other)
+EInteger &EInteger::operator=(const EInteger & other)
 {
-  SecifierDefinition tmp(other);
+  EInteger tmp(other);
   swap(tmp);
   return *this;
 }
 
-void SecifierDefinition::swap(SecifierDefinition & other)
+void EInteger::swap(EInteger & other)
 {
-  std::swap(nna_, other.nna_);
-  std::swap(spe_, other.spe_);
+  std::swap(integer_, other.integer_);
 
 }
 
-SecifierDefinition::~SecifierDefinition()
+EInteger::~EInteger()
 {
-  delete(nna_);
-  delete(spe_);
 
 }
 
-void SecifierDefinition::accept(Visitor *v)
+void EInteger::accept(Visitor *v)
 {
-  v->visitSecifierDefinition(this);
+  v->visitEInteger(this);
 }
 
-SecifierDefinition *SecifierDefinition::clone() const
+EInteger *EInteger::clone() const
 {
-  return new SecifierDefinition(*this);
+  return new EInteger(*this);
 }
 
 
 
-/********************   NamespaceName    ********************/
-NamespaceName::NamespaceName(Id p1)
+/********************   EString    ********************/
+EString::EString(String p1)
 {
-  id_ = p1;
+  string_ = p1;
 
 }
 
-NamespaceName::NamespaceName(const NamespaceName & other)
+EString::EString(const EString & other)
 {
-  id_ = other.id_;
+  string_ = other.string_;
 
 }
 
-NamespaceName &NamespaceName::operator=(const NamespaceName & other)
+EString &EString::operator=(const EString & other)
 {
-  NamespaceName tmp(other);
+  EString tmp(other);
   swap(tmp);
   return *this;
 }
 
-void NamespaceName::swap(NamespaceName & other)
+void EString::swap(EString & other)
 {
-  std::swap(id_, other.id_);
+  std::swap(string_, other.string_);
 
 }
 
-NamespaceName::~NamespaceName()
-{
-
-}
-
-void NamespaceName::accept(Visitor *v)
-{
-  v->visitNamespaceName(this);
-}
-
-NamespaceName *NamespaceName::clone() const
-{
-  return new NamespaceName(*this);
-}
-
-
-
-/********************   LiteralStringDefinition    ********************/
-LiteralStringDefinition::LiteralStringDefinition(CSe *p1)
-{
-  cse_ = p1;
-
-}
-
-LiteralStringDefinition::LiteralStringDefinition(const LiteralStringDefinition & other)
-{
-  cse_ = other.cse_->clone();
-
-}
-
-LiteralStringDefinition &LiteralStringDefinition::operator=(const LiteralStringDefinition & other)
-{
-  LiteralStringDefinition tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void LiteralStringDefinition::swap(LiteralStringDefinition & other)
-{
-  std::swap(cse_, other.cse_);
-
-}
-
-LiteralStringDefinition::~LiteralStringDefinition()
-{
-  delete(cse_);
-
-}
-
-void LiteralStringDefinition::accept(Visitor *v)
-{
-  v->visitLiteralStringDefinition(this);
-}
-
-LiteralStringDefinition *LiteralStringDefinition::clone() const
-{
-  return new LiteralStringDefinition(*this);
-}
-
-
-
-/********************   CharacterSeq    ********************/
-CharacterSeq::CharacterSeq(ChS p1)
-{
-  chs_ = p1;
-
-}
-
-CharacterSeq::CharacterSeq(const CharacterSeq & other)
-{
-  chs_ = other.chs_;
-
-}
-
-CharacterSeq &CharacterSeq::operator=(const CharacterSeq & other)
-{
-  CharacterSeq tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void CharacterSeq::swap(CharacterSeq & other)
-{
-  std::swap(chs_, other.chs_);
-
-}
-
-CharacterSeq::~CharacterSeq()
+EString::~EString()
 {
 
 }
 
-void CharacterSeq::accept(Visitor *v)
+void EString::accept(Visitor *v)
 {
-  v->visitCharacterSeq(this);
+  v->visitEString(this);
 }
 
-CharacterSeq *CharacterSeq::clone() const
+EString *EString::clone() const
 {
-  return new CharacterSeq(*this);
-}
-
-
-
-/********************   CharacterSequence    ********************/
-CharacterSequence::CharacterSequence(CSe *p1, ChS p2)
-{
-  cse_ = p1;
-  chs_ = p2;
-
-}
-
-CharacterSequence::CharacterSequence(const CharacterSequence & other)
-{
-  cse_ = other.cse_->clone();
-  chs_ = other.chs_;
-
-}
-
-CharacterSequence &CharacterSequence::operator=(const CharacterSequence & other)
-{
-  CharacterSequence tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void CharacterSequence::swap(CharacterSequence & other)
-{
-  std::swap(cse_, other.cse_);
-  std::swap(chs_, other.chs_);
-
-}
-
-CharacterSequence::~CharacterSequence()
-{
-  delete(cse_);
-
-}
-
-void CharacterSequence::accept(Visitor *v)
-{
-  v->visitCharacterSequence(this);
-}
-
-CharacterSequence *CharacterSequence::clone() const
-{
-  return new CharacterSequence(*this);
-}
-
-
-
-/********************   EAtom    ********************/
-EAtom::EAtom(ChS p1)
-{
-  chs_ = p1;
-
-}
-
-EAtom::EAtom(const EAtom & other)
-{
-  chs_ = other.chs_;
-
-}
-
-EAtom &EAtom::operator=(const EAtom & other)
-{
-  EAtom tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void EAtom::swap(EAtom & other)
-{
-  std::swap(chs_, other.chs_);
-
-}
-
-EAtom::~EAtom()
-{
-
-}
-
-void EAtom::accept(Visitor *v)
-{
-  v->visitEAtom(this);
-}
-
-EAtom *EAtom::clone() const
-{
-  return new EAtom(*this);
+  return new EString(*this);
 }
 
 
@@ -2759,6 +2530,96 @@ void EExce::accept(Visitor *v)
 EExce *EExce::clone() const
 {
   return new EExce(*this);
+}
+
+
+
+/********************   SpecifierDefinition    ********************/
+SpecifierDefinition::SpecifierDefinition(NNa *p1, Id p2)
+{
+  nna_ = p1;
+  id_ = p2;
+
+}
+
+SpecifierDefinition::SpecifierDefinition(const SpecifierDefinition & other)
+{
+  nna_ = other.nna_->clone();
+  id_ = other.id_;
+
+}
+
+SpecifierDefinition &SpecifierDefinition::operator=(const SpecifierDefinition & other)
+{
+  SpecifierDefinition tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void SpecifierDefinition::swap(SpecifierDefinition & other)
+{
+  std::swap(nna_, other.nna_);
+  std::swap(id_, other.id_);
+
+}
+
+SpecifierDefinition::~SpecifierDefinition()
+{
+  delete(nna_);
+
+}
+
+void SpecifierDefinition::accept(Visitor *v)
+{
+  v->visitSpecifierDefinition(this);
+}
+
+SpecifierDefinition *SpecifierDefinition::clone() const
+{
+  return new SpecifierDefinition(*this);
+}
+
+
+
+/********************   NamespaceName    ********************/
+NamespaceName::NamespaceName(Id p1)
+{
+  id_ = p1;
+
+}
+
+NamespaceName::NamespaceName(const NamespaceName & other)
+{
+  id_ = other.id_;
+
+}
+
+NamespaceName &NamespaceName::operator=(const NamespaceName & other)
+{
+  NamespaceName tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void NamespaceName::swap(NamespaceName & other)
+{
+  std::swap(id_, other.id_);
+
+}
+
+NamespaceName::~NamespaceName()
+{
+
+}
+
+void NamespaceName::accept(Visitor *v)
+{
+  v->visitNamespaceName(this);
+}
+
+NamespaceName *NamespaceName::clone() const
+{
+  return new NamespaceName(*this);
 }
 
 
