@@ -6,6 +6,7 @@ StatementDeclaration . Stm ::= Type Id ";" ;
 StatementDeclarations . Stm ::= Type Id "," [Id] ";" ;
 separator Id "," ;
 StatementInitialization . Stm ::= Type Id "=" Exp ";" ;
+StatementUsing . Stm ::= "using" Exp ";" ;
 
 StatementReturn . Stm ::= "return" Exp ";" ;
 StatementWhile . Stm ::= "while" "(" Exp ")" Stm ";" ;
@@ -23,6 +24,7 @@ separator Type "," ;
 StatementDefinition . Stm ::= Exp ";" ;
 ArgumentDefinition . Arg ::= Exp ;
 
+EId . Exp16 ::= Id ;
 EInteger . Exp16 ::= Integer ;
 EString . Exp16 ::= String ;
 EInde . Exp15 ::= Exp "[" Id "]" ;
@@ -63,9 +65,7 @@ TBool . Type ::= "bool" ;
 TDouble . Type ::= "double" ;
 TVoid . Type ::= "void" ;
 TString . Type ::= "string" ;
-
-SpecifierDefinition . Exp ::= NNa "::" Id ;
-NamespaceName . NNa ::= Id ;
+TStringStd . Type ::= "std::string" ;
 
 comment "//" ;
 comment "/*" "*/" ;

@@ -60,14 +60,14 @@ IDENT [a-zA-Z0-9'_]
 <YYINITIAL>"-="      	 return _SYMB_31;
 <YYINITIAL>"?"      	 return _SYMB_32;
 <YYINITIAL>":"      	 return _SYMB_33;
-<YYINITIAL>"bool"      	 return _SYMB_34;
-<YYINITIAL>"do"      	 return _SYMB_35;
-<YYINITIAL>"double"      	 return _SYMB_36;
-<YYINITIAL>"else"      	 return _SYMB_37;
-<YYINITIAL>"for"      	 return _SYMB_38;
-<YYINITIAL>"ident"      	 return _SYMB_39;
-<YYINITIAL>"if"      	 return _SYMB_40;
-<YYINITIAL>"include"      	 return _SYMB_41;
+<YYINITIAL>"std::string"      	 return _SYMB_34;
+<YYINITIAL>"bool"      	 return _SYMB_35;
+<YYINITIAL>"do"      	 return _SYMB_36;
+<YYINITIAL>"double"      	 return _SYMB_37;
+<YYINITIAL>"else"      	 return _SYMB_38;
+<YYINITIAL>"for"      	 return _SYMB_39;
+<YYINITIAL>"ident"      	 return _SYMB_40;
+<YYINITIAL>"if"      	 return _SYMB_41;
 <YYINITIAL>"int"      	 return _SYMB_42;
 <YYINITIAL>"return"      	 return _SYMB_43;
 <YYINITIAL>"string"      	 return _SYMB_44;
@@ -78,6 +78,7 @@ IDENT [a-zA-Z0-9'_]
 <YYINITIAL>"while"      	 return _SYMB_49;
 
 <YYINITIAL>"//"[^\n]*\n  ++yy_mylinenumber ; 	 /* BNFC single-line comment */;
+<YYINITIAL>"#"[^\n]*\n  ++yy_mylinenumber ; 	 /* BNFC single-line comment */;
 <YYINITIAL>"/*"      	 BEGIN COMMENT;
 <COMMENT>"*/"      	 BEGIN YYINITIAL;
 <COMMENT>.      	 /* BNFC multi-line comment */;

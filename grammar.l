@@ -60,21 +60,23 @@ IDENT [a-zA-Z0-9'_]
 <YYINITIAL>"-="      	 return _SYMB_31;
 <YYINITIAL>"?"      	 return _SYMB_32;
 <YYINITIAL>":"      	 return _SYMB_33;
-<YYINITIAL>"bool"      	 return _SYMB_34;
-<YYINITIAL>"do"      	 return _SYMB_35;
-<YYINITIAL>"double"      	 return _SYMB_36;
-<YYINITIAL>"else"      	 return _SYMB_37;
-<YYINITIAL>"for"      	 return _SYMB_38;
-<YYINITIAL>"ident"      	 return _SYMB_39;
-<YYINITIAL>"if"      	 return _SYMB_40;
-<YYINITIAL>"int"      	 return _SYMB_41;
-<YYINITIAL>"return"      	 return _SYMB_42;
-<YYINITIAL>"string"      	 return _SYMB_43;
-<YYINITIAL>"struct"      	 return _SYMB_44;
-<YYINITIAL>"throw"      	 return _SYMB_45;
-<YYINITIAL>"typedef"      	 return _SYMB_46;
-<YYINITIAL>"void"      	 return _SYMB_47;
-<YYINITIAL>"while"      	 return _SYMB_48;
+<YYINITIAL>"std::string"      	 return _SYMB_34;
+<YYINITIAL>"bool"      	 return _SYMB_35;
+<YYINITIAL>"do"      	 return _SYMB_36;
+<YYINITIAL>"double"      	 return _SYMB_37;
+<YYINITIAL>"else"      	 return _SYMB_38;
+<YYINITIAL>"for"      	 return _SYMB_39;
+<YYINITIAL>"ident"      	 return _SYMB_40;
+<YYINITIAL>"if"      	 return _SYMB_41;
+<YYINITIAL>"int"      	 return _SYMB_42;
+<YYINITIAL>"return"      	 return _SYMB_43;
+<YYINITIAL>"string"      	 return _SYMB_44;
+<YYINITIAL>"struct"      	 return _SYMB_45;
+<YYINITIAL>"throw"      	 return _SYMB_46;
+<YYINITIAL>"typedef"      	 return _SYMB_47;
+<YYINITIAL>"using"      	 return _SYMB_48;
+<YYINITIAL>"void"      	 return _SYMB_49;
+<YYINITIAL>"while"      	 return _SYMB_50;
 
 <YYINITIAL>"//"[^\n]*\n  ++yy_mylinenumber ; 	 /* BNFC single-line comment */;
 <YYINITIAL>"#"[^\n]*\n  ++yy_mylinenumber ; 	 /* BNFC single-line comment */;
@@ -83,7 +85,7 @@ IDENT [a-zA-Z0-9'_]
 <COMMENT>.      	 /* BNFC multi-line comment */;
 <COMMENT>[\n]   ++yy_mylinenumber ; 	 /* BNFC multi-line comment */;
 
-<YYINITIAL>{LETTER}({LETTER}|{DIGIT}|\_)*     	 yylval.string_ = strdup(yytext); return _SYMB_49;
+<YYINITIAL>{LETTER}({LETTER}|{DIGIT}|\_)*     	 yylval.string_ = strdup(yytext); return _SYMB_51;
 <YYINITIAL>"\""      	 BEGIN STRING;
 <STRING>\\      	 BEGIN ESCAPED;
 <STRING>\"      	 yylval.string_ = strdup(YY_PARSED_STRING); YY_BUFFER_RESET(); BEGIN YYINITIAL; return _STRING_;

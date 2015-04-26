@@ -60,6 +60,50 @@ Function *Function::clone() const
 
 
 
+/********************   StatementList    ********************/
+StatementList::StatementList(ListStm *p1)
+{
+  liststm_ = p1;
+
+}
+
+StatementList::StatementList(const StatementList & other)
+{
+  liststm_ = other.liststm_->clone();
+
+}
+
+StatementList &StatementList::operator=(const StatementList & other)
+{
+  StatementList tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void StatementList::swap(StatementList & other)
+{
+  std::swap(liststm_, other.liststm_);
+
+}
+
+StatementList::~StatementList()
+{
+  delete(liststm_);
+
+}
+
+void StatementList::accept(Visitor *v)
+{
+  v->visitStatementList(this);
+}
+
+StatementList *StatementList::clone() const
+{
+  return new StatementList(*this);
+}
+
+
+
 /********************   StatementDeclaration    ********************/
 StatementDeclaration::StatementDeclaration(Type *p1, Id p2)
 {
@@ -205,6 +249,50 @@ void StatementInitialization::accept(Visitor *v)
 StatementInitialization *StatementInitialization::clone() const
 {
   return new StatementInitialization(*this);
+}
+
+
+
+/********************   StatementUsing    ********************/
+StatementUsing::StatementUsing(Exp *p1)
+{
+  exp_ = p1;
+
+}
+
+StatementUsing::StatementUsing(const StatementUsing & other)
+{
+  exp_ = other.exp_->clone();
+
+}
+
+StatementUsing &StatementUsing::operator=(const StatementUsing & other)
+{
+  StatementUsing tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void StatementUsing::swap(StatementUsing & other)
+{
+  std::swap(exp_, other.exp_);
+
+}
+
+StatementUsing::~StatementUsing()
+{
+  delete(exp_);
+
+}
+
+void StatementUsing::accept(Visitor *v)
+{
+  v->visitStatementUsing(this);
+}
+
+StatementUsing *StatementUsing::clone() const
+{
+  return new StatementUsing(*this);
 }
 
 
@@ -982,6 +1070,89 @@ void TString::accept(Visitor *v)
 TString *TString::clone() const
 {
   return new TString(*this);
+}
+
+
+
+/********************   TStringStd    ********************/
+TStringStd::TStringStd()
+{
+
+}
+
+TStringStd::TStringStd(const TStringStd & other)
+{
+
+}
+
+TStringStd &TStringStd::operator=(const TStringStd & other)
+{
+  TStringStd tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void TStringStd::swap(TStringStd & other)
+{
+
+}
+
+TStringStd::~TStringStd()
+{
+
+}
+
+void TStringStd::accept(Visitor *v)
+{
+  v->visitTStringStd(this);
+}
+
+TStringStd *TStringStd::clone() const
+{
+  return new TStringStd(*this);
+}
+
+
+
+/********************   EId    ********************/
+EId::EId(Id p1)
+{
+  id_ = p1;
+
+}
+
+EId::EId(const EId & other)
+{
+  id_ = other.id_;
+
+}
+
+EId &EId::operator=(const EId & other)
+{
+  EId tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EId::swap(EId & other)
+{
+  std::swap(id_, other.id_);
+
+}
+
+EId::~EId()
+{
+
+}
+
+void EId::accept(Visitor *v)
+{
+  v->visitEId(this);
+}
+
+EId *EId::clone() const
+{
+  return new EId(*this);
 }
 
 
@@ -2530,96 +2701,6 @@ void EExce::accept(Visitor *v)
 EExce *EExce::clone() const
 {
   return new EExce(*this);
-}
-
-
-
-/********************   SpecifierDefinition    ********************/
-SpecifierDefinition::SpecifierDefinition(NNa *p1, Id p2)
-{
-  nna_ = p1;
-  id_ = p2;
-
-}
-
-SpecifierDefinition::SpecifierDefinition(const SpecifierDefinition & other)
-{
-  nna_ = other.nna_->clone();
-  id_ = other.id_;
-
-}
-
-SpecifierDefinition &SpecifierDefinition::operator=(const SpecifierDefinition & other)
-{
-  SpecifierDefinition tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void SpecifierDefinition::swap(SpecifierDefinition & other)
-{
-  std::swap(nna_, other.nna_);
-  std::swap(id_, other.id_);
-
-}
-
-SpecifierDefinition::~SpecifierDefinition()
-{
-  delete(nna_);
-
-}
-
-void SpecifierDefinition::accept(Visitor *v)
-{
-  v->visitSpecifierDefinition(this);
-}
-
-SpecifierDefinition *SpecifierDefinition::clone() const
-{
-  return new SpecifierDefinition(*this);
-}
-
-
-
-/********************   NamespaceName    ********************/
-NamespaceName::NamespaceName(Id p1)
-{
-  id_ = p1;
-
-}
-
-NamespaceName::NamespaceName(const NamespaceName & other)
-{
-  id_ = other.id_;
-
-}
-
-NamespaceName &NamespaceName::operator=(const NamespaceName & other)
-{
-  NamespaceName tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void NamespaceName::swap(NamespaceName & other)
-{
-  std::swap(id_, other.id_);
-
-}
-
-NamespaceName::~NamespaceName()
-{
-
-}
-
-void NamespaceName::accept(Visitor *v)
-{
-  v->visitNamespaceName(this);
-}
-
-NamespaceName *NamespaceName::clone() const
-{
-  return new NamespaceName(*this);
 }
 
 

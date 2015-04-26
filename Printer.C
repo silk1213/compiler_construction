@@ -136,6 +136,17 @@ void PrintAbsyn::visitListStm(ListStm *liststm)
 
 void PrintAbsyn::visitStm(Stm*p) {} //abstract class
 
+void PrintAbsyn::visitStatementList(StatementList* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  if(p->liststm_) {_i_ = 0; p->liststm_->accept(this);}
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
 void PrintAbsyn::visitStatementDeclaration(StatementDeclaration* p)
 {
   int oldi = _i_;
@@ -173,6 +184,20 @@ void PrintAbsyn::visitStatementInitialization(StatementInitialization* p)
   _i_ = 0; p->type_->accept(this);
   visitIdent(p->id_);
   render('=');
+  _i_ = 0; p->exp_->accept(this);
+  render(';');
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitStatementUsing(StatementUsing* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render("using");
   _i_ = 0; p->exp_->accept(this);
   render(';');
 
@@ -400,6 +425,18 @@ void PrintAbsyn::visitArgumentDefinition(ArgumentDefinition* p)
 }
 
 void PrintAbsyn::visitExp(Exp*p) {} //abstract class
+
+void PrintAbsyn::visitEId(EId* p)
+{
+  int oldi = _i_;
+  if (oldi > 16) render(_L_PAREN);
+
+  visitIdent(p->id_);
+
+  if (oldi > 16) render(_R_PAREN);
+
+  _i_ = oldi;
+}
 
 void PrintAbsyn::visitEInteger(EInteger* p)
 {
@@ -855,20 +892,6 @@ void PrintAbsyn::visitEExce(EExce* p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitSpecifierDefinition(SpecifierDefinition* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->nna_->accept(this);
-  render("::");
-  visitIdent(p->id_);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
 void PrintAbsyn::visitListExp(ListExp *listexp)
 {
   for (ListExp::const_iterator i = listexp->begin() ; i != listexp->end() ; ++i)
@@ -940,14 +963,12 @@ void PrintAbsyn::visitTString(TString* p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitNNa(NNa*p) {} //abstract class
-
-void PrintAbsyn::visitNamespaceName(NamespaceName* p)
+void PrintAbsyn::visitTStringStd(TStringStd* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  visitIdent(p->id_);
+  render("std::string");
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -1051,6 +1072,16 @@ void ShowAbsyn::visitListStm(ListStm *liststm)
 
 void ShowAbsyn::visitStm(Stm* p) {} //abstract class
 
+void ShowAbsyn::visitStatementList(StatementList* p)
+{
+  bufAppend('(');
+  bufAppend("StatementList");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->liststm_)  p->liststm_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
 void ShowAbsyn::visitStatementDeclaration(StatementDeclaration* p)
 {
   bufAppend('(');
@@ -1091,6 +1122,17 @@ void ShowAbsyn::visitStatementInitialization(StatementInitialization* p)
   bufAppend(']');
   bufAppend(' ');
   visitIdent(p->id_);
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->exp_)  p->exp_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitStatementUsing(StatementUsing* p)
+{
+  bufAppend('(');
+  bufAppend("StatementUsing");
   bufAppend(' ');
   bufAppend('[');
   if (p->exp_)  p->exp_->accept(this);
@@ -1281,6 +1323,14 @@ void ShowAbsyn::visitArgumentDefinition(ArgumentDefinition* p)
 }
 void ShowAbsyn::visitExp(Exp* p) {} //abstract class
 
+void ShowAbsyn::visitEId(EId* p)
+{
+  bufAppend('(');
+  bufAppend("EId");
+  bufAppend(' ');
+  visitIdent(p->id_);
+  bufAppend(')');
+}
 void ShowAbsyn::visitEInteger(EInteger* p)
 {
   bufAppend('(');
@@ -1621,18 +1671,6 @@ void ShowAbsyn::visitEExce(EExce* p)
   bufAppend(']');
   bufAppend(')');
 }
-void ShowAbsyn::visitSpecifierDefinition(SpecifierDefinition* p)
-{
-  bufAppend('(');
-  bufAppend("SpecifierDefinition");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->nna_)  p->nna_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  visitIdent(p->id_);
-  bufAppend(')');
-}
 void ShowAbsyn::visitListExp(ListExp *listexp)
 {
   for (ListExp::const_iterator i = listexp->begin() ; i != listexp->end() ; ++i)
@@ -1664,15 +1702,9 @@ void ShowAbsyn::visitTString(TString* p)
 {
   bufAppend("TString");
 }
-void ShowAbsyn::visitNNa(NNa* p) {} //abstract class
-
-void ShowAbsyn::visitNamespaceName(NamespaceName* p)
+void ShowAbsyn::visitTStringStd(TStringStd* p)
 {
-  bufAppend('(');
-  bufAppend("NamespaceName");
-  bufAppend(' ');
-  visitIdent(p->id_);
-  bufAppend(')');
+  bufAppend("TStringStd");
 }
 void ShowAbsyn::visitInteger(Integer i)
 {

@@ -13,11 +13,12 @@ public:
   void visitArg(Arg* p);
   void visitExp(Exp* p);
   void visitType(Type* p);
-  void visitNNa(NNa* p);
   void visitFunction(Function* p);
+  void visitStatementList(StatementList* p);
   void visitStatementDeclaration(StatementDeclaration* p);
   void visitStatementDeclarations(StatementDeclarations* p);
   void visitStatementInitialization(StatementInitialization* p);
+  void visitStatementUsing(StatementUsing* p);
   void visitStatementReturn(StatementReturn* p);
   void visitStatementWhile(StatementWhile* p);
   void visitStatementDo(StatementDo* p);
@@ -30,6 +31,7 @@ public:
   void visitTemplateInstantiations(TemplateInstantiations* p);
   void visitStatementDefinition(StatementDefinition* p);
   void visitArgumentDefinition(ArgumentDefinition* p);
+  void visitEId(EId* p);
   void visitEInteger(EInteger* p);
   void visitEString(EString* p);
   void visitEInde(EInde* p);
@@ -68,8 +70,7 @@ public:
   void visitTDouble(TDouble* p);
   void visitTVoid(TVoid* p);
   void visitTString(TString* p);
-  void visitSpecifierDefinition(SpecifierDefinition* p);
-  void visitNamespaceName(NamespaceName* p);
+  void visitTStringStd(TStringStd* p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
   void visitListId(ListId* p);

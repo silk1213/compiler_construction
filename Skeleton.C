@@ -13,7 +13,6 @@ void Skeleton::visitStm(Stm* t) {} //abstract class
 void Skeleton::visitArg(Arg* t) {} //abstract class
 void Skeleton::visitExp(Exp* t) {} //abstract class
 void Skeleton::visitType(Type* t) {} //abstract class
-void Skeleton::visitNNa(NNa* t) {} //abstract class
 
 void Skeleton::visitFunction(Function *function)
 {
@@ -23,6 +22,14 @@ void Skeleton::visitFunction(Function *function)
   visitId(function->id_);
   function->listarg_->accept(this);
   function->liststm_->accept(this);
+
+}
+
+void Skeleton::visitStatementList(StatementList *statementlist)
+{
+  /* Code For StatementList Goes Here */
+
+  statementlist->liststm_->accept(this);
 
 }
 
@@ -52,6 +59,14 @@ void Skeleton::visitStatementInitialization(StatementInitialization *statementin
   statementinitialization->type_->accept(this);
   visitId(statementinitialization->id_);
   statementinitialization->exp_->accept(this);
+
+}
+
+void Skeleton::visitStatementUsing(StatementUsing *statementusing)
+{
+  /* Code For StatementUsing Goes Here */
+
+  statementusing->exp_->accept(this);
 
 }
 
@@ -196,6 +211,21 @@ void Skeleton::visitTString(TString *tstring)
 {
   /* Code For TString Goes Here */
 
+
+}
+
+void Skeleton::visitTStringStd(TStringStd *tstringstd)
+{
+  /* Code For TStringStd Goes Here */
+
+
+}
+
+void Skeleton::visitEId(EId *eid)
+{
+  /* Code For EId Goes Here */
+
+  visitId(eid->id_);
 
 }
 
@@ -485,23 +515,6 @@ void Skeleton::visitEExce(EExce *eexce)
   /* Code For EExce Goes Here */
 
   eexce->exp_->accept(this);
-
-}
-
-void Skeleton::visitSpecifierDefinition(SpecifierDefinition *specifierdefinition)
-{
-  /* Code For SpecifierDefinition Goes Here */
-
-  specifierdefinition->nna_->accept(this);
-  visitId(specifierdefinition->id_);
-
-}
-
-void Skeleton::visitNamespaceName(NamespaceName *namespacename)
-{
-  /* Code For NamespaceName Goes Here */
-
-  visitId(namespacename->id_);
 
 }
 

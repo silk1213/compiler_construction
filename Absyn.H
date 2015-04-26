@@ -25,11 +25,12 @@ class Stm;
 class Arg;
 class Exp;
 class Type;
-class NNa;
 class Function;
+class StatementList;
 class StatementDeclaration;
 class StatementDeclarations;
 class StatementInitialization;
+class StatementUsing;
 class StatementReturn;
 class StatementWhile;
 class StatementDo;
@@ -42,6 +43,7 @@ class StatementStruct;
 class TemplateInstantiations;
 class StatementDefinition;
 class ArgumentDefinition;
+class EId;
 class EInteger;
 class EString;
 class EInde;
@@ -80,8 +82,7 @@ class TBool;
 class TDouble;
 class TVoid;
 class TString;
-class SpecifierDefinition;
-class NamespaceName;
+class TStringStd;
 class ListArg;
 class ListStm;
 class ListId;
@@ -99,11 +100,12 @@ public:
   virtual void visitArg(Arg *p) = 0;
   virtual void visitExp(Exp *p) = 0;
   virtual void visitType(Type *p) = 0;
-  virtual void visitNNa(NNa *p) = 0;
   virtual void visitFunction(Function *p) = 0;
+  virtual void visitStatementList(StatementList *p) = 0;
   virtual void visitStatementDeclaration(StatementDeclaration *p) = 0;
   virtual void visitStatementDeclarations(StatementDeclarations *p) = 0;
   virtual void visitStatementInitialization(StatementInitialization *p) = 0;
+  virtual void visitStatementUsing(StatementUsing *p) = 0;
   virtual void visitStatementReturn(StatementReturn *p) = 0;
   virtual void visitStatementWhile(StatementWhile *p) = 0;
   virtual void visitStatementDo(StatementDo *p) = 0;
@@ -116,6 +118,7 @@ public:
   virtual void visitTemplateInstantiations(TemplateInstantiations *p) = 0;
   virtual void visitStatementDefinition(StatementDefinition *p) = 0;
   virtual void visitArgumentDefinition(ArgumentDefinition *p) = 0;
+  virtual void visitEId(EId *p) = 0;
   virtual void visitEInteger(EInteger *p) = 0;
   virtual void visitEString(EString *p) = 0;
   virtual void visitEInde(EInde *p) = 0;
@@ -154,8 +157,7 @@ public:
   virtual void visitTDouble(TDouble *p) = 0;
   virtual void visitTVoid(TVoid *p) = 0;
   virtual void visitTString(TString *p) = 0;
-  virtual void visitSpecifierDefinition(SpecifierDefinition *p) = 0;
-  virtual void visitNamespaceName(NamespaceName *p) = 0;
+  virtual void visitTStringStd(TStringStd *p) = 0;
   virtual void visitListArg(ListArg *p) = 0;
   virtual void visitListStm(ListStm *p) = 0;
   virtual void visitListId(ListId *p) = 0;
@@ -218,13 +220,6 @@ public:
 
 };
 
-class NNa : public Visitable
-{
-public:
-  virtual NNa *clone() const = 0;
-
-};
-
 
 
 class Function : public Def
@@ -242,6 +237,20 @@ public:
   virtual void accept(Visitor *v);
   virtual Function *clone() const;
   void swap(Function &);
+};
+
+class StatementList : public Stm
+{
+public:
+  ListStm *liststm_;
+
+  StatementList(const StatementList &);
+  StatementList &operator=(const StatementList &);
+  StatementList(ListStm *p1);
+  ~StatementList();
+  virtual void accept(Visitor *v);
+  virtual StatementList *clone() const;
+  void swap(StatementList &);
 };
 
 class StatementDeclaration : public Stm
@@ -289,6 +298,20 @@ public:
   virtual void accept(Visitor *v);
   virtual StatementInitialization *clone() const;
   void swap(StatementInitialization &);
+};
+
+class StatementUsing : public Stm
+{
+public:
+  Exp *exp_;
+
+  StatementUsing(const StatementUsing &);
+  StatementUsing &operator=(const StatementUsing &);
+  StatementUsing(Exp *p1);
+  ~StatementUsing();
+  virtual void accept(Visitor *v);
+  virtual StatementUsing *clone() const;
+  void swap(StatementUsing &);
 };
 
 class StatementReturn : public Stm
@@ -535,6 +558,33 @@ public:
   virtual void accept(Visitor *v);
   virtual TString *clone() const;
   void swap(TString &);
+};
+
+class TStringStd : public Type
+{
+public:
+
+  TStringStd(const TStringStd &);
+  TStringStd &operator=(const TStringStd &);
+  TStringStd();
+  ~TStringStd();
+  virtual void accept(Visitor *v);
+  virtual TStringStd *clone() const;
+  void swap(TStringStd &);
+};
+
+class EId : public Exp
+{
+public:
+  Id id_;
+
+  EId(const EId &);
+  EId &operator=(const EId &);
+  EId(Id p1);
+  ~EId();
+  virtual void accept(Visitor *v);
+  virtual EId *clone() const;
+  void swap(EId &);
 };
 
 class EInteger : public Exp
@@ -1022,35 +1072,6 @@ public:
   virtual void accept(Visitor *v);
   virtual EExce *clone() const;
   void swap(EExce &);
-};
-
-class SpecifierDefinition : public Exp
-{
-public:
-  NNa *nna_;
-  Id id_;
-
-  SpecifierDefinition(const SpecifierDefinition &);
-  SpecifierDefinition &operator=(const SpecifierDefinition &);
-  SpecifierDefinition(NNa *p1, Id p2);
-  ~SpecifierDefinition();
-  virtual void accept(Visitor *v);
-  virtual SpecifierDefinition *clone() const;
-  void swap(SpecifierDefinition &);
-};
-
-class NamespaceName : public NNa
-{
-public:
-  Id id_;
-
-  NamespaceName(const NamespaceName &);
-  NamespaceName &operator=(const NamespaceName &);
-  NamespaceName(Id p1);
-  ~NamespaceName();
-  virtual void accept(Visitor *v);
-  virtual NamespaceName *clone() const;
-  void swap(NamespaceName &);
 };
 
 
