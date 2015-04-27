@@ -6,6 +6,7 @@
 
 
 class Def;
+class ListDef;
 class ListArg;
 class ListStm;
 class Stm;
@@ -23,6 +24,7 @@ typedef union
   double double_;
   char* string_;
   Def* def_;
+  ListDef* listdef_;
   ListArg* listarg_;
   ListStm* liststm_;
   Stm* stm_;
@@ -36,6 +38,8 @@ typedef union
 
 Def* pDef(FILE *inp);
 Def* pDef(const char *str);
+ListDef* pListDef(FILE *inp);
+ListDef* pListDef(const char *str);
 ListArg* pListArg(FILE *inp);
 ListArg* pListArg(const char *str);
 ListStm* pListStm(FILE *inp);
@@ -110,8 +114,9 @@ Exp* pExp(const char *str);
 #define _SYMB_49 308
 #define _SYMB_50 309
 #define _SYMB_51 310
-#define _STRING_ 311
-#define _INTEGER_ 312
+#define _SYMB_52 311
+#define _STRING_ 312
+#define _INTEGER_ 313
 
 extern YYSTYPE yylval;
 

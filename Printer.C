@@ -99,7 +99,18 @@ char* PrintAbsyn::print(Visitable *v)
 }
 void PrintAbsyn::visitDef(Def*p) {} //abstract class
 
-void PrintAbsyn::visitFunction(Function* p)
+void PrintAbsyn::visitPDefs(PDefs* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  if(p->listdef_) {_i_ = 0; p->listdef_->accept(this);}
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitDefinitionFunction(DefinitionFunction* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -114,6 +125,47 @@ void PrintAbsyn::visitFunction(Function* p)
   if (oldi > 0) render(_R_PAREN);
 
   _i_ = oldi;
+}
+
+void PrintAbsyn::visitDefinitionUsing(DefinitionUsing* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render("using");
+  _i_ = 0; p->exp_->accept(this);
+  render(';');
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitDefinitionTypeDef(DefinitionTypeDef* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render("typedef");
+  visitIdent(p->id_);
+  render('<');
+  _i_ = 0; p->type_->accept(this);
+  render('>');
+  _i_ = 0; p->exp_->accept(this);
+  render(';');
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitListDef(ListDef *listdef)
+{
+  for (ListDef::const_iterator i = listdef->begin() ; i != listdef->end() ; ++i)
+  {
+    (*i)->accept(this);
+    render("");
+  }
 }
 
 void PrintAbsyn::visitListArg(ListArg *listarg)
@@ -135,17 +187,6 @@ void PrintAbsyn::visitListStm(ListStm *liststm)
 }
 
 void PrintAbsyn::visitStm(Stm*p) {} //abstract class
-
-void PrintAbsyn::visitStatementList(StatementList* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  if(p->liststm_) {_i_ = 0; p->liststm_->accept(this);}
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
 
 void PrintAbsyn::visitStatementDeclaration(StatementDeclaration* p)
 {
@@ -184,20 +225,6 @@ void PrintAbsyn::visitStatementInitialization(StatementInitialization* p)
   _i_ = 0; p->type_->accept(this);
   visitIdent(p->id_);
   render('=');
-  _i_ = 0; p->exp_->accept(this);
-  render(';');
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitStatementUsing(StatementUsing* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render("using");
   _i_ = 0; p->exp_->accept(this);
   render(';');
 
@@ -330,24 +357,6 @@ void PrintAbsyn::visitStatementBlock(StatementBlock* p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitStatementTypedef(StatementTypedef* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render("typedef");
-  _i_ = 0; p->type_1->accept(this);
-  render('<');
-  _i_ = 0; p->type_2->accept(this);
-  render('>');
-  visitIdent(p->id_);
-  render(';');
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
 void PrintAbsyn::visitStatementStruct(StatementStruct* p)
 {
   int oldi = _i_;
@@ -357,6 +366,23 @@ void PrintAbsyn::visitStatementStruct(StatementStruct* p)
   visitIdent(p->id_);
   render('{');
   if(p->liststm_) {_i_ = 0; p->liststm_->accept(this);}  render('}');
+  render(';');
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitStatementTemplate(StatementTemplate* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  visitIdent(p->id_);
+  render('<');
+  _i_ = 0; p->type_->accept(this);
+  render('>');
+  _i_ = 0; p->exp_->accept(this);
   render(';');
 
   if (oldi > 0) render(_R_PAREN);
@@ -975,6 +1001,18 @@ void PrintAbsyn::visitTStringStd(TStringStd* p)
   _i_ = oldi;
 }
 
+void PrintAbsyn::visitTVectorStd(TVectorStd* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render("std::vector");
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
 void PrintAbsyn::visitInteger(Integer i)
 {
   char tmp[16];
@@ -1031,10 +1069,20 @@ char* ShowAbsyn::show(Visitable *v)
 }
 void ShowAbsyn::visitDef(Def* p) {} //abstract class
 
-void ShowAbsyn::visitFunction(Function* p)
+void ShowAbsyn::visitPDefs(PDefs* p)
 {
   bufAppend('(');
-  bufAppend("Function");
+  bufAppend("PDefs");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->listdef_)  p->listdef_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+void ShowAbsyn::visitDefinitionFunction(DefinitionFunction* p)
+{
+  bufAppend('(');
+  bufAppend("DefinitionFunction");
   bufAppend(' ');
   bufAppend('[');
   if (p->type_)  p->type_->accept(this);
@@ -1052,6 +1100,43 @@ void ShowAbsyn::visitFunction(Function* p)
   bufAppend(' ');
   bufAppend(')');
 }
+void ShowAbsyn::visitDefinitionUsing(DefinitionUsing* p)
+{
+  bufAppend('(');
+  bufAppend("DefinitionUsing");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->exp_)  p->exp_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitDefinitionTypeDef(DefinitionTypeDef* p)
+{
+  bufAppend('(');
+  bufAppend("DefinitionTypeDef");
+  bufAppend(' ');
+  visitIdent(p->id_);
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->type_)  p->type_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->exp_)  p->exp_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitListDef(ListDef *listdef)
+{
+  for (ListDef::const_iterator i = listdef->begin() ; i != listdef->end() ; ++i)
+  {
+    (*i)->accept(this);
+    if (i != listdef->end() - 1) bufAppend(", ");
+  }
+}
+
 void ShowAbsyn::visitListArg(ListArg *listarg)
 {
   for (ListArg::const_iterator i = listarg->begin() ; i != listarg->end() ; ++i)
@@ -1072,16 +1157,6 @@ void ShowAbsyn::visitListStm(ListStm *liststm)
 
 void ShowAbsyn::visitStm(Stm* p) {} //abstract class
 
-void ShowAbsyn::visitStatementList(StatementList* p)
-{
-  bufAppend('(');
-  bufAppend("StatementList");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->liststm_)  p->liststm_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
 void ShowAbsyn::visitStatementDeclaration(StatementDeclaration* p)
 {
   bufAppend('(');
@@ -1122,17 +1197,6 @@ void ShowAbsyn::visitStatementInitialization(StatementInitialization* p)
   bufAppend(']');
   bufAppend(' ');
   visitIdent(p->id_);
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->exp_)  p->exp_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend(')');
-}
-void ShowAbsyn::visitStatementUsing(StatementUsing* p)
-{
-  bufAppend('(');
-  bufAppend("StatementUsing");
   bufAppend(' ');
   bufAppend('[');
   if (p->exp_)  p->exp_->accept(this);
@@ -1243,19 +1307,6 @@ void ShowAbsyn::visitStatementBlock(StatementBlock* p)
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitStatementTypedef(StatementTypedef* p)
-{
-  bufAppend('(');
-  bufAppend("StatementTypedef");
-  bufAppend(' ');
-  p->type_1->accept(this);
-  bufAppend(' ');
-  p->type_2->accept(this);
-  bufAppend(' ');
-  visitIdent(p->id_);
-  bufAppend(' ');
-  bufAppend(')');
-}
 void ShowAbsyn::visitStatementStruct(StatementStruct* p)
 {
   bufAppend('(');
@@ -1265,6 +1316,23 @@ void ShowAbsyn::visitStatementStruct(StatementStruct* p)
   bufAppend(' ');
   bufAppend('[');
   if (p->liststm_)  p->liststm_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend(')');
+}
+void ShowAbsyn::visitStatementTemplate(StatementTemplate* p)
+{
+  bufAppend('(');
+  bufAppend("StatementTemplate");
+  bufAppend(' ');
+  visitIdent(p->id_);
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->type_)  p->type_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->exp_)  p->exp_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -1705,6 +1773,10 @@ void ShowAbsyn::visitTString(TString* p)
 void ShowAbsyn::visitTStringStd(TStringStd* p)
 {
   bufAppend("TStringStd");
+}
+void ShowAbsyn::visitTVectorStd(TVectorStd* p)
+{
+  bufAppend("TVectorStd");
 }
 void ShowAbsyn::visitInteger(Integer i)
 {

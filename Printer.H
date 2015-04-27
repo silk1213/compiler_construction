@@ -29,15 +29,17 @@ class PrintAbsyn : public Visitor
   char* print(Visitable* v);
 
   void visitDef(Def *p); /* abstract class */
-  void visitFunction(Function *p);
+  void visitPDefs(PDefs *p);
+  void visitDefinitionFunction(DefinitionFunction *p);
+  void visitDefinitionUsing(DefinitionUsing *p);
+  void visitDefinitionTypeDef(DefinitionTypeDef *p);
+  void visitListDef(ListDef* p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
   void visitStm(Stm *p); /* abstract class */
-  void visitStatementList(StatementList *p);
   void visitStatementDeclaration(StatementDeclaration *p);
   void visitStatementDeclarations(StatementDeclarations *p);
   void visitStatementInitialization(StatementInitialization *p);
-  void visitStatementUsing(StatementUsing *p);
   void visitStatementReturn(StatementReturn *p);
   void visitStatementWhile(StatementWhile *p);
   void visitStatementDo(StatementDo *p);
@@ -45,8 +47,8 @@ class PrintAbsyn : public Visitor
   void visitStatementIf(StatementIf *p);
   void visitStatementIfElse(StatementIfElse *p);
   void visitStatementBlock(StatementBlock *p);
-  void visitStatementTypedef(StatementTypedef *p);
   void visitStatementStruct(StatementStruct *p);
+  void visitStatementTemplate(StatementTemplate *p);
   void visitTemplateInstantiations(TemplateInstantiations *p);
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
@@ -96,6 +98,7 @@ class PrintAbsyn : public Visitor
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
   void visitTStringStd(TStringStd *p);
+  void visitTVectorStd(TVectorStd *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);
@@ -166,15 +169,17 @@ class ShowAbsyn : public Visitor
   char* show(Visitable* v);
 
   void visitDef(Def *p); /* abstract class */
-  void visitFunction(Function *p);
+  void visitPDefs(PDefs *p);
+  void visitDefinitionFunction(DefinitionFunction *p);
+  void visitDefinitionUsing(DefinitionUsing *p);
+  void visitDefinitionTypeDef(DefinitionTypeDef *p);
+  void visitListDef(ListDef* p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
   void visitStm(Stm *p); /* abstract class */
-  void visitStatementList(StatementList *p);
   void visitStatementDeclaration(StatementDeclaration *p);
   void visitStatementDeclarations(StatementDeclarations *p);
   void visitStatementInitialization(StatementInitialization *p);
-  void visitStatementUsing(StatementUsing *p);
   void visitStatementReturn(StatementReturn *p);
   void visitStatementWhile(StatementWhile *p);
   void visitStatementDo(StatementDo *p);
@@ -182,8 +187,8 @@ class ShowAbsyn : public Visitor
   void visitStatementIf(StatementIf *p);
   void visitStatementIfElse(StatementIfElse *p);
   void visitStatementBlock(StatementBlock *p);
-  void visitStatementTypedef(StatementTypedef *p);
   void visitStatementStruct(StatementStruct *p);
+  void visitStatementTemplate(StatementTemplate *p);
   void visitTemplateInstantiations(TemplateInstantiations *p);
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
@@ -233,6 +238,7 @@ class ShowAbsyn : public Visitor
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
   void visitTStringStd(TStringStd *p);
+  void visitTVectorStd(TVectorStd *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);

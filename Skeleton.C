@@ -14,22 +14,40 @@ void Skeleton::visitArg(Arg* t) {} //abstract class
 void Skeleton::visitExp(Exp* t) {} //abstract class
 void Skeleton::visitType(Type* t) {} //abstract class
 
-void Skeleton::visitFunction(Function *function)
+void Skeleton::visitPDefs(PDefs *pdefs)
 {
-  /* Code For Function Goes Here */
+  /* Code For PDefs Goes Here */
 
-  function->type_->accept(this);
-  visitId(function->id_);
-  function->listarg_->accept(this);
-  function->liststm_->accept(this);
+  pdefs->listdef_->accept(this);
 
 }
 
-void Skeleton::visitStatementList(StatementList *statementlist)
+void Skeleton::visitDefinitionFunction(DefinitionFunction *definitionfunction)
 {
-  /* Code For StatementList Goes Here */
+  /* Code For DefinitionFunction Goes Here */
 
-  statementlist->liststm_->accept(this);
+  definitionfunction->type_->accept(this);
+  visitId(definitionfunction->id_);
+  definitionfunction->listarg_->accept(this);
+  definitionfunction->liststm_->accept(this);
+
+}
+
+void Skeleton::visitDefinitionUsing(DefinitionUsing *definitionusing)
+{
+  /* Code For DefinitionUsing Goes Here */
+
+  definitionusing->exp_->accept(this);
+
+}
+
+void Skeleton::visitDefinitionTypeDef(DefinitionTypeDef *definitiontypedef)
+{
+  /* Code For DefinitionTypeDef Goes Here */
+
+  visitId(definitiontypedef->id_);
+  definitiontypedef->type_->accept(this);
+  definitiontypedef->exp_->accept(this);
 
 }
 
@@ -59,14 +77,6 @@ void Skeleton::visitStatementInitialization(StatementInitialization *statementin
   statementinitialization->type_->accept(this);
   visitId(statementinitialization->id_);
   statementinitialization->exp_->accept(this);
-
-}
-
-void Skeleton::visitStatementUsing(StatementUsing *statementusing)
-{
-  /* Code For StatementUsing Goes Here */
-
-  statementusing->exp_->accept(this);
 
 }
 
@@ -136,22 +146,22 @@ void Skeleton::visitStatementBlock(StatementBlock *statementblock)
 
 }
 
-void Skeleton::visitStatementTypedef(StatementTypedef *statementtypedef)
-{
-  /* Code For StatementTypedef Goes Here */
-
-  statementtypedef->type_1->accept(this);
-  statementtypedef->type_2->accept(this);
-  visitId(statementtypedef->id_);
-
-}
-
 void Skeleton::visitStatementStruct(StatementStruct *statementstruct)
 {
   /* Code For StatementStruct Goes Here */
 
   visitId(statementstruct->id_);
   statementstruct->liststm_->accept(this);
+
+}
+
+void Skeleton::visitStatementTemplate(StatementTemplate *statementtemplate)
+{
+  /* Code For StatementTemplate Goes Here */
+
+  visitId(statementtemplate->id_);
+  statementtemplate->type_->accept(this);
+  statementtemplate->exp_->accept(this);
 
 }
 
@@ -217,6 +227,13 @@ void Skeleton::visitTString(TString *tstring)
 void Skeleton::visitTStringStd(TStringStd *tstringstd)
 {
   /* Code For TStringStd Goes Here */
+
+
+}
+
+void Skeleton::visitTVectorStd(TVectorStd *tvectorstd)
+{
+  /* Code For TVectorStd Goes Here */
 
 
 }
@@ -518,6 +535,14 @@ void Skeleton::visitEExce(EExce *eexce)
 
 }
 
+
+void Skeleton::visitListDef(ListDef* listdef)
+{
+  for (ListDef::iterator i = listdef->begin() ; i != listdef->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
 
 void Skeleton::visitListArg(ListArg* listarg)
 {

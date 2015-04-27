@@ -5,8 +5,52 @@
 #include <vector>
 #include "Absyn.H"
 
-/********************   Function    ********************/
-Function::Function(Type *p1, Id p2, ListArg *p3, ListStm *p4)
+/********************   PDefs    ********************/
+PDefs::PDefs(ListDef *p1)
+{
+  listdef_ = p1;
+
+}
+
+PDefs::PDefs(const PDefs & other)
+{
+  listdef_ = other.listdef_->clone();
+
+}
+
+PDefs &PDefs::operator=(const PDefs & other)
+{
+  PDefs tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void PDefs::swap(PDefs & other)
+{
+  std::swap(listdef_, other.listdef_);
+
+}
+
+PDefs::~PDefs()
+{
+  delete(listdef_);
+
+}
+
+void PDefs::accept(Visitor *v)
+{
+  v->visitPDefs(this);
+}
+
+PDefs *PDefs::clone() const
+{
+  return new PDefs(*this);
+}
+
+
+
+/********************   DefinitionFunction    ********************/
+DefinitionFunction::DefinitionFunction(Type *p1, Id p2, ListArg *p3, ListStm *p4)
 {
   type_ = p1;
   id_ = p2;
@@ -15,7 +59,7 @@ Function::Function(Type *p1, Id p2, ListArg *p3, ListStm *p4)
 
 }
 
-Function::Function(const Function & other)
+DefinitionFunction::DefinitionFunction(const DefinitionFunction & other)
 {
   type_ = other.type_->clone();
   id_ = other.id_;
@@ -24,14 +68,14 @@ Function::Function(const Function & other)
 
 }
 
-Function &Function::operator=(const Function & other)
+DefinitionFunction &DefinitionFunction::operator=(const DefinitionFunction & other)
 {
-  Function tmp(other);
+  DefinitionFunction tmp(other);
   swap(tmp);
   return *this;
 }
 
-void Function::swap(Function & other)
+void DefinitionFunction::swap(DefinitionFunction & other)
 {
   std::swap(type_, other.type_);
   std::swap(id_, other.id_);
@@ -40,7 +84,7 @@ void Function::swap(Function & other)
 
 }
 
-Function::~Function()
+DefinitionFunction::~DefinitionFunction()
 {
   delete(type_);
   delete(listarg_);
@@ -48,58 +92,109 @@ Function::~Function()
 
 }
 
-void Function::accept(Visitor *v)
+void DefinitionFunction::accept(Visitor *v)
 {
-  v->visitFunction(this);
+  v->visitDefinitionFunction(this);
 }
 
-Function *Function::clone() const
+DefinitionFunction *DefinitionFunction::clone() const
 {
-  return new Function(*this);
+  return new DefinitionFunction(*this);
 }
 
 
 
-/********************   StatementList    ********************/
-StatementList::StatementList(ListStm *p1)
+/********************   DefinitionUsing    ********************/
+DefinitionUsing::DefinitionUsing(Exp *p1)
 {
-  liststm_ = p1;
-
-}
-
-StatementList::StatementList(const StatementList & other)
-{
-  liststm_ = other.liststm_->clone();
+  exp_ = p1;
 
 }
 
-StatementList &StatementList::operator=(const StatementList & other)
+DefinitionUsing::DefinitionUsing(const DefinitionUsing & other)
 {
-  StatementList tmp(other);
+  exp_ = other.exp_->clone();
+
+}
+
+DefinitionUsing &DefinitionUsing::operator=(const DefinitionUsing & other)
+{
+  DefinitionUsing tmp(other);
   swap(tmp);
   return *this;
 }
 
-void StatementList::swap(StatementList & other)
+void DefinitionUsing::swap(DefinitionUsing & other)
 {
-  std::swap(liststm_, other.liststm_);
+  std::swap(exp_, other.exp_);
 
 }
 
-StatementList::~StatementList()
+DefinitionUsing::~DefinitionUsing()
 {
-  delete(liststm_);
+  delete(exp_);
 
 }
 
-void StatementList::accept(Visitor *v)
+void DefinitionUsing::accept(Visitor *v)
 {
-  v->visitStatementList(this);
+  v->visitDefinitionUsing(this);
 }
 
-StatementList *StatementList::clone() const
+DefinitionUsing *DefinitionUsing::clone() const
 {
-  return new StatementList(*this);
+  return new DefinitionUsing(*this);
+}
+
+
+
+/********************   DefinitionTypeDef    ********************/
+DefinitionTypeDef::DefinitionTypeDef(Id p1, Type *p2, Exp *p3)
+{
+  id_ = p1;
+  type_ = p2;
+  exp_ = p3;
+
+}
+
+DefinitionTypeDef::DefinitionTypeDef(const DefinitionTypeDef & other)
+{
+  id_ = other.id_;
+  type_ = other.type_->clone();
+  exp_ = other.exp_->clone();
+
+}
+
+DefinitionTypeDef &DefinitionTypeDef::operator=(const DefinitionTypeDef & other)
+{
+  DefinitionTypeDef tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void DefinitionTypeDef::swap(DefinitionTypeDef & other)
+{
+  std::swap(id_, other.id_);
+  std::swap(type_, other.type_);
+  std::swap(exp_, other.exp_);
+
+}
+
+DefinitionTypeDef::~DefinitionTypeDef()
+{
+  delete(type_);
+  delete(exp_);
+
+}
+
+void DefinitionTypeDef::accept(Visitor *v)
+{
+  v->visitDefinitionTypeDef(this);
+}
+
+DefinitionTypeDef *DefinitionTypeDef::clone() const
+{
+  return new DefinitionTypeDef(*this);
 }
 
 
@@ -249,50 +344,6 @@ void StatementInitialization::accept(Visitor *v)
 StatementInitialization *StatementInitialization::clone() const
 {
   return new StatementInitialization(*this);
-}
-
-
-
-/********************   StatementUsing    ********************/
-StatementUsing::StatementUsing(Exp *p1)
-{
-  exp_ = p1;
-
-}
-
-StatementUsing::StatementUsing(const StatementUsing & other)
-{
-  exp_ = other.exp_->clone();
-
-}
-
-StatementUsing &StatementUsing::operator=(const StatementUsing & other)
-{
-  StatementUsing tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void StatementUsing::swap(StatementUsing & other)
-{
-  std::swap(exp_, other.exp_);
-
-}
-
-StatementUsing::~StatementUsing()
-{
-  delete(exp_);
-
-}
-
-void StatementUsing::accept(Visitor *v)
-{
-  v->visitStatementUsing(this);
-}
-
-StatementUsing *StatementUsing::clone() const
-{
-  return new StatementUsing(*this);
 }
 
 
@@ -644,57 +695,6 @@ StatementBlock *StatementBlock::clone() const
 
 
 
-/********************   StatementTypedef    ********************/
-StatementTypedef::StatementTypedef(Type *p1, Type *p2, Id p3)
-{
-  type_1 = p1;
-  type_2 = p2;
-  id_ = p3;
-
-}
-
-StatementTypedef::StatementTypedef(const StatementTypedef & other)
-{
-  type_1 = other.type_1->clone();
-  type_2 = other.type_2->clone();
-  id_ = other.id_;
-
-}
-
-StatementTypedef &StatementTypedef::operator=(const StatementTypedef & other)
-{
-  StatementTypedef tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void StatementTypedef::swap(StatementTypedef & other)
-{
-  std::swap(type_1, other.type_1);
-  std::swap(type_2, other.type_2);
-  std::swap(id_, other.id_);
-
-}
-
-StatementTypedef::~StatementTypedef()
-{
-  delete(type_1);
-  delete(type_2);
-
-}
-
-void StatementTypedef::accept(Visitor *v)
-{
-  v->visitStatementTypedef(this);
-}
-
-StatementTypedef *StatementTypedef::clone() const
-{
-  return new StatementTypedef(*this);
-}
-
-
-
 /********************   StatementStruct    ********************/
 StatementStruct::StatementStruct(Id p1, ListStm *p2)
 {
@@ -738,6 +738,57 @@ void StatementStruct::accept(Visitor *v)
 StatementStruct *StatementStruct::clone() const
 {
   return new StatementStruct(*this);
+}
+
+
+
+/********************   StatementTemplate    ********************/
+StatementTemplate::StatementTemplate(Id p1, Type *p2, Exp *p3)
+{
+  id_ = p1;
+  type_ = p2;
+  exp_ = p3;
+
+}
+
+StatementTemplate::StatementTemplate(const StatementTemplate & other)
+{
+  id_ = other.id_;
+  type_ = other.type_->clone();
+  exp_ = other.exp_->clone();
+
+}
+
+StatementTemplate &StatementTemplate::operator=(const StatementTemplate & other)
+{
+  StatementTemplate tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void StatementTemplate::swap(StatementTemplate & other)
+{
+  std::swap(id_, other.id_);
+  std::swap(type_, other.type_);
+  std::swap(exp_, other.exp_);
+
+}
+
+StatementTemplate::~StatementTemplate()
+{
+  delete(type_);
+  delete(exp_);
+
+}
+
+void StatementTemplate::accept(Visitor *v)
+{
+  v->visitStatementTemplate(this);
+}
+
+StatementTemplate *StatementTemplate::clone() const
+{
+  return new StatementTemplate(*this);
 }
 
 
@@ -1110,6 +1161,46 @@ void TStringStd::accept(Visitor *v)
 TStringStd *TStringStd::clone() const
 {
   return new TStringStd(*this);
+}
+
+
+
+/********************   TVectorStd    ********************/
+TVectorStd::TVectorStd()
+{
+
+}
+
+TVectorStd::TVectorStd(const TVectorStd & other)
+{
+
+}
+
+TVectorStd &TVectorStd::operator=(const TVectorStd & other)
+{
+  TVectorStd tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void TVectorStd::swap(TVectorStd & other)
+{
+
+}
+
+TVectorStd::~TVectorStd()
+{
+
+}
+
+void TVectorStd::accept(Visitor *v)
+{
+  v->visitTVectorStd(this);
+}
+
+TVectorStd *TVectorStd::clone() const
+{
+  return new TVectorStd(*this);
 }
 
 
@@ -2704,6 +2795,20 @@ EExce *EExce::clone() const
 }
 
 
+
+
+/********************   ListDef    ********************/
+
+void ListDef::accept(Visitor *v)
+{
+  v->visitListDef(this);
+}
+
+
+ListDef *ListDef::clone() const
+{
+  return new ListDef(*this);
+}
 
 
 /********************   ListArg    ********************/
