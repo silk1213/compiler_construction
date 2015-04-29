@@ -1,9 +1,12 @@
-PDefs . Def ::= [Def] ;
+PDefs . Prog ::= [Def] ;
 terminator Def "";
 
 DefinitionFunction . Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
 DefinitionUsing . Def ::= "using" Exp ";" ;
-DefinitionTypeDef . Def ::= "typedef" Id "<" Type ">" [Exp] Id ";" ;
+DefinitionUsingType . Def ::= "using" Type ";" ;
+DefinitionTypedef . Def ::= "typedef" Type ";" ;
+DefinitionTypedefExp . Def ::= "typedef" Exp ";" ;
+
 separator Arg "," ;
 terminator Stm "" ;
 
@@ -21,6 +24,7 @@ StatementIfElse . Stm ::= "if" "(" Exp ")" Stm ";" "else" Stm ";" ;
 StatementBlock . Stm ::= "{" [Stm] "}" ;
 StatementStruct . Stm ::= "struct" Id "{" [Stm] "}" ";" ;
 StatementTemplate . Stm ::= Id "<" Type ">" Exp ";" ;
+StatementTypedef . Stm ::= "typedef" Exp ";" ;
 
 TemplateInstantiations . Stm ::= "ident" "<" [Type] ">" ";" ;
 separator Type "," ;

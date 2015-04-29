@@ -8,6 +8,7 @@
 
 
 
+void Skeleton::visitProg(Prog* t) {} //abstract class
 void Skeleton::visitDef(Def* t) {} //abstract class
 void Skeleton::visitStm(Stm* t) {} //abstract class
 void Skeleton::visitArg(Arg* t) {} //abstract class
@@ -38,6 +39,22 @@ void Skeleton::visitDefinitionUsing(DefinitionUsing *definitionusing)
   /* Code For DefinitionUsing Goes Here */
 
   definitionusing->exp_->accept(this);
+
+}
+
+void Skeleton::visitDefinitionUsingType(DefinitionUsingType *definitionusingtype)
+{
+  /* Code For DefinitionUsingType Goes Here */
+
+  definitionusingtype->type_->accept(this);
+
+}
+
+void Skeleton::visitDefinitionTypedef(DefinitionTypedef *definitiontypedef)
+{
+  /* Code For DefinitionTypedef Goes Here */
+
+  definitiontypedef->type_->accept(this);
 
 }
 
@@ -152,6 +169,14 @@ void Skeleton::visitStatementTemplate(StatementTemplate *statementtemplate)
   visitId(statementtemplate->id_);
   statementtemplate->type_->accept(this);
   statementtemplate->exp_->accept(this);
+
+}
+
+void Skeleton::visitStatementTypedef(StatementTypedef *statementtypedef)
+{
+  /* Code For StatementTypedef Goes Here */
+
+  statementtypedef->exp_->accept(this);
 
 }
 

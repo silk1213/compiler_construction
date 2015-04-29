@@ -23,7 +23,7 @@ int main(int argc, char ** argv)
   }
   else input = stdin;
   /* The default entry point is used. For other options see Parser.H */
-  Def *parse_tree = pDef(input);
+  Prog *parse_tree = pProg(input);
   if (parse_tree)
   {
     printf("\nParse Succesful!\n");

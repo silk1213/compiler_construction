@@ -8,6 +8,7 @@
 class Skeleton : public Visitor
 {
 public:
+  void visitProg(Prog* p);
   void visitDef(Def* p);
   void visitStm(Stm* p);
   void visitArg(Arg* p);
@@ -16,7 +17,9 @@ public:
   void visitPDefs(PDefs* p);
   void visitDefinitionFunction(DefinitionFunction* p);
   void visitDefinitionUsing(DefinitionUsing* p);
-  void visitDefinitionTypeDef(DefinitionTypeDef* p);
+  void visitDefinitionUsingType(DefinitionUsingType* p);
+  void visitDefinitionTypedef(DefinitionTypedef* p);
+  void visitDefinitionTypedefExp(DefinitionTypedefExp* p);
   void visitStatementDeclaration(StatementDeclaration* p);
   void visitStatementDeclarations(StatementDeclarations* p);
   void visitStatementInitialization(StatementInitialization* p);
@@ -29,6 +32,7 @@ public:
   void visitStatementBlock(StatementBlock* p);
   void visitStatementStruct(StatementStruct* p);
   void visitStatementTemplate(StatementTemplate* p);
+  void visitStatementTypedef(StatementTypedef* p);
   void visitTemplateInstantiations(TemplateInstantiations* p);
   void visitStatementDefinition(StatementDefinition* p);
   void visitArgumentDefinition(ArgumentDefinition* p);

@@ -7,11 +7,11 @@
 #include <string>
 #include <vector>
 
-//using std::cin;
-/*using std::cin;             using std::sort;
+using std::cin;		    using std::sort;
+using std::cin;             using std::sort;
 using std::cout;            using std::streamsize;
 using std::endl;            using std::string;
-using std::setprecision;    using std::vector;*/
+using std::setprecision;    using std::vector;
 
 int main()
 {
@@ -38,6 +38,7 @@ int main()
 
 	// check that the student entered some homework grades
 #ifdef _MSC_VER
+	typedef std::string;
 	typedef std::vector<double>::size_type vec_sz;
 #else
 	typedef vector<double>::size_type vec_sz;

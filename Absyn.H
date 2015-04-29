@@ -20,6 +20,7 @@ typedef std::string Id;
 
 /********************   Forward Declarations    ********************/
 
+class Prog;
 class Def;
 class Stm;
 class Arg;
@@ -28,7 +29,9 @@ class Type;
 class PDefs;
 class DefinitionFunction;
 class DefinitionUsing;
-class DefinitionTypeDef;
+class DefinitionUsingType;
+class DefinitionTypedef;
+class DefinitionTypedefExp;
 class StatementDeclaration;
 class StatementDeclarations;
 class StatementInitialization;
@@ -41,6 +44,7 @@ class StatementIfElse;
 class StatementBlock;
 class StatementStruct;
 class StatementTemplate;
+class StatementTypedef;
 class TemplateInstantiations;
 class StatementDefinition;
 class ArgumentDefinition;
@@ -98,6 +102,7 @@ class Visitor
 {
 public:
   virtual ~Visitor() {}
+  virtual void visitProg(Prog *p) = 0;
   virtual void visitDef(Def *p) = 0;
   virtual void visitStm(Stm *p) = 0;
   virtual void visitArg(Arg *p) = 0;
@@ -106,7 +111,9 @@ public:
   virtual void visitPDefs(PDefs *p) = 0;
   virtual void visitDefinitionFunction(DefinitionFunction *p) = 0;
   virtual void visitDefinitionUsing(DefinitionUsing *p) = 0;
-  virtual void visitDefinitionTypeDef(DefinitionTypeDef *p) = 0;
+  virtual void visitDefinitionUsingType(DefinitionUsingType *p) = 0;
+  virtual void visitDefinitionTypedef(DefinitionTypedef *p) = 0;
+  virtual void visitDefinitionTypedefExp(DefinitionTypedefExp *p) = 0;
   virtual void visitStatementDeclaration(StatementDeclaration *p) = 0;
   virtual void visitStatementDeclarations(StatementDeclarations *p) = 0;
   virtual void visitStatementInitialization(StatementInitialization *p) = 0;
@@ -119,6 +126,7 @@ public:
   virtual void visitStatementBlock(StatementBlock *p) = 0;
   virtual void visitStatementStruct(StatementStruct *p) = 0;
   virtual void visitStatementTemplate(StatementTemplate *p) = 0;
+  virtual void visitStatementTypedef(StatementTypedef *p) = 0;
   virtual void visitTemplateInstantiations(TemplateInstantiations *p) = 0;
   virtual void visitStatementDefinition(StatementDefinition *p) = 0;
   virtual void visitArgumentDefinition(ArgumentDefinition *p) = 0;
@@ -191,6 +199,13 @@ class Visitable
 
 /********************   Abstract Syntax Classes    ********************/
 
+class Prog : public Visitable
+{
+public:
+  virtual Prog *clone() const = 0;
+
+};
+
 class Def : public Visitable
 {
 public:
@@ -228,7 +243,7 @@ public:
 
 
 
-class PDefs : public Def
+class PDefs : public Prog
 {
 public:
   ListDef *listdef_;
@@ -273,20 +288,46 @@ public:
   void swap(DefinitionUsing &);
 };
 
-class DefinitionTypeDef : public Def
+class DefinitionUsingType : public Def
 {
 public:
-  Id id_;
   Type *type_;
+
+  DefinitionUsingType(const DefinitionUsingType &);
+  DefinitionUsingType &operator=(const DefinitionUsingType &);
+  DefinitionUsingType(Type *p1);
+  ~DefinitionUsingType();
+  virtual void accept(Visitor *v);
+  virtual DefinitionUsingType *clone() const;
+  void swap(DefinitionUsingType &);
+};
+
+class DefinitionTypedef : public Def
+{
+public:
+  Type *type_;
+
+  DefinitionTypedef(const DefinitionTypedef &);
+  DefinitionTypedef &operator=(const DefinitionTypedef &);
+  DefinitionTypedef(Type *p1);
+  ~DefinitionTypedef();
+  virtual void accept(Visitor *v);
+  virtual DefinitionTypedef *clone() const;
+  void swap(DefinitionTypedef &);
+};
+
+class DefinitionTypedefExp : public Def
+{
+public:
   Exp *exp_;
 
-  DefinitionTypeDef(const DefinitionTypeDef &);
-  DefinitionTypeDef &operator=(const DefinitionTypeDef &);
-  DefinitionTypeDef(Id p1, Type *p2, Exp *p3);
-  ~DefinitionTypeDef();
+  DefinitionTypedefExp(const DefinitionTypedefExp &);
+  DefinitionTypedefExp &operator=(const DefinitionTypedefExp &);
+  DefinitionTypedefExp(Exp *p1);
+  ~DefinitionTypedefExp();
   virtual void accept(Visitor *v);
-  virtual DefinitionTypeDef *clone() const;
-  void swap(DefinitionTypeDef &);
+  virtual DefinitionTypedefExp *clone() const;
+  void swap(DefinitionTypedefExp &);
 };
 
 class StatementDeclaration : public Stm
@@ -473,6 +514,20 @@ public:
   virtual void accept(Visitor *v);
   virtual StatementTemplate *clone() const;
   void swap(StatementTemplate &);
+};
+
+class StatementTypedef : public Stm
+{
+public:
+  Exp *exp_;
+
+  StatementTypedef(const StatementTypedef &);
+  StatementTypedef &operator=(const StatementTypedef &);
+  StatementTypedef(Exp *p1);
+  ~StatementTypedef();
+  virtual void accept(Visitor *v);
+  virtual StatementTypedef *clone() const;
+  void swap(StatementTypedef &);
 };
 
 class TemplateInstantiations : public Stm

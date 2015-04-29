@@ -148,53 +148,134 @@ DefinitionUsing *DefinitionUsing::clone() const
 
 
 
-/********************   DefinitionTypeDef    ********************/
-DefinitionTypeDef::DefinitionTypeDef(Id p1, Type *p2, Exp *p3)
+/********************   DefinitionUsingType    ********************/
+DefinitionUsingType::DefinitionUsingType(Type *p1)
 {
-  id_ = p1;
-  type_ = p2;
-  exp_ = p3;
+  type_ = p1;
 
 }
 
-DefinitionTypeDef::DefinitionTypeDef(const DefinitionTypeDef & other)
+DefinitionUsingType::DefinitionUsingType(const DefinitionUsingType & other)
 {
-  id_ = other.id_;
   type_ = other.type_->clone();
-  exp_ = other.exp_->clone();
 
 }
 
-DefinitionTypeDef &DefinitionTypeDef::operator=(const DefinitionTypeDef & other)
+DefinitionUsingType &DefinitionUsingType::operator=(const DefinitionUsingType & other)
 {
-  DefinitionTypeDef tmp(other);
+  DefinitionUsingType tmp(other);
   swap(tmp);
   return *this;
 }
 
-void DefinitionTypeDef::swap(DefinitionTypeDef & other)
+void DefinitionUsingType::swap(DefinitionUsingType & other)
 {
-  std::swap(id_, other.id_);
   std::swap(type_, other.type_);
+
+}
+
+DefinitionUsingType::~DefinitionUsingType()
+{
+  delete(type_);
+
+}
+
+void DefinitionUsingType::accept(Visitor *v)
+{
+  v->visitDefinitionUsingType(this);
+}
+
+DefinitionUsingType *DefinitionUsingType::clone() const
+{
+  return new DefinitionUsingType(*this);
+}
+
+
+
+/********************   DefinitionTypedef    ********************/
+DefinitionTypedef::DefinitionTypedef(Type *p1)
+{
+  type_ = p1;
+
+}
+
+DefinitionTypedef::DefinitionTypedef(const DefinitionTypedef & other)
+{
+  type_ = other.type_->clone();
+
+}
+
+DefinitionTypedef &DefinitionTypedef::operator=(const DefinitionTypedef & other)
+{
+  DefinitionTypedef tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void DefinitionTypedef::swap(DefinitionTypedef & other)
+{
+  std::swap(type_, other.type_);
+
+}
+
+DefinitionTypedef::~DefinitionTypedef()
+{
+  delete(type_);
+
+}
+
+void DefinitionTypedef::accept(Visitor *v)
+{
+  v->visitDefinitionTypedef(this);
+}
+
+DefinitionTypedef *DefinitionTypedef::clone() const
+{
+  return new DefinitionTypedef(*this);
+}
+
+
+
+/********************   DefinitionTypedefExp    ********************/
+DefinitionTypedefExp::DefinitionTypedefExp(Exp *p1)
+{
+  exp_ = p1;
+
+}
+
+DefinitionTypedefExp::DefinitionTypedefExp(const DefinitionTypedefExp & other)
+{
+  exp_ = other.exp_->clone();
+
+}
+
+DefinitionTypedefExp &DefinitionTypedefExp::operator=(const DefinitionTypedefExp & other)
+{
+  DefinitionTypedefExp tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void DefinitionTypedefExp::swap(DefinitionTypedefExp & other)
+{
   std::swap(exp_, other.exp_);
 
 }
 
-DefinitionTypeDef::~DefinitionTypeDef()
+DefinitionTypedefExp::~DefinitionTypedefExp()
 {
-  delete(type_);
   delete(exp_);
 
 }
 
-void DefinitionTypeDef::accept(Visitor *v)
+void DefinitionTypedefExp::accept(Visitor *v)
 {
-  v->visitDefinitionTypeDef(this);
+  v->visitDefinitionTypedefExp(this);
 }
 
-DefinitionTypeDef *DefinitionTypeDef::clone() const
+DefinitionTypedefExp *DefinitionTypedefExp::clone() const
 {
-  return new DefinitionTypeDef(*this);
+  return new DefinitionTypedefExp(*this);
 }
 
 
@@ -789,6 +870,50 @@ void StatementTemplate::accept(Visitor *v)
 StatementTemplate *StatementTemplate::clone() const
 {
   return new StatementTemplate(*this);
+}
+
+
+
+/********************   StatementTypedef    ********************/
+StatementTypedef::StatementTypedef(Exp *p1)
+{
+  exp_ = p1;
+
+}
+
+StatementTypedef::StatementTypedef(const StatementTypedef & other)
+{
+  exp_ = other.exp_->clone();
+
+}
+
+StatementTypedef &StatementTypedef::operator=(const StatementTypedef & other)
+{
+  StatementTypedef tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void StatementTypedef::swap(StatementTypedef & other)
+{
+  std::swap(exp_, other.exp_);
+
+}
+
+StatementTypedef::~StatementTypedef()
+{
+  delete(exp_);
+
+}
+
+void StatementTypedef::accept(Visitor *v)
+{
+  v->visitStatementTypedef(this);
+}
+
+StatementTypedef *StatementTypedef::clone() const
+{
+  return new StatementTypedef(*this);
 }
 
 

@@ -28,12 +28,15 @@ class PrintAbsyn : public Visitor
   ~PrintAbsyn(void);
   char* print(Visitable* v);
 
-  void visitDef(Def *p); /* abstract class */
+  void visitProg(Prog *p); /* abstract class */
   void visitPDefs(PDefs *p);
+  void visitListDef(ListDef* p);
+  void visitDef(Def *p); /* abstract class */
   void visitDefinitionFunction(DefinitionFunction *p);
   void visitDefinitionUsing(DefinitionUsing *p);
-  void visitDefinitionTypeDef(DefinitionTypeDef *p);
-  void visitListDef(ListDef* p);
+  void visitDefinitionUsingType(DefinitionUsingType *p);
+  void visitDefinitionTypedef(DefinitionTypedef *p);
+  void visitDefinitionTypedefExp(DefinitionTypedefExp *p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
   void visitStm(Stm *p); /* abstract class */
@@ -49,6 +52,7 @@ class PrintAbsyn : public Visitor
   void visitStatementBlock(StatementBlock *p);
   void visitStatementStruct(StatementStruct *p);
   void visitStatementTemplate(StatementTemplate *p);
+  void visitStatementTypedef(StatementTypedef *p);
   void visitTemplateInstantiations(TemplateInstantiations *p);
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
@@ -168,12 +172,15 @@ class ShowAbsyn : public Visitor
   ~ShowAbsyn(void);
   char* show(Visitable* v);
 
-  void visitDef(Def *p); /* abstract class */
+  void visitProg(Prog *p); /* abstract class */
   void visitPDefs(PDefs *p);
+  void visitListDef(ListDef* p);
+  void visitDef(Def *p); /* abstract class */
   void visitDefinitionFunction(DefinitionFunction *p);
   void visitDefinitionUsing(DefinitionUsing *p);
-  void visitDefinitionTypeDef(DefinitionTypeDef *p);
-  void visitListDef(ListDef* p);
+  void visitDefinitionUsingType(DefinitionUsingType *p);
+  void visitDefinitionTypedef(DefinitionTypedef *p);
+  void visitDefinitionTypedefExp(DefinitionTypedefExp *p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
   void visitStm(Stm *p); /* abstract class */
@@ -189,6 +196,7 @@ class ShowAbsyn : public Visitor
   void visitStatementBlock(StatementBlock *p);
   void visitStatementStruct(StatementStruct *p);
   void visitStatementTemplate(StatementTemplate *p);
+  void visitStatementTypedef(StatementTypedef *p);
   void visitTemplateInstantiations(TemplateInstantiations *p);
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
