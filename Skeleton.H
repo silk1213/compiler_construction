@@ -20,6 +20,7 @@ public:
   void visitDefinitionUsing(DefinitionUsing* p);
   void visitStatementDeclaration(StatementDeclaration* p);
   void visitStatementDeclarations(StatementDeclarations* p);
+  void visitTemplateInstantiations(TemplateInstantiations* p);
   void visitStatementInitialization(StatementInitialization* p);
   void visitStatementReturn(StatementReturn* p);
   void visitStatementWhile(StatementWhile* p);
@@ -31,15 +32,15 @@ public:
   void visitStatementStruct(StatementStruct* p);
   void visitStatementTemplate(StatementTemplate* p);
   void visitStatementTypedef(StatementTypedef* p);
-  void visitTemplateInstantiations(TemplateInstantiations* p);
   void visitStatementDefinition(StatementDefinition* p);
   void visitArgumentDefinition(ArgumentDefinition* p);
   void visitEId(EId* p);
   void visitEInteger(EInteger* p);
   void visitEString(EString* p);
+  void visitStringList(StringList* p);
   void visitEInde(EInde* p);
   void visitEQCon(EQCon* p);
-  void visitEQCo(EQCo* p);
+  void visitEQualifiedConType(EQualifiedConType* p);
   void visitEFunC(EFunC* p);
   void visitEStPP(EStPP* p);
   void visitEStPA(EStPA* p);

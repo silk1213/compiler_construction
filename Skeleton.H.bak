@@ -37,8 +37,10 @@ public:
   void visitEId(EId* p);
   void visitEInteger(EInteger* p);
   void visitEString(EString* p);
+  void visitStringList(StringList* p);
   void visitEInde(EInde* p);
   void visitEQCon(EQCon* p);
+  void visitEQualifiedConType(EQualifiedConType* p);
   void visitEFunC(EFunC* p);
   void visitEStPP(EStPP* p);
   void visitEStPA(EStPA* p);

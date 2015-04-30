@@ -122,9 +122,8 @@ Exp* pExp(const char *str);
 #define _SYMB_49 308
 #define _SYMB_50 309
 #define _SYMB_51 310
-#define _SYMB_52 311
-#define _STRING_ 312
-#define _INTEGER_ 313
+#define _STRING_ 311
+#define _INTEGER_ 312
 
 extern YYSTYPE yylval;
 

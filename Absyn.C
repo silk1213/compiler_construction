@@ -246,6 +246,56 @@ StatementDeclarations *StatementDeclarations::clone() const
 
 
 
+/********************   TemplateInstantiations    ********************/
+TemplateInstantiations::TemplateInstantiations(Id p1, ListType *p2, Id p3)
+{
+  id_1 = p1;
+  listtype_ = p2;
+  id_2 = p3;
+
+}
+
+TemplateInstantiations::TemplateInstantiations(const TemplateInstantiations & other)
+{
+  id_1 = other.id_1;
+  listtype_ = other.listtype_->clone();
+  id_2 = other.id_2;
+
+}
+
+TemplateInstantiations &TemplateInstantiations::operator=(const TemplateInstantiations & other)
+{
+  TemplateInstantiations tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void TemplateInstantiations::swap(TemplateInstantiations & other)
+{
+  std::swap(id_1, other.id_1);
+  std::swap(listtype_, other.listtype_);
+  std::swap(id_2, other.id_2);
+
+}
+
+TemplateInstantiations::~TemplateInstantiations()
+{
+  delete(listtype_);
+
+}
+
+void TemplateInstantiations::accept(Visitor *v)
+{
+  v->visitTemplateInstantiations(this);
+}
+
+TemplateInstantiations *TemplateInstantiations::clone() const
+{
+  return new TemplateInstantiations(*this);
+}
+
+
+
 /********************   StatementInitialization    ********************/
 StatementInitialization::StatementInitialization(Type *p1, Id p2, Exp *p3)
 {
@@ -782,50 +832,6 @@ void StatementTypedef::accept(Visitor *v)
 StatementTypedef *StatementTypedef::clone() const
 {
   return new StatementTypedef(*this);
-}
-
-
-
-/********************   TemplateInstantiations    ********************/
-TemplateInstantiations::TemplateInstantiations(ListType *p1)
-{
-  listtype_ = p1;
-
-}
-
-TemplateInstantiations::TemplateInstantiations(const TemplateInstantiations & other)
-{
-  listtype_ = other.listtype_->clone();
-
-}
-
-TemplateInstantiations &TemplateInstantiations::operator=(const TemplateInstantiations & other)
-{
-  TemplateInstantiations tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void TemplateInstantiations::swap(TemplateInstantiations & other)
-{
-  std::swap(listtype_, other.listtype_);
-
-}
-
-TemplateInstantiations::~TemplateInstantiations()
-{
-  delete(listtype_);
-
-}
-
-void TemplateInstantiations::accept(Visitor *v)
-{
-  v->visitTemplateInstantiations(this);
-}
-
-TemplateInstantiations *TemplateInstantiations::clone() const
-{
-  return new TemplateInstantiations(*this);
 }
 
 
@@ -1375,6 +1381,53 @@ EString *EString::clone() const
 
 
 
+/********************   StringList    ********************/
+StringList::StringList(String p1, Exp *p2)
+{
+  string_ = p1;
+  exp_ = p2;
+
+}
+
+StringList::StringList(const StringList & other)
+{
+  string_ = other.string_;
+  exp_ = other.exp_->clone();
+
+}
+
+StringList &StringList::operator=(const StringList & other)
+{
+  StringList tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void StringList::swap(StringList & other)
+{
+  std::swap(string_, other.string_);
+  std::swap(exp_, other.exp_);
+
+}
+
+StringList::~StringList()
+{
+  delete(exp_);
+
+}
+
+void StringList::accept(Visitor *v)
+{
+  v->visitStringList(this);
+}
+
+StringList *StringList::clone() const
+{
+  return new StringList(*this);
+}
+
+
+
 /********************   EInde    ********************/
 EInde::EInde(Exp *p1, Id p2)
 {
@@ -1469,50 +1522,50 @@ EQCon *EQCon::clone() const
 
 
 
-/********************   EQCo    ********************/
-EQCo::EQCo(Con *p1, Type *p2)
+/********************   EQualifiedConType    ********************/
+EQualifiedConType::EQualifiedConType(Con *p1, Type *p2)
 {
   con_ = p1;
   type_ = p2;
 
 }
 
-EQCo::EQCo(const EQCo & other)
+EQualifiedConType::EQualifiedConType(const EQualifiedConType & other)
 {
   con_ = other.con_->clone();
   type_ = other.type_->clone();
 
 }
 
-EQCo &EQCo::operator=(const EQCo & other)
+EQualifiedConType &EQualifiedConType::operator=(const EQualifiedConType & other)
 {
-  EQCo tmp(other);
+  EQualifiedConType tmp(other);
   swap(tmp);
   return *this;
 }
 
-void EQCo::swap(EQCo & other)
+void EQualifiedConType::swap(EQualifiedConType & other)
 {
   std::swap(con_, other.con_);
   std::swap(type_, other.type_);
 
 }
 
-EQCo::~EQCo()
+EQualifiedConType::~EQualifiedConType()
 {
   delete(con_);
   delete(type_);
 
 }
 
-void EQCo::accept(Visitor *v)
+void EQualifiedConType::accept(Visitor *v)
 {
-  v->visitEQCo(this);
+  v->visitEQualifiedConType(this);
 }
 
-EQCo *EQCo::clone() const
+EQualifiedConType *EQualifiedConType::clone() const
 {
-  return new EQCo(*this);
+  return new EQualifiedConType(*this);
 }
 
 

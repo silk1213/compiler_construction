@@ -10,6 +10,8 @@ terminator Stm "" ;
 StatementDeclaration . Stm ::= Type Id ";" ;
 StatementDeclarations . Stm ::= Type Id "," [Id] ";" ;
 separator Id "," ;
+TemplateInstantiations . Stm ::= Id "<" [Type] ">" Id ";" ;
+separator Type "," ;
 
 StatementInitialization . Stm ::= Type Id "=" Exp ";" ;
 StatementReturn . Stm ::= "return" Exp ";" ;
@@ -23,15 +25,13 @@ StatementStruct . Stm ::= "struct" Id "{" [Stm] "}" ";" ;
 StatementTemplate . Stm ::= Id "<" Type ">" Exp ";" ;
 StatementTypedef . Stm ::= "typedef" Exp ";" ;
 
-TemplateInstantiations . Stm ::= "ident" "<" [Type] ">" ";" ;
-separator Type "," ;
-
 StatementDefinition . Stm ::= Exp ";" ;
 ArgumentDefinition . Arg ::= Exp ;
 
 EId . Exp16 ::= Id ;
 EInteger . Exp16 ::= Integer ;
 EString . Exp16 ::= String ;
+StringList . Exp16 ::= String Exp ;
 
 EInde . Exp15 ::= Exp "[" Id "]" ;
 EQCon . Exp15 ::= Con "::" Id ;

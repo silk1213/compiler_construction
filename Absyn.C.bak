@@ -246,6 +246,53 @@ StatementDeclarations *StatementDeclarations::clone() const
 
 
 
+/********************   TemplateInstantiations    ********************/
+TemplateInstantiations::TemplateInstantiations(Id p1, ListType *p2)
+{
+  id_ = p1;
+  listtype_ = p2;
+
+}
+
+TemplateInstantiations::TemplateInstantiations(const TemplateInstantiations & other)
+{
+  id_ = other.id_;
+  listtype_ = other.listtype_->clone();
+
+}
+
+TemplateInstantiations &TemplateInstantiations::operator=(const TemplateInstantiations & other)
+{
+  TemplateInstantiations tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void TemplateInstantiations::swap(TemplateInstantiations & other)
+{
+  std::swap(id_, other.id_);
+  std::swap(listtype_, other.listtype_);
+
+}
+
+TemplateInstantiations::~TemplateInstantiations()
+{
+  delete(listtype_);
+
+}
+
+void TemplateInstantiations::accept(Visitor *v)
+{
+  v->visitTemplateInstantiations(this);
+}
+
+TemplateInstantiations *TemplateInstantiations::clone() const
+{
+  return new TemplateInstantiations(*this);
+}
+
+
+
 /********************   StatementInitialization    ********************/
 StatementInitialization::StatementInitialization(Type *p1, Id p2, Exp *p3)
 {
@@ -782,50 +829,6 @@ void StatementTypedef::accept(Visitor *v)
 StatementTypedef *StatementTypedef::clone() const
 {
   return new StatementTypedef(*this);
-}
-
-
-
-/********************   TemplateInstantiations    ********************/
-TemplateInstantiations::TemplateInstantiations(ListType *p1)
-{
-  listtype_ = p1;
-
-}
-
-TemplateInstantiations::TemplateInstantiations(const TemplateInstantiations & other)
-{
-  listtype_ = other.listtype_->clone();
-
-}
-
-TemplateInstantiations &TemplateInstantiations::operator=(const TemplateInstantiations & other)
-{
-  TemplateInstantiations tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void TemplateInstantiations::swap(TemplateInstantiations & other)
-{
-  std::swap(listtype_, other.listtype_);
-
-}
-
-TemplateInstantiations::~TemplateInstantiations()
-{
-  delete(listtype_);
-
-}
-
-void TemplateInstantiations::accept(Visitor *v)
-{
-  v->visitTemplateInstantiations(this);
-}
-
-TemplateInstantiations *TemplateInstantiations::clone() const
-{
-  return new TemplateInstantiations(*this);
 }
 
 
@@ -1375,6 +1378,53 @@ EString *EString::clone() const
 
 
 
+/********************   StringList    ********************/
+StringList::StringList(String p1, Exp *p2)
+{
+  string_ = p1;
+  exp_ = p2;
+
+}
+
+StringList::StringList(const StringList & other)
+{
+  string_ = other.string_;
+  exp_ = other.exp_->clone();
+
+}
+
+StringList &StringList::operator=(const StringList & other)
+{
+  StringList tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void StringList::swap(StringList & other)
+{
+  std::swap(string_, other.string_);
+  std::swap(exp_, other.exp_);
+
+}
+
+StringList::~StringList()
+{
+  delete(exp_);
+
+}
+
+void StringList::accept(Visitor *v)
+{
+  v->visitStringList(this);
+}
+
+StringList *StringList::clone() const
+{
+  return new StringList(*this);
+}
+
+
+
 /********************   EInde    ********************/
 EInde::EInde(Exp *p1, Id p2)
 {
@@ -1465,6 +1515,54 @@ void EQCon::accept(Visitor *v)
 EQCon *EQCon::clone() const
 {
   return new EQCon(*this);
+}
+
+
+
+/********************   EQualifiedConType    ********************/
+EQualifiedConType::EQualifiedConType(Con *p1, Type *p2)
+{
+  con_ = p1;
+  type_ = p2;
+
+}
+
+EQualifiedConType::EQualifiedConType(const EQualifiedConType & other)
+{
+  con_ = other.con_->clone();
+  type_ = other.type_->clone();
+
+}
+
+EQualifiedConType &EQualifiedConType::operator=(const EQualifiedConType & other)
+{
+  EQualifiedConType tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EQualifiedConType::swap(EQualifiedConType & other)
+{
+  std::swap(con_, other.con_);
+  std::swap(type_, other.type_);
+
+}
+
+EQualifiedConType::~EQualifiedConType()
+{
+  delete(con_);
+  delete(type_);
+
+}
+
+void EQualifiedConType::accept(Visitor *v)
+{
+  v->visitEQualifiedConType(this);
+}
+
+EQualifiedConType *EQualifiedConType::clone() const
+{
+  return new EQualifiedConType(*this);
 }
 
 

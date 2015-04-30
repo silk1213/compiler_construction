@@ -62,6 +62,16 @@ void Skeleton::visitStatementDeclarations(StatementDeclarations *statementdeclar
 
 }
 
+void Skeleton::visitTemplateInstantiations(TemplateInstantiations *templateinstantiations)
+{
+  /* Code For TemplateInstantiations Goes Here */
+
+  visitId(templateinstantiations->id_1);
+  templateinstantiations->listtype_->accept(this);
+  visitId(templateinstantiations->id_2);
+
+}
+
 void Skeleton::visitStatementInitialization(StatementInitialization *statementinitialization)
 {
   /* Code For StatementInitialization Goes Here */
@@ -165,14 +175,6 @@ void Skeleton::visitStatementTypedef(StatementTypedef *statementtypedef)
 
 }
 
-void Skeleton::visitTemplateInstantiations(TemplateInstantiations *templateinstantiations)
-{
-  /* Code For TemplateInstantiations Goes Here */
-
-  templateinstantiations->listtype_->accept(this);
-
-}
-
 void Skeleton::visitStatementDefinition(StatementDefinition *statementdefinition)
 {
   /* Code For StatementDefinition Goes Here */
@@ -271,6 +273,15 @@ void Skeleton::visitEString(EString *estring)
 
 }
 
+void Skeleton::visitStringList(StringList *stringlist)
+{
+  /* Code For StringList Goes Here */
+
+  visitString(stringlist->string_);
+  stringlist->exp_->accept(this);
+
+}
+
 void Skeleton::visitEInde(EInde *einde)
 {
   /* Code For EInde Goes Here */
@@ -289,12 +300,12 @@ void Skeleton::visitEQCon(EQCon *eqcon)
 
 }
 
-void Skeleton::visitEQCo(EQCo *eqco)
+void Skeleton::visitEQualifiedConType(EQualifiedConType *equalifiedcontype)
 {
-  /* Code For EQCo Goes Here */
+  /* Code For EQualifiedConType Goes Here */
 
-  eqco->con_->accept(this);
-  eqco->type_->accept(this);
+  equalifiedcontype->con_->accept(this);
+  equalifiedcontype->type_->accept(this);
 
 }
 

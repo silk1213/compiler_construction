@@ -32,6 +32,7 @@ class DefinitionFunction;
 class DefinitionUsing;
 class StatementDeclaration;
 class StatementDeclarations;
+class TemplateInstantiations;
 class StatementInitialization;
 class StatementReturn;
 class StatementWhile;
@@ -43,15 +44,15 @@ class StatementBlock;
 class StatementStruct;
 class StatementTemplate;
 class StatementTypedef;
-class TemplateInstantiations;
 class StatementDefinition;
 class ArgumentDefinition;
 class EId;
 class EInteger;
 class EString;
+class StringList;
 class EInde;
 class EQCon;
-class EQCo;
+class EQualifiedConType;
 class EFunC;
 class EStPP;
 class EStPA;
@@ -114,6 +115,7 @@ public:
   virtual void visitDefinitionUsing(DefinitionUsing *p) = 0;
   virtual void visitStatementDeclaration(StatementDeclaration *p) = 0;
   virtual void visitStatementDeclarations(StatementDeclarations *p) = 0;
+  virtual void visitTemplateInstantiations(TemplateInstantiations *p) = 0;
   virtual void visitStatementInitialization(StatementInitialization *p) = 0;
   virtual void visitStatementReturn(StatementReturn *p) = 0;
   virtual void visitStatementWhile(StatementWhile *p) = 0;
@@ -125,15 +127,15 @@ public:
   virtual void visitStatementStruct(StatementStruct *p) = 0;
   virtual void visitStatementTemplate(StatementTemplate *p) = 0;
   virtual void visitStatementTypedef(StatementTypedef *p) = 0;
-  virtual void visitTemplateInstantiations(TemplateInstantiations *p) = 0;
   virtual void visitStatementDefinition(StatementDefinition *p) = 0;
   virtual void visitArgumentDefinition(ArgumentDefinition *p) = 0;
   virtual void visitEId(EId *p) = 0;
   virtual void visitEInteger(EInteger *p) = 0;
   virtual void visitEString(EString *p) = 0;
+  virtual void visitStringList(StringList *p) = 0;
   virtual void visitEInde(EInde *p) = 0;
   virtual void visitEQCon(EQCon *p) = 0;
-  virtual void visitEQCo(EQCo *p) = 0;
+  virtual void visitEQualifiedConType(EQualifiedConType *p) = 0;
   virtual void visitEFunC(EFunC *p) = 0;
   virtual void visitEStPP(EStPP *p) = 0;
   virtual void visitEStPA(EStPA *p) = 0;
@@ -326,6 +328,22 @@ public:
   void swap(StatementDeclarations &);
 };
 
+class TemplateInstantiations : public Stm
+{
+public:
+  Id id_1;
+  ListType *listtype_;
+  Id id_2;
+
+  TemplateInstantiations(const TemplateInstantiations &);
+  TemplateInstantiations &operator=(const TemplateInstantiations &);
+  TemplateInstantiations(Id p1, ListType *p2, Id p3);
+  ~TemplateInstantiations();
+  virtual void accept(Visitor *v);
+  virtual TemplateInstantiations *clone() const;
+  void swap(TemplateInstantiations &);
+};
+
 class StatementInitialization : public Stm
 {
 public:
@@ -493,20 +511,6 @@ public:
   virtual void accept(Visitor *v);
   virtual StatementTypedef *clone() const;
   void swap(StatementTypedef &);
-};
-
-class TemplateInstantiations : public Stm
-{
-public:
-  ListType *listtype_;
-
-  TemplateInstantiations(const TemplateInstantiations &);
-  TemplateInstantiations &operator=(const TemplateInstantiations &);
-  TemplateInstantiations(ListType *p1);
-  ~TemplateInstantiations();
-  virtual void accept(Visitor *v);
-  virtual TemplateInstantiations *clone() const;
-  void swap(TemplateInstantiations &);
 };
 
 class StatementDefinition : public Stm
@@ -685,6 +689,21 @@ public:
   void swap(EString &);
 };
 
+class StringList : public Exp
+{
+public:
+  String string_;
+  Exp *exp_;
+
+  StringList(const StringList &);
+  StringList &operator=(const StringList &);
+  StringList(String p1, Exp *p2);
+  ~StringList();
+  virtual void accept(Visitor *v);
+  virtual StringList *clone() const;
+  void swap(StringList &);
+};
+
 class EInde : public Exp
 {
 public:
@@ -715,19 +734,19 @@ public:
   void swap(EQCon &);
 };
 
-class EQCo : public Exp
+class EQualifiedConType : public Exp
 {
 public:
   Con *con_;
   Type *type_;
 
-  EQCo(const EQCo &);
-  EQCo &operator=(const EQCo &);
-  EQCo(Con *p1, Type *p2);
-  ~EQCo();
+  EQualifiedConType(const EQualifiedConType &);
+  EQualifiedConType &operator=(const EQualifiedConType &);
+  EQualifiedConType(Con *p1, Type *p2);
+  ~EQualifiedConType();
   virtual void accept(Visitor *v);
-  virtual EQCo *clone() const;
-  void swap(EQCo &);
+  virtual EQualifiedConType *clone() const;
+  void swap(EQualifiedConType &);
 };
 
 class EFunC : public Exp

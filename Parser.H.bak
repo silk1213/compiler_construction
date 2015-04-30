@@ -15,6 +15,7 @@ class ListId;
 class ListType;
 class Arg;
 class ListExp;
+class Con;
 class Type;
 class Exp;
 
@@ -34,6 +35,7 @@ typedef union
   ListType* listtype_;
   Arg* arg_;
   ListExp* listexp_;
+  Con* con_;
   Type* type_;
   Exp* exp_;
 } YYSTYPE;
@@ -58,6 +60,8 @@ Arg* pArg(FILE *inp);
 Arg* pArg(const char *str);
 ListExp* pListExp(FILE *inp);
 ListExp* pListExp(const char *str);
+Con* pCon(FILE *inp);
+Con* pCon(const char *str);
 Type* pType(FILE *inp);
 Type* pType(const char *str);
 Exp* pExp(FILE *inp);

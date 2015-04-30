@@ -32,9 +32,9 @@ IDENT [a-zA-Z0-9'_]
 <YYINITIAL>"}"      	 return _SYMB_3;
 <YYINITIAL>";"      	 return _SYMB_4;
 <YYINITIAL>","      	 return _SYMB_5;
-<YYINITIAL>"="      	 return _SYMB_6;
-<YYINITIAL>"<"      	 return _SYMB_7;
-<YYINITIAL>">"      	 return _SYMB_8;
+<YYINITIAL>"<"      	 return _SYMB_6;
+<YYINITIAL>">"      	 return _SYMB_7;
+<YYINITIAL>"="      	 return _SYMB_8;
 <YYINITIAL>"["      	 return _SYMB_9;
 <YYINITIAL>"]"      	 return _SYMB_10;
 <YYINITIAL>"::"      	 return _SYMB_11;
@@ -65,19 +65,18 @@ IDENT [a-zA-Z0-9'_]
 <YYINITIAL>"double"      	 return _SYMB_36;
 <YYINITIAL>"else"      	 return _SYMB_37;
 <YYINITIAL>"for"      	 return _SYMB_38;
-<YYINITIAL>"ident"      	 return _SYMB_39;
-<YYINITIAL>"if"      	 return _SYMB_40;
-<YYINITIAL>"int"      	 return _SYMB_41;
-<YYINITIAL>"return"      	 return _SYMB_42;
-<YYINITIAL>"std"      	 return _SYMB_43;
-<YYINITIAL>"string"      	 return _SYMB_44;
-<YYINITIAL>"struct"      	 return _SYMB_45;
-<YYINITIAL>"throw"      	 return _SYMB_46;
-<YYINITIAL>"typedef"      	 return _SYMB_47;
-<YYINITIAL>"using"      	 return _SYMB_48;
-<YYINITIAL>"vector"      	 return _SYMB_49;
-<YYINITIAL>"void"      	 return _SYMB_50;
-<YYINITIAL>"while"      	 return _SYMB_51;
+<YYINITIAL>"if"      	 return _SYMB_39;
+<YYINITIAL>"int"      	 return _SYMB_40;
+<YYINITIAL>"return"      	 return _SYMB_41;
+<YYINITIAL>"std"      	 return _SYMB_42;
+<YYINITIAL>"string"      	 return _SYMB_43;
+<YYINITIAL>"struct"      	 return _SYMB_44;
+<YYINITIAL>"throw"      	 return _SYMB_45;
+<YYINITIAL>"typedef"      	 return _SYMB_46;
+<YYINITIAL>"using"      	 return _SYMB_47;
+<YYINITIAL>"vector"      	 return _SYMB_48;
+<YYINITIAL>"void"      	 return _SYMB_49;
+<YYINITIAL>"while"      	 return _SYMB_50;
 
 <YYINITIAL>"//"[^\n]*\n  ++yy_mylinenumber ; 	 /* BNFC single-line comment */;
 <YYINITIAL>"#"[^\n]*\n  ++yy_mylinenumber ; 	 /* BNFC single-line comment */;
@@ -86,7 +85,7 @@ IDENT [a-zA-Z0-9'_]
 <COMMENT>.      	 /* BNFC multi-line comment */;
 <COMMENT>[\n]   ++yy_mylinenumber ; 	 /* BNFC multi-line comment */;
 
-<YYINITIAL>{LETTER}({LETTER}|{DIGIT}|\_)*     	 yylval.string_ = strdup(yytext); return _SYMB_52;
+<YYINITIAL>{LETTER}({LETTER}|{DIGIT}|\_)*     	 yylval.string_ = strdup(yytext); return _SYMB_51;
 <YYINITIAL>"\""      	 BEGIN STRING;
 <STRING>\\      	 BEGIN ESCAPED;
 <STRING>\"      	 yylval.string_ = strdup(YY_PARSED_STRING); YY_BUFFER_RESET(); BEGIN YYINITIAL; return _STRING_;

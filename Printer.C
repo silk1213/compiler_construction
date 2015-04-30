@@ -201,6 +201,22 @@ void PrintAbsyn::visitStatementDeclarations(StatementDeclarations* p)
   _i_ = oldi;
 }
 
+void PrintAbsyn::visitTemplateInstantiations(TemplateInstantiations* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  _i_ = 0; p->id_1->accept(this);
+  render('<');
+  if(p->listtype_) {_i_ = 0; p->listtype_->accept(this);}  render('>');
+  _i_ = 0; p->id_2->accept(this);
+  render(';');
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
 void PrintAbsyn::visitStatementInitialization(StatementInitialization* p)
 {
   int oldi = _i_;
@@ -388,21 +404,6 @@ void PrintAbsyn::visitStatementTypedef(StatementTypedef* p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitTemplateInstantiations(TemplateInstantiations* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render("ident");
-  render('<');
-  if(p->listtype_) {_i_ = 0; p->listtype_->accept(this);}  render('>');
-  render(';');
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
 void PrintAbsyn::visitStatementDefinition(StatementDefinition* p)
 {
   int oldi = _i_;
@@ -486,6 +487,19 @@ void PrintAbsyn::visitEString(EString* p)
   _i_ = oldi;
 }
 
+void PrintAbsyn::visitStringList(StringList* p)
+{
+  int oldi = _i_;
+  if (oldi > 16) render(_L_PAREN);
+
+  visitString(p->string_);
+  _i_ = 0; p->exp_->accept(this);
+
+  if (oldi > 16) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
 void PrintAbsyn::visitEInde(EInde* p)
 {
   int oldi = _i_;
@@ -515,7 +529,7 @@ void PrintAbsyn::visitEQCon(EQCon* p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitEQCo(EQCo* p)
+void PrintAbsyn::visitEQualifiedConType(EQualifiedConType* p)
 {
   int oldi = _i_;
   if (oldi > 15) render(_L_PAREN);
@@ -1200,6 +1214,21 @@ void ShowAbsyn::visitStatementDeclarations(StatementDeclarations* p)
   bufAppend(' ');
   bufAppend(')');
 }
+void ShowAbsyn::visitTemplateInstantiations(TemplateInstantiations* p)
+{
+  bufAppend('(');
+  bufAppend("TemplateInstantiations");
+  bufAppend(' ');
+  p->id_1->accept(this);
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->listtype_)  p->listtype_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  p->id_2->accept(this);
+  bufAppend(' ');
+  bufAppend(')');
+}
 void ShowAbsyn::visitStatementInitialization(StatementInitialization* p)
 {
   bufAppend('(');
@@ -1361,17 +1390,6 @@ void ShowAbsyn::visitStatementTypedef(StatementTypedef* p)
   bufAppend(' ');
   bufAppend(')');
 }
-void ShowAbsyn::visitTemplateInstantiations(TemplateInstantiations* p)
-{
-  bufAppend('(');
-  bufAppend("TemplateInstantiations");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->listtype_)  p->listtype_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend(')');
-}
 void ShowAbsyn::visitStatementDefinition(StatementDefinition* p)
 {
   bufAppend('(');
@@ -1439,6 +1457,18 @@ void ShowAbsyn::visitEString(EString* p)
   visitString(p->string_);
   bufAppend(')');
 }
+void ShowAbsyn::visitStringList(StringList* p)
+{
+  bufAppend('(');
+  bufAppend("StringList");
+  bufAppend(' ');
+  visitString(p->string_);
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->exp_)  p->exp_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
 void ShowAbsyn::visitEInde(EInde* p)
 {
   bufAppend('(');
@@ -1464,10 +1494,10 @@ void ShowAbsyn::visitEQCon(EQCon* p)
   visitIdent(p->id_);
   bufAppend(')');
 }
-void ShowAbsyn::visitEQCo(EQCo* p)
+void ShowAbsyn::visitEQualifiedConType(EQualifiedConType* p)
 {
   bufAppend('(');
-  bufAppend("EQCo");
+  bufAppend("EQualifiedConType");
   bufAppend(' ');
   bufAppend('[');
   if (p->con_)  p->con_->accept(this);
