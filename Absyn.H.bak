@@ -42,7 +42,6 @@ class StatementIf;
 class StatementIfElse;
 class StatementBlock;
 class StatementStruct;
-class StatementTemplate;
 class StatementTypedef;
 class StatementDefinition;
 class ArgumentDefinition;
@@ -89,7 +88,6 @@ class TDouble;
 class TVoid;
 class TString;
 class TVector;
-class TConDef;
 class ListDef;
 class ListArg;
 class ListStm;
@@ -125,7 +123,6 @@ public:
   virtual void visitStatementIfElse(StatementIfElse *p) = 0;
   virtual void visitStatementBlock(StatementBlock *p) = 0;
   virtual void visitStatementStruct(StatementStruct *p) = 0;
-  virtual void visitStatementTemplate(StatementTemplate *p) = 0;
   virtual void visitStatementTypedef(StatementTypedef *p) = 0;
   virtual void visitStatementDefinition(StatementDefinition *p) = 0;
   virtual void visitArgumentDefinition(ArgumentDefinition *p) = 0;
@@ -172,7 +169,6 @@ public:
   virtual void visitTVoid(TVoid *p) = 0;
   virtual void visitTString(TString *p) = 0;
   virtual void visitTVector(TVector *p) = 0;
-  virtual void visitTConDef(TConDef *p) = 0;
   virtual void visitListDef(ListDef *p) = 0;
   virtual void visitListArg(ListArg *p) = 0;
   virtual void visitListStm(ListStm *p) = 0;
@@ -331,12 +327,13 @@ public:
 class TemplateInstantiations : public Stm
 {
 public:
-  Id id_;
+  Exp *exp_;
   ListType *listtype_;
+  Id id_;
 
   TemplateInstantiations(const TemplateInstantiations &);
   TemplateInstantiations &operator=(const TemplateInstantiations &);
-  TemplateInstantiations(Id p1, ListType *p2);
+  TemplateInstantiations(Exp *p1, ListType *p2, Id p3);
   ~TemplateInstantiations();
   virtual void accept(Visitor *v);
   virtual TemplateInstantiations *clone() const;
@@ -482,30 +479,14 @@ public:
   void swap(StatementStruct &);
 };
 
-class StatementTemplate : public Stm
-{
-public:
-  Id id_;
-  Type *type_;
-  Exp *exp_;
-
-  StatementTemplate(const StatementTemplate &);
-  StatementTemplate &operator=(const StatementTemplate &);
-  StatementTemplate(Id p1, Type *p2, Exp *p3);
-  ~StatementTemplate();
-  virtual void accept(Visitor *v);
-  virtual StatementTemplate *clone() const;
-  void swap(StatementTemplate &);
-};
-
 class StatementTypedef : public Stm
 {
 public:
-  Exp *exp_;
+  Type *type_;
 
   StatementTypedef(const StatementTypedef &);
   StatementTypedef &operator=(const StatementTypedef &);
-  StatementTypedef(Exp *p1);
+  StatementTypedef(Type *p1);
   ~StatementTypedef();
   virtual void accept(Visitor *v);
   virtual StatementTypedef *clone() const;
@@ -629,21 +610,6 @@ public:
   virtual void accept(Visitor *v);
   virtual TVector *clone() const;
   void swap(TVector &);
-};
-
-class TConDef : public Type
-{
-public:
-  Con *con_;
-  Type *type_;
-
-  TConDef(const TConDef &);
-  TConDef &operator=(const TConDef &);
-  TConDef(Con *p1, Type *p2);
-  ~TConDef();
-  virtual void accept(Visitor *v);
-  virtual TConDef *clone() const;
-  void swap(TConDef &);
 };
 
 class EId : public Exp

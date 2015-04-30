@@ -586,7 +586,7 @@ ListStm : /* empty */ {  $$ = new ListStm(); YY_RESULT_ListStm_= $$; }
 ;
 Stm : Type _SYMB_51 _SYMB_4 {  $$ = new StatementDeclaration($1, $2); YY_RESULT_Stm_= $$; } 
   | Type _SYMB_51 _SYMB_5 ListId _SYMB_4 {  std::reverse($4->begin(),$4->end()) ;$$ = new StatementDeclarations($1, $2, $4); YY_RESULT_Stm_= $$; }
-  | _SYMB_51 _SYMB_6 ListType _SYMB_7 _SYMB_51 _SYMB_4 {  std::reverse($3->begin(),$3->end()) ;$$ = new TemplateInstantiations($1, $3, $5); YY_RESULT_Stm_= $$; }
+  | Exp _SYMB_6 ListType _SYMB_7 _SYMB_51 _SYMB_4 {  std::reverse($3->begin(),$3->end()) ;$$ = new TemplateInstantiations($1, $3, $5); YY_RESULT_Stm_= $$; }
   | Type _SYMB_51 _SYMB_8 Exp _SYMB_4 {  $$ = new StatementInitialization($1, $2, $4); YY_RESULT_Stm_= $$; }
   | _SYMB_41 Exp _SYMB_4 {  $$ = new StatementReturn($2); YY_RESULT_Stm_= $$; }
   | _SYMB_50 _SYMB_0 Exp _SYMB_1 Stm _SYMB_4 {  $$ = new StatementWhile($3, $5); YY_RESULT_Stm_= $$; }
@@ -596,7 +596,6 @@ Stm : Type _SYMB_51 _SYMB_4 {  $$ = new StatementDeclaration($1, $2); YY_RESULT_
   | _SYMB_39 _SYMB_0 Exp _SYMB_1 Stm _SYMB_4 _SYMB_37 Stm _SYMB_4 {  $$ = new StatementIfElse($3, $5, $8); YY_RESULT_Stm_= $$; }
   | _SYMB_2 ListStm _SYMB_3 {  $$ = new StatementBlock($2); YY_RESULT_Stm_= $$; }
   | _SYMB_44 _SYMB_51 _SYMB_2 ListStm _SYMB_3 _SYMB_4 {  $$ = new StatementStruct($2, $4); YY_RESULT_Stm_= $$; }
-  | _SYMB_51 _SYMB_6 Type _SYMB_7 Exp _SYMB_4 {  $$ = new StatementTemplate($1, $3, $5); YY_RESULT_Stm_= $$; }
   | _SYMB_46 Exp _SYMB_4 {  $$ = new StatementTypedef($2); YY_RESULT_Stm_= $$; }
   | Exp _SYMB_4 {  $$ = new StatementDefinition($1); YY_RESULT_Stm_= $$; }
 ;
@@ -684,7 +683,6 @@ Type : _SYMB_40 {  $$ = new TInt(); YY_RESULT_Type_= $$; }
   | _SYMB_49 {  $$ = new TVoid(); YY_RESULT_Type_= $$; }
   | _SYMB_43 {  $$ = new TString(); YY_RESULT_Type_= $$; }
   | _SYMB_48 {  $$ = new TVector(); YY_RESULT_Type_= $$; }
-  | Con _SYMB_11 Type {  $$ = new TConDef($1, $3); YY_RESULT_Type_= $$; }
 ;
 Exp : Exp1 {  $$ = $1; YY_RESULT_Exp_= $$; } 
 ;

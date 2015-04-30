@@ -206,10 +206,10 @@ void PrintAbsyn::visitTemplateInstantiations(TemplateInstantiations* p)
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  _i_ = 0; p->id_1->accept(this);
+  _i_ = 0; p->exp_->accept(this);
   render('<');
   if(p->listtype_) {_i_ = 0; p->listtype_->accept(this);}  render('>');
-  _i_ = 0; p->id_2->accept(this);
+  visitIdent(p->id_);
   render(';');
 
   if (oldi > 0) render(_R_PAREN);
@@ -366,23 +366,6 @@ void PrintAbsyn::visitStatementStruct(StatementStruct* p)
   visitIdent(p->id_);
   render('{');
   if(p->liststm_) {_i_ = 0; p->liststm_->accept(this);}  render('}');
-  render(';');
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitStatementTemplate(StatementTemplate* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  visitIdent(p->id_);
-  render('<');
-  _i_ = 0; p->type_->accept(this);
-  render('>');
-  _i_ = 0; p->exp_->accept(this);
   render(';');
 
   if (oldi > 0) render(_R_PAREN);
@@ -1041,20 +1024,6 @@ void PrintAbsyn::visitTVector(TVector* p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitTConDef(TConDef* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->con_->accept(this);
-  render("::");
-  _i_ = 0; p->type_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
 void PrintAbsyn::visitInteger(Integer i)
 {
   char tmp[16];
@@ -1219,13 +1188,15 @@ void ShowAbsyn::visitTemplateInstantiations(TemplateInstantiations* p)
   bufAppend('(');
   bufAppend("TemplateInstantiations");
   bufAppend(' ');
-  p->id_1->accept(this);
+  bufAppend('[');
+  if (p->exp_)  p->exp_->accept(this);
+  bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
   if (p->listtype_)  p->listtype_->accept(this);
   bufAppend(']');
   bufAppend(' ');
-  p->id_2->accept(this);
+  visitIdent(p->id_);
   bufAppend(' ');
   bufAppend(')');
 }
@@ -1358,23 +1329,6 @@ void ShowAbsyn::visitStatementStruct(StatementStruct* p)
   bufAppend(' ');
   bufAppend('[');
   if (p->liststm_)  p->liststm_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend(')');
-}
-void ShowAbsyn::visitStatementTemplate(StatementTemplate* p)
-{
-  bufAppend('(');
-  bufAppend("StatementTemplate");
-  bufAppend(' ');
-  visitIdent(p->id_);
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->type_)  p->type_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->exp_)  p->exp_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -1847,20 +1801,6 @@ void ShowAbsyn::visitTString(TString* p)
 void ShowAbsyn::visitTVector(TVector* p)
 {
   bufAppend("TVector");
-}
-void ShowAbsyn::visitTConDef(TConDef* p)
-{
-  bufAppend('(');
-  bufAppend("TConDef");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->con_)  p->con_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->type_)  p->type_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
 }
 void ShowAbsyn::visitInteger(Integer i)
 {

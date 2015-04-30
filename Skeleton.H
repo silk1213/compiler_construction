@@ -30,7 +30,6 @@ public:
   void visitStatementIfElse(StatementIfElse* p);
   void visitStatementBlock(StatementBlock* p);
   void visitStatementStruct(StatementStruct* p);
-  void visitStatementTemplate(StatementTemplate* p);
   void visitStatementTypedef(StatementTypedef* p);
   void visitStatementDefinition(StatementDefinition* p);
   void visitArgumentDefinition(ArgumentDefinition* p);
@@ -77,7 +76,6 @@ public:
   void visitTVoid(TVoid* p);
   void visitTString(TString* p);
   void visitTVector(TVector* p);
-  void visitTConDef(TConDef* p);
   void visitListDef(ListDef* p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);

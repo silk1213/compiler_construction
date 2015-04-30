@@ -49,7 +49,6 @@ class PrintAbsyn : public Visitor
   void visitStatementIfElse(StatementIfElse *p);
   void visitStatementBlock(StatementBlock *p);
   void visitStatementStruct(StatementStruct *p);
-  void visitStatementTemplate(StatementTemplate *p);
   void visitStatementTypedef(StatementTypedef *p);
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
@@ -103,7 +102,6 @@ class PrintAbsyn : public Visitor
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
   void visitTVector(TVector *p);
-  void visitTConDef(TConDef *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);
@@ -194,7 +192,6 @@ class ShowAbsyn : public Visitor
   void visitStatementIfElse(StatementIfElse *p);
   void visitStatementBlock(StatementBlock *p);
   void visitStatementStruct(StatementStruct *p);
-  void visitStatementTemplate(StatementTemplate *p);
   void visitStatementTypedef(StatementTypedef *p);
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
@@ -248,7 +245,6 @@ class ShowAbsyn : public Visitor
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
   void visitTVector(TVector *p);
-  void visitTConDef(TConDef *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);

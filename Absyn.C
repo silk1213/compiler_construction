@@ -247,19 +247,19 @@ StatementDeclarations *StatementDeclarations::clone() const
 
 
 /********************   TemplateInstantiations    ********************/
-TemplateInstantiations::TemplateInstantiations(Id p1, ListType *p2, Id p3)
+TemplateInstantiations::TemplateInstantiations(Exp *p1, ListType *p2, Id p3)
 {
-  id_1 = p1;
+  exp_ = p1;
   listtype_ = p2;
-  id_2 = p3;
+  id_ = p3;
 
 }
 
 TemplateInstantiations::TemplateInstantiations(const TemplateInstantiations & other)
 {
-  id_1 = other.id_1;
+  exp_ = other.exp_->clone();
   listtype_ = other.listtype_->clone();
-  id_2 = other.id_2;
+  id_ = other.id_;
 
 }
 
@@ -272,14 +272,15 @@ TemplateInstantiations &TemplateInstantiations::operator=(const TemplateInstanti
 
 void TemplateInstantiations::swap(TemplateInstantiations & other)
 {
-  std::swap(id_1, other.id_1);
+  std::swap(exp_, other.exp_);
   std::swap(listtype_, other.listtype_);
-  std::swap(id_2, other.id_2);
+  std::swap(id_, other.id_);
 
 }
 
 TemplateInstantiations::~TemplateInstantiations()
 {
+  delete(exp_);
   delete(listtype_);
 
 }
@@ -741,57 +742,6 @@ StatementStruct *StatementStruct::clone() const
 
 
 
-/********************   StatementTemplate    ********************/
-StatementTemplate::StatementTemplate(Id p1, Type *p2, Exp *p3)
-{
-  id_ = p1;
-  type_ = p2;
-  exp_ = p3;
-
-}
-
-StatementTemplate::StatementTemplate(const StatementTemplate & other)
-{
-  id_ = other.id_;
-  type_ = other.type_->clone();
-  exp_ = other.exp_->clone();
-
-}
-
-StatementTemplate &StatementTemplate::operator=(const StatementTemplate & other)
-{
-  StatementTemplate tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void StatementTemplate::swap(StatementTemplate & other)
-{
-  std::swap(id_, other.id_);
-  std::swap(type_, other.type_);
-  std::swap(exp_, other.exp_);
-
-}
-
-StatementTemplate::~StatementTemplate()
-{
-  delete(type_);
-  delete(exp_);
-
-}
-
-void StatementTemplate::accept(Visitor *v)
-{
-  v->visitStatementTemplate(this);
-}
-
-StatementTemplate *StatementTemplate::clone() const
-{
-  return new StatementTemplate(*this);
-}
-
-
-
 /********************   StatementTypedef    ********************/
 StatementTypedef::StatementTypedef(Exp *p1)
 {
@@ -1200,54 +1150,6 @@ void TVector::accept(Visitor *v)
 TVector *TVector::clone() const
 {
   return new TVector(*this);
-}
-
-
-
-/********************   TConDef    ********************/
-TConDef::TConDef(Con *p1, Type *p2)
-{
-  con_ = p1;
-  type_ = p2;
-
-}
-
-TConDef::TConDef(const TConDef & other)
-{
-  con_ = other.con_->clone();
-  type_ = other.type_->clone();
-
-}
-
-TConDef &TConDef::operator=(const TConDef & other)
-{
-  TConDef tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void TConDef::swap(TConDef & other)
-{
-  std::swap(con_, other.con_);
-  std::swap(type_, other.type_);
-
-}
-
-TConDef::~TConDef()
-{
-  delete(con_);
-  delete(type_);
-
-}
-
-void TConDef::accept(Visitor *v)
-{
-  v->visitTConDef(this);
-}
-
-TConDef *TConDef::clone() const
-{
-  return new TConDef(*this);
 }
 
 

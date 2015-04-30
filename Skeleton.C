@@ -66,9 +66,9 @@ void Skeleton::visitTemplateInstantiations(TemplateInstantiations *templateinsta
 {
   /* Code For TemplateInstantiations Goes Here */
 
-  visitId(templateinstantiations->id_1);
+  templateinstantiations->exp_->accept(this);
   templateinstantiations->listtype_->accept(this);
-  visitId(templateinstantiations->id_2);
+  visitId(templateinstantiations->id_);
 
 }
 
@@ -157,16 +157,6 @@ void Skeleton::visitStatementStruct(StatementStruct *statementstruct)
 
 }
 
-void Skeleton::visitStatementTemplate(StatementTemplate *statementtemplate)
-{
-  /* Code For StatementTemplate Goes Here */
-
-  visitId(statementtemplate->id_);
-  statementtemplate->type_->accept(this);
-  statementtemplate->exp_->accept(this);
-
-}
-
 void Skeleton::visitStatementTypedef(StatementTypedef *statementtypedef)
 {
   /* Code For StatementTypedef Goes Here */
@@ -237,15 +227,6 @@ void Skeleton::visitTVector(TVector *tvector)
 {
   /* Code For TVector Goes Here */
 
-
-}
-
-void Skeleton::visitTConDef(TConDef *tcondef)
-{
-  /* Code For TConDef Goes Here */
-
-  tcondef->con_->accept(this);
-  tcondef->type_->accept(this);
 
 }
 

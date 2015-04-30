@@ -39,6 +39,7 @@ class PrintAbsyn : public Visitor
   void visitStm(Stm *p); /* abstract class */
   void visitStatementDeclaration(StatementDeclaration *p);
   void visitStatementDeclarations(StatementDeclarations *p);
+  void visitTemplateInstantiations(TemplateInstantiations *p);
   void visitStatementInitialization(StatementInitialization *p);
   void visitStatementReturn(StatementReturn *p);
   void visitStatementWhile(StatementWhile *p);
@@ -48,9 +49,7 @@ class PrintAbsyn : public Visitor
   void visitStatementIfElse(StatementIfElse *p);
   void visitStatementBlock(StatementBlock *p);
   void visitStatementStruct(StatementStruct *p);
-  void visitStatementTemplate(StatementTemplate *p);
   void visitStatementTypedef(StatementTypedef *p);
-  void visitTemplateInstantiations(TemplateInstantiations *p);
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
   void visitListType(ListType* p);
@@ -63,7 +62,6 @@ class PrintAbsyn : public Visitor
   void visitStringList(StringList *p);
   void visitEInde(EInde *p);
   void visitEQCon(EQCon *p);
-  void visitEQualifiedConType(EQualifiedConType *p);
   void visitEFunC(EFunC *p);
   void visitEStPP(EStPP *p);
   void visitEStPA(EStPA *p);
@@ -103,7 +101,7 @@ class PrintAbsyn : public Visitor
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
   void visitTVector(TVector *p);
-  void visitTConDef(TConDef *p);
+  void visitQConDef(QConDef *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);
@@ -184,6 +182,7 @@ class ShowAbsyn : public Visitor
   void visitStm(Stm *p); /* abstract class */
   void visitStatementDeclaration(StatementDeclaration *p);
   void visitStatementDeclarations(StatementDeclarations *p);
+  void visitTemplateInstantiations(TemplateInstantiations *p);
   void visitStatementInitialization(StatementInitialization *p);
   void visitStatementReturn(StatementReturn *p);
   void visitStatementWhile(StatementWhile *p);
@@ -193,9 +192,7 @@ class ShowAbsyn : public Visitor
   void visitStatementIfElse(StatementIfElse *p);
   void visitStatementBlock(StatementBlock *p);
   void visitStatementStruct(StatementStruct *p);
-  void visitStatementTemplate(StatementTemplate *p);
   void visitStatementTypedef(StatementTypedef *p);
-  void visitTemplateInstantiations(TemplateInstantiations *p);
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
   void visitListType(ListType* p);
@@ -208,7 +205,6 @@ class ShowAbsyn : public Visitor
   void visitStringList(StringList *p);
   void visitEInde(EInde *p);
   void visitEQCon(EQCon *p);
-  void visitEQualifiedConType(EQualifiedConType *p);
   void visitEFunC(EFunC *p);
   void visitEStPP(EStPP *p);
   void visitEStPA(EStPA *p);
@@ -248,7 +244,7 @@ class ShowAbsyn : public Visitor
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
   void visitTVector(TVector *p);
-  void visitTConDef(TConDef *p);
+  void visitQConDef(QConDef *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);

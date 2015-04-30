@@ -10,7 +10,7 @@ terminator Stm "" ;
 StatementDeclaration . Stm ::= Type Id ";" ;
 StatementDeclarations . Stm ::= Type Id "," [Id] ";" ;
 separator Id "," ;
-TemplateInstantiations . Stm ::= Id "<" [Type] ">" Id ";" ;
+TemplateInstantiations . Stm ::= Exp "<" [Type] ">" Id ";" ;
 separator Type "," ;
 
 StatementInitialization . Stm ::= Type Id "=" Exp ";" ;
@@ -22,7 +22,6 @@ StatementIf . Stm ::= "if" "(" Exp ")" Stm ";" ;
 StatementIfElse . Stm ::= "if" "(" Exp ")" Stm ";" "else" Stm ";" ;
 StatementBlock . Stm ::= "{" [Stm] "}" ;
 StatementStruct . Stm ::= "struct" Id "{" [Stm] "}" ";" ;
-StatementTemplate . Stm ::= Id "<" Type ">" Exp ";" ;
 StatementTypedef . Stm ::= "typedef" Exp ";" ;
 
 StatementDefinition . Stm ::= Exp ";" ;
@@ -75,8 +74,6 @@ TDouble . Type ::= "double" ;
 TVoid . Type ::= "void" ;
 TString . Type ::= "string" ;
 TVector . Type ::= "vector" ;
-
-TConDef . Type ::= Con "::" Type ;
 
 comment "//" ;
 comment "/*" "*/" ;
