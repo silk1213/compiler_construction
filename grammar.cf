@@ -2,8 +2,7 @@ PDefs . Prog ::= [Def] ;
 terminator Def "";
 
 DefinitionFunction . Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
-DefinitionUsing . Def ::= "using" QCo ";" ;
-DefinitionTypedef . Def ::= "typedef" QCo ";" ;
+DefinitionUsing . Def ::= "using" Exp ";" ;
 
 separator Arg "," ;
 terminator Stm "" ;
@@ -27,9 +26,6 @@ StatementTypedef . Stm ::= "typedef" Exp ";" ;
 TemplateInstantiations . Stm ::= "ident" "<" [Type] ">" ";" ;
 separator Type "," ;
 
-QualifiedConstants . QCo ::= [id] ;
-seperator Txpe "::";
-
 StatementDefinition . Stm ::= Exp ";" ;
 ArgumentDefinition . Arg ::= Exp ;
 
@@ -38,7 +34,8 @@ EInteger . Exp16 ::= Integer ;
 EString . Exp16 ::= String ;
 
 EInde . Exp15 ::= Exp "[" Id "]" ;
-EQCon . Exp15 ::= Exp "::" Id ;
+EQCon . Exp15 ::= Con "::" Id ;
+EQualifiedConType . Exp15 ::= Con "::" Type ;
 EFunC . Exp15 ::= Exp "(" [Exp] ")" ;
 separator Exp "," ;
 EStPP . Exp14 ::= Exp "." Exp ;
@@ -70,13 +67,16 @@ EAsMi . Exp2 ::= Exp "-=" Exp ;
 ECond . Exp2 ::= Exp "?" Exp ":" Exp ;
 EExce . Exp1 ::= "throw" Exp ;
 
+CStd . Con ::= "std" ;
+
 TInt . Type ::= "int" ;
 TBool . Type ::= "bool" ;
 TDouble . Type ::= "double" ;
 TVoid . Type ::= "void" ;
 TString . Type ::= "string" ;
-TStringStd . Type ::= "std::string" ;
-TVectorStd . Type ::= "std::vector" ;
+TVector . Type ::= "vector" ;
+
+TConDef . Type ::= Con "::" Type ;
 
 comment "//" ;
 comment "/*" "*/" ;

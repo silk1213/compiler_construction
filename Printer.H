@@ -34,9 +34,6 @@ class PrintAbsyn : public Visitor
   void visitDef(Def *p); /* abstract class */
   void visitDefinitionFunction(DefinitionFunction *p);
   void visitDefinitionUsing(DefinitionUsing *p);
-  void visitDefinitionUsingType(DefinitionUsingType *p);
-  void visitDefinitionTypedef(DefinitionTypedef *p);
-  void visitDefinitionTypedefExp(DefinitionTypedefExp *p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
   void visitStm(Stm *p); /* abstract class */
@@ -65,6 +62,7 @@ class PrintAbsyn : public Visitor
   void visitEString(EString *p);
   void visitEInde(EInde *p);
   void visitEQCon(EQCon *p);
+  void visitEQCo(EQCo *p);
   void visitEFunC(EFunC *p);
   void visitEStPP(EStPP *p);
   void visitEStPA(EStPA *p);
@@ -95,14 +93,16 @@ class PrintAbsyn : public Visitor
   void visitECond(ECond *p);
   void visitEExce(EExce *p);
   void visitListExp(ListExp* p);
+  void visitCon(Con *p); /* abstract class */
+  void visitCStd(CStd *p);
   void visitType(Type *p); /* abstract class */
   void visitTInt(TInt *p);
   void visitTBool(TBool *p);
   void visitTDouble(TDouble *p);
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
-  void visitTStringStd(TStringStd *p);
-  void visitTVectorStd(TVectorStd *p);
+  void visitTVector(TVector *p);
+  void visitTConDef(TConDef *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);
@@ -178,9 +178,6 @@ class ShowAbsyn : public Visitor
   void visitDef(Def *p); /* abstract class */
   void visitDefinitionFunction(DefinitionFunction *p);
   void visitDefinitionUsing(DefinitionUsing *p);
-  void visitDefinitionUsingType(DefinitionUsingType *p);
-  void visitDefinitionTypedef(DefinitionTypedef *p);
-  void visitDefinitionTypedefExp(DefinitionTypedefExp *p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
   void visitStm(Stm *p); /* abstract class */
@@ -209,6 +206,7 @@ class ShowAbsyn : public Visitor
   void visitEString(EString *p);
   void visitEInde(EInde *p);
   void visitEQCon(EQCon *p);
+  void visitEQCo(EQCo *p);
   void visitEFunC(EFunC *p);
   void visitEStPP(EStPP *p);
   void visitEStPA(EStPA *p);
@@ -239,14 +237,16 @@ class ShowAbsyn : public Visitor
   void visitECond(ECond *p);
   void visitEExce(EExce *p);
   void visitListExp(ListExp* p);
+  void visitCon(Con *p); /* abstract class */
+  void visitCStd(CStd *p);
   void visitType(Type *p); /* abstract class */
   void visitTInt(TInt *p);
   void visitTBool(TBool *p);
   void visitTDouble(TDouble *p);
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
-  void visitTStringStd(TStringStd *p);
-  void visitTVectorStd(TVectorStd *p);
+  void visitTVector(TVector *p);
+  void visitTConDef(TConDef *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);

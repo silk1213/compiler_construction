@@ -25,13 +25,11 @@ class Def;
 class Stm;
 class Arg;
 class Exp;
+class Con;
 class Type;
 class PDefs;
 class DefinitionFunction;
 class DefinitionUsing;
-class DefinitionUsingType;
-class DefinitionTypedef;
-class DefinitionTypedefExp;
 class StatementDeclaration;
 class StatementDeclarations;
 class StatementInitialization;
@@ -53,6 +51,7 @@ class EInteger;
 class EString;
 class EInde;
 class EQCon;
+class EQCo;
 class EFunC;
 class EStPP;
 class EStPA;
@@ -82,13 +81,14 @@ class EAsPl;
 class EAsMi;
 class ECond;
 class EExce;
+class CStd;
 class TInt;
 class TBool;
 class TDouble;
 class TVoid;
 class TString;
-class TStringStd;
-class TVectorStd;
+class TVector;
+class TConDef;
 class ListDef;
 class ListArg;
 class ListStm;
@@ -107,13 +107,11 @@ public:
   virtual void visitStm(Stm *p) = 0;
   virtual void visitArg(Arg *p) = 0;
   virtual void visitExp(Exp *p) = 0;
+  virtual void visitCon(Con *p) = 0;
   virtual void visitType(Type *p) = 0;
   virtual void visitPDefs(PDefs *p) = 0;
   virtual void visitDefinitionFunction(DefinitionFunction *p) = 0;
   virtual void visitDefinitionUsing(DefinitionUsing *p) = 0;
-  virtual void visitDefinitionUsingType(DefinitionUsingType *p) = 0;
-  virtual void visitDefinitionTypedef(DefinitionTypedef *p) = 0;
-  virtual void visitDefinitionTypedefExp(DefinitionTypedefExp *p) = 0;
   virtual void visitStatementDeclaration(StatementDeclaration *p) = 0;
   virtual void visitStatementDeclarations(StatementDeclarations *p) = 0;
   virtual void visitStatementInitialization(StatementInitialization *p) = 0;
@@ -135,6 +133,7 @@ public:
   virtual void visitEString(EString *p) = 0;
   virtual void visitEInde(EInde *p) = 0;
   virtual void visitEQCon(EQCon *p) = 0;
+  virtual void visitEQCo(EQCo *p) = 0;
   virtual void visitEFunC(EFunC *p) = 0;
   virtual void visitEStPP(EStPP *p) = 0;
   virtual void visitEStPA(EStPA *p) = 0;
@@ -164,13 +163,14 @@ public:
   virtual void visitEAsMi(EAsMi *p) = 0;
   virtual void visitECond(ECond *p) = 0;
   virtual void visitEExce(EExce *p) = 0;
+  virtual void visitCStd(CStd *p) = 0;
   virtual void visitTInt(TInt *p) = 0;
   virtual void visitTBool(TBool *p) = 0;
   virtual void visitTDouble(TDouble *p) = 0;
   virtual void visitTVoid(TVoid *p) = 0;
   virtual void visitTString(TString *p) = 0;
-  virtual void visitTStringStd(TStringStd *p) = 0;
-  virtual void visitTVectorStd(TVectorStd *p) = 0;
+  virtual void visitTVector(TVector *p) = 0;
+  virtual void visitTConDef(TConDef *p) = 0;
   virtual void visitListDef(ListDef *p) = 0;
   virtual void visitListArg(ListArg *p) = 0;
   virtual void visitListStm(ListStm *p) = 0;
@@ -234,6 +234,13 @@ public:
 
 };
 
+class Con : public Visitable
+{
+public:
+  virtual Con *clone() const = 0;
+
+};
+
 class Type : public Visitable
 {
 public:
@@ -286,48 +293,6 @@ public:
   virtual void accept(Visitor *v);
   virtual DefinitionUsing *clone() const;
   void swap(DefinitionUsing &);
-};
-
-class DefinitionUsingType : public Def
-{
-public:
-  Type *type_;
-
-  DefinitionUsingType(const DefinitionUsingType &);
-  DefinitionUsingType &operator=(const DefinitionUsingType &);
-  DefinitionUsingType(Type *p1);
-  ~DefinitionUsingType();
-  virtual void accept(Visitor *v);
-  virtual DefinitionUsingType *clone() const;
-  void swap(DefinitionUsingType &);
-};
-
-class DefinitionTypedef : public Def
-{
-public:
-  Type *type_;
-
-  DefinitionTypedef(const DefinitionTypedef &);
-  DefinitionTypedef &operator=(const DefinitionTypedef &);
-  DefinitionTypedef(Type *p1);
-  ~DefinitionTypedef();
-  virtual void accept(Visitor *v);
-  virtual DefinitionTypedef *clone() const;
-  void swap(DefinitionTypedef &);
-};
-
-class DefinitionTypedefExp : public Def
-{
-public:
-  Exp *exp_;
-
-  DefinitionTypedefExp(const DefinitionTypedefExp &);
-  DefinitionTypedefExp &operator=(const DefinitionTypedefExp &);
-  DefinitionTypedefExp(Exp *p1);
-  ~DefinitionTypedefExp();
-  virtual void accept(Visitor *v);
-  virtual DefinitionTypedefExp *clone() const;
-  void swap(DefinitionTypedefExp &);
 };
 
 class StatementDeclaration : public Stm
@@ -572,6 +537,19 @@ public:
   void swap(ArgumentDefinition &);
 };
 
+class CStd : public Con
+{
+public:
+
+  CStd(const CStd &);
+  CStd &operator=(const CStd &);
+  CStd();
+  ~CStd();
+  virtual void accept(Visitor *v);
+  virtual CStd *clone() const;
+  void swap(CStd &);
+};
+
 class TInt : public Type
 {
 public:
@@ -637,30 +615,32 @@ public:
   void swap(TString &);
 };
 
-class TStringStd : public Type
+class TVector : public Type
 {
 public:
 
-  TStringStd(const TStringStd &);
-  TStringStd &operator=(const TStringStd &);
-  TStringStd();
-  ~TStringStd();
+  TVector(const TVector &);
+  TVector &operator=(const TVector &);
+  TVector();
+  ~TVector();
   virtual void accept(Visitor *v);
-  virtual TStringStd *clone() const;
-  void swap(TStringStd &);
+  virtual TVector *clone() const;
+  void swap(TVector &);
 };
 
-class TVectorStd : public Type
+class TConDef : public Type
 {
 public:
+  Con *con_;
+  Type *type_;
 
-  TVectorStd(const TVectorStd &);
-  TVectorStd &operator=(const TVectorStd &);
-  TVectorStd();
-  ~TVectorStd();
+  TConDef(const TConDef &);
+  TConDef &operator=(const TConDef &);
+  TConDef(Con *p1, Type *p2);
+  ~TConDef();
   virtual void accept(Visitor *v);
-  virtual TVectorStd *clone() const;
-  void swap(TVectorStd &);
+  virtual TConDef *clone() const;
+  void swap(TConDef &);
 };
 
 class EId : public Exp
@@ -723,16 +703,31 @@ public:
 class EQCon : public Exp
 {
 public:
-  Exp *exp_;
+  Con *con_;
   Id id_;
 
   EQCon(const EQCon &);
   EQCon &operator=(const EQCon &);
-  EQCon(Exp *p1, Id p2);
+  EQCon(Con *p1, Id p2);
   ~EQCon();
   virtual void accept(Visitor *v);
   virtual EQCon *clone() const;
   void swap(EQCon &);
+};
+
+class EQCo : public Exp
+{
+public:
+  Con *con_;
+  Type *type_;
+
+  EQCo(const EQCo &);
+  EQCo &operator=(const EQCo &);
+  EQCo(Con *p1, Type *p2);
+  ~EQCo();
+  virtual void accept(Visitor *v);
+  virtual EQCo *clone() const;
+  void swap(EQCo &);
 };
 
 class EFunC : public Exp

@@ -13,6 +13,7 @@ void Skeleton::visitDef(Def* t) {} //abstract class
 void Skeleton::visitStm(Stm* t) {} //abstract class
 void Skeleton::visitArg(Arg* t) {} //abstract class
 void Skeleton::visitExp(Exp* t) {} //abstract class
+void Skeleton::visitCon(Con* t) {} //abstract class
 void Skeleton::visitType(Type* t) {} //abstract class
 
 void Skeleton::visitPDefs(PDefs *pdefs)
@@ -39,30 +40,6 @@ void Skeleton::visitDefinitionUsing(DefinitionUsing *definitionusing)
   /* Code For DefinitionUsing Goes Here */
 
   definitionusing->exp_->accept(this);
-
-}
-
-void Skeleton::visitDefinitionUsingType(DefinitionUsingType *definitionusingtype)
-{
-  /* Code For DefinitionUsingType Goes Here */
-
-  definitionusingtype->type_->accept(this);
-
-}
-
-void Skeleton::visitDefinitionTypedef(DefinitionTypedef *definitiontypedef)
-{
-  /* Code For DefinitionTypedef Goes Here */
-
-  definitiontypedef->type_->accept(this);
-
-}
-
-void Skeleton::visitDefinitionTypedefExp(DefinitionTypedefExp *definitiontypedefexp)
-{
-  /* Code For DefinitionTypedefExp Goes Here */
-
-  definitiontypedefexp->exp_->accept(this);
 
 }
 
@@ -212,6 +189,13 @@ void Skeleton::visitArgumentDefinition(ArgumentDefinition *argumentdefinition)
 
 }
 
+void Skeleton::visitCStd(CStd *cstd)
+{
+  /* Code For CStd Goes Here */
+
+
+}
+
 void Skeleton::visitTInt(TInt *tint)
 {
   /* Code For TInt Goes Here */
@@ -247,17 +231,19 @@ void Skeleton::visitTString(TString *tstring)
 
 }
 
-void Skeleton::visitTStringStd(TStringStd *tstringstd)
+void Skeleton::visitTVector(TVector *tvector)
 {
-  /* Code For TStringStd Goes Here */
+  /* Code For TVector Goes Here */
 
 
 }
 
-void Skeleton::visitTVectorStd(TVectorStd *tvectorstd)
+void Skeleton::visitTConDef(TConDef *tcondef)
 {
-  /* Code For TVectorStd Goes Here */
+  /* Code For TConDef Goes Here */
 
+  tcondef->con_->accept(this);
+  tcondef->type_->accept(this);
 
 }
 
@@ -298,8 +284,17 @@ void Skeleton::visitEQCon(EQCon *eqcon)
 {
   /* Code For EQCon Goes Here */
 
-  eqcon->exp_->accept(this);
+  eqcon->con_->accept(this);
   visitId(eqcon->id_);
+
+}
+
+void Skeleton::visitEQCo(EQCo *eqco)
+{
+  /* Code For EQCo Goes Here */
+
+  eqco->con_->accept(this);
+  eqco->type_->accept(this);
 
 }
 

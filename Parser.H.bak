@@ -5,8 +5,9 @@
 #include<string>
 
 
-class Def;
+class Prog;
 class ListDef;
+class Def;
 class ListArg;
 class ListStm;
 class Stm;
@@ -23,8 +24,9 @@ typedef union
   char char_;
   double double_;
   char* string_;
-  Def* def_;
+  Prog* prog_;
   ListDef* listdef_;
+  Def* def_;
   ListArg* listarg_;
   ListStm* liststm_;
   Stm* stm_;
@@ -36,10 +38,12 @@ typedef union
   Exp* exp_;
 } YYSTYPE;
 
-Def* pDef(FILE *inp);
-Def* pDef(const char *str);
+Prog* pProg(FILE *inp);
+Prog* pProg(const char *str);
 ListDef* pListDef(FILE *inp);
 ListDef* pListDef(const char *str);
+Def* pDef(FILE *inp);
+Def* pDef(const char *str);
 ListArg* pListArg(FILE *inp);
 ListArg* pListArg(const char *str);
 ListStm* pListStm(FILE *inp);
