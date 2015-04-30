@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-using std::cin;		    using std::sort;
+using std::cin;             using std::sort;
 using std::cin;             using std::sort;
 using std::cout;            using std::streamsize;
 using std::endl;            using std::string;
@@ -27,8 +27,8 @@ int main()
 	cin >> midterm >> final;
 
 	// ask for and read the homework grades
-	/*cout << "Enter all your homework grades, "
-	        "followed by end-of-file: ";*/
+    cout << "Enter all your homework grades, "
+            "followed by end-of-file: ";
 
 	vector<double> homework;
 	double x;

@@ -2,10 +2,8 @@ PDefs . Prog ::= [Def] ;
 terminator Def "";
 
 DefinitionFunction . Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
-DefinitionUsing . Def ::= "using" Exp ";" ;
-DefinitionUsingType . Def ::= "using" Type ";" ;
-DefinitionTypedef . Def ::= "typedef" Type ";" ;
-DefinitionTypedefExp . Def ::= "typedef" Exp ";" ;
+DefinitionUsing . Def ::= "using" QCo ";" ;
+DefinitionTypedef . Def ::= "typedef" QCo ";" ;
 
 separator Arg "," ;
 terminator Stm "" ;
@@ -28,6 +26,9 @@ StatementTypedef . Stm ::= "typedef" Exp ";" ;
 
 TemplateInstantiations . Stm ::= "ident" "<" [Type] ">" ";" ;
 separator Type "," ;
+
+QualifiedConstants . QCo ::= [id] ;
+seperator Txpe "::";
 
 StatementDefinition . Stm ::= Exp ";" ;
 ArgumentDefinition . Arg ::= Exp ;
