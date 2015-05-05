@@ -189,7 +189,6 @@ alex_action_8 =  tok (\p s -> PT p (TI $ share s))
 alex_action_9 =  tok (\p s -> PT p (TD $ share s)) 
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
-{-# LINE 1 "<built-in>" #-}
 {-# LINE 1 "<command-line>" #-}
 
 

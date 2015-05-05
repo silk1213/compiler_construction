@@ -5,8 +5,9 @@ import AbsCPP
 import LexCPP
 import ErrM
 import Control.Applicative(Applicative(..))
+import Control.Monad (ap)
 
--- parser produced by Happy Version 1.19.4
+-- parser produced by Happy Version 1.19.5
 
 data HappyAbsSyn 
 	= HappyTerminal (Token)
@@ -5837,7 +5838,6 @@ happyError ts =
 myLexer = tokens
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
 {-# LINE 1 "templates/GenericTemplate.hs" #-}
-{-# LINE 1 "<built-in>" #-}
 {-# LINE 1 "<command-line>" #-}
 
 

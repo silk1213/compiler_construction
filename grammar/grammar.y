@@ -1071,7 +1071,7 @@ Definition : _SYMB_45 Type Id ArgumentList Body {  $$ = new FunctionDefIn($2, $3
   | Type Id ArgumentList Body {  $$ = new FunctionDef($1, $2, $3, $4); YY_RESULT_Definition_= $$; }
   | Type Id ArgumentList _SYMB_0 {  $$ = new Function($1, $2, $3); YY_RESULT_Definition_= $$; }
   | Decl _SYMB_0 {  $$ = new GlobVar($1); YY_RESULT_Definition_= $$; }
-  | Struct {  $$ = new GlobStruct($1); YY_RESULT_Definition_= $$; }
+  | Struct _SYMB_0 {  $$ = new GlobStruct($1); YY_RESULT_Definition_= $$; }
   | TypeDef {  $$ = new GlobTypeDef($1); YY_RESULT_Definition_= $$; }
   | _SYMB_52 _SYMB_47 Id _SYMB_0 {  $$ = new UsingNSDef($3); YY_RESULT_Definition_= $$; }
   | _SYMB_52 QCon _SYMB_0 {  $$ = new UsingDef($2); YY_RESULT_Definition_= $$; }
@@ -1106,7 +1106,7 @@ Stm : Decl _SYMB_0 {  $$ = new StmDecl($1); YY_RESULT_Stm_= $$; }
   | _SYMB_4 ListStm _SYMB_5 {  $$ = new StmBlock($2); YY_RESULT_Stm_= $$; }
   | _SYMB_4 _SYMB_5 {  $$ = new StmEmptyBlock(); YY_RESULT_Stm_= $$; }
   | TypeDef {  $$ = new StmTypeDef($1); YY_RESULT_Stm_= $$; }
-  | Struct {  $$ = new StmeStruct($1); YY_RESULT_Stm_= $$; }
+  | Struct _SYMB_0 {  $$ = new StmeStruct($1); YY_RESULT_Stm_= $$; }
   | Exp _SYMB_0 {  $$ = new StmExpression($1); YY_RESULT_Stm_= $$; }
 ;
 ListStm : /* empty */ {  $$ = new ListStm(); YY_RESULT_ListStm_= $$; } 

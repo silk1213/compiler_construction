@@ -158,7 +158,6 @@ void PrintAbsyn::visitFunction(Function* p)
   _i_ = oldi;
 }
 
-<<<<<<< HEAD
 void PrintAbsyn::visitGlobVar(GlobVar* p)
 {
   int oldi = _i_;
@@ -178,6 +177,7 @@ void PrintAbsyn::visitGlobStruct(GlobStruct* p)
   if (oldi > 0) render(_L_PAREN);
 
   _i_ = 0; p->struct_->accept(this);
+  render(';');
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -226,9 +226,6 @@ void PrintAbsyn::visitUsingDef(UsingDef* p)
 }
 
 void PrintAbsyn::visitListDefinition(ListDefinition *listdefinition)
-=======
-void PrintAbsyn::visitListArg(ListArg *listarg)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   for (ListDefinition::const_iterator i = listdefinition->begin() ; i != listdefinition->end() ; ++i)
   {
@@ -290,27 +287,7 @@ void PrintAbsyn::visitArgumentDecl(ArgumentDecl* p)
   _i_ = oldi;
 }
 
-<<<<<<< HEAD
 void PrintAbsyn::visitArgumentConsttype(ArgumentConsttype* p)
-=======
-void PrintAbsyn::visitTemplateInstantiations(TemplateInstantiations* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->exp_->accept(this);
-  render('<');
-  if(p->listtype_) {_i_ = 0; p->listtype_->accept(this);}  render('>');
-  visitIdent(p->id_);
-  render(';');
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitStatementInitialization(StatementInitialization* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -523,7 +500,6 @@ void PrintAbsyn::visitStmEmptyBlock(StmEmptyBlock* p)
   _i_ = oldi;
 }
 
-<<<<<<< HEAD
 void PrintAbsyn::visitStmTypeDef(StmTypeDef* p)
 {
   int oldi = _i_;
@@ -590,9 +566,6 @@ void PrintAbsyn::visitStructDef(StructDef* p)
 void PrintAbsyn::visitTypeDef(TypeDef*p) {} //abstract class
 
 void PrintAbsyn::visitTypeDefForm(TypeDefForm* p)
-=======
-void PrintAbsyn::visitStatementTypedef(StatementTypedef* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -607,7 +580,6 @@ void PrintAbsyn::visitStatementTypedef(StatementTypedef* p)
   _i_ = oldi;
 }
 
-<<<<<<< HEAD
 void PrintAbsyn::visitTypeDefForm2(TypeDefForm2* p)
 {
   int oldi = _i_;
@@ -625,9 +597,6 @@ void PrintAbsyn::visitTypeDefForm2(TypeDefForm2* p)
 void PrintAbsyn::visitDecl(Decl*p) {} //abstract class
 
 void PrintAbsyn::visitConstDecl(ConstDecl* p)
-=======
-void PrintAbsyn::visitStatementDefinition(StatementDefinition* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -792,24 +761,7 @@ void PrintAbsyn::visitEBracket(EBracket* p)
   _i_ = oldi;
 }
 
-<<<<<<< HEAD
 void PrintAbsyn::visitEIndex(EIndex* p)
-=======
-void PrintAbsyn::visitStringList(StringList* p)
-{
-  int oldi = _i_;
-  if (oldi > 16) render(_L_PAREN);
-
-  visitString(p->string_);
-  _i_ = 0; p->exp_->accept(this);
-
-  if (oldi > 16) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitEInde(EInde* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   int oldi = _i_;
   if (oldi > 15) render(_L_PAREN);
@@ -829,38 +781,14 @@ void PrintAbsyn::visitEQCon(EQCon* p)
   int oldi = _i_;
   if (oldi > 15) render(_L_PAREN);
 
-<<<<<<< HEAD
   _i_ = 0; p->qcon_->accept(this);
-=======
-  _i_ = 0; p->con_->accept(this);
-  render("::");
-  visitIdent(p->id_);
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 
   if (oldi > 15) render(_R_PAREN);
 
   _i_ = oldi;
 }
 
-<<<<<<< HEAD
 void PrintAbsyn::visitEFunCall(EFunCall* p)
-=======
-void PrintAbsyn::visitEQualifiedConType(EQualifiedConType* p)
-{
-  int oldi = _i_;
-  if (oldi > 15) render(_L_PAREN);
-
-  _i_ = 0; p->con_->accept(this);
-  render("::");
-  _i_ = 0; p->type_->accept(this);
-
-  if (oldi > 15) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitEFunC(EFunC* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   int oldi = _i_;
   if (oldi > 15) render(_L_PAREN);
@@ -1298,34 +1226,23 @@ void PrintAbsyn::visitListExp(ListExp *listexp)
   }
 }
 
-<<<<<<< HEAD
 void PrintAbsyn::visitTempInst(TempInst*p) {} //abstract class
 
 void PrintAbsyn::visitTemplateInst(TemplateInst* p)
-=======
-void PrintAbsyn::visitCon(Con*p) {} //abstract class
-
-void PrintAbsyn::visitCStd(CStd* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-<<<<<<< HEAD
   _i_ = 0; p->id_->accept(this);
   render('<');
   _i_ = 0; p->typelist_->accept(this);
   render('>');
-=======
-  render("std");
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 
   if (oldi > 0) render(_R_PAREN);
 
   _i_ = oldi;
 }
 
-<<<<<<< HEAD
 void PrintAbsyn::visitTypeList(TypeList*p) {} //abstract class
 
 void PrintAbsyn::visitTypeListDef(TypeListDef* p)
@@ -1348,8 +1265,6 @@ void PrintAbsyn::visitListType(ListType *listtype)
   }
 }
 
-=======
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 void PrintAbsyn::visitType(Type*p) {} //abstract class
 
 void PrintAbsyn::visitPointer(Pointer* p)
@@ -1517,16 +1432,11 @@ void PrintAbsyn::visitLStringListDef(LStringListDef* p)
   _i_ = oldi;
 }
 
-<<<<<<< HEAD
 void PrintAbsyn::visitLString(LString* p)
-=======
-void PrintAbsyn::visitTVector(TVector* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-<<<<<<< HEAD
   visitString(p->string_);
 
   if (oldi > 0) render(_R_PAREN);
@@ -1542,9 +1452,6 @@ void PrintAbsyn::visitIdentif(Identif* p)
   if (oldi > 0) render(_L_PAREN);
 
   visitIdent(p->ident_);
-=======
-  render("vector");
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -1686,7 +1593,6 @@ void ShowAbsyn::visitGlobVar(GlobVar* p)
   bufAppend(' ');
   bufAppend(')');
 }
-<<<<<<< HEAD
 void ShowAbsyn::visitGlobStruct(GlobStruct* p)
 {
   bufAppend('(');
@@ -1695,6 +1601,7 @@ void ShowAbsyn::visitGlobStruct(GlobStruct* p)
   bufAppend('[');
   if (p->struct_)  p->struct_->accept(this);
   bufAppend(']');
+  bufAppend(' ');
   bufAppend(')');
 }
 void ShowAbsyn::visitGlobTypeDef(GlobTypeDef* p)
@@ -1730,9 +1637,6 @@ void ShowAbsyn::visitUsingDef(UsingDef* p)
   bufAppend(')');
 }
 void ShowAbsyn::visitListDefinition(ListDefinition *listdefinition)
-=======
-void ShowAbsyn::visitListArg(ListArg *listarg)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   for (ListDefinition::const_iterator i = listdefinition->begin() ; i != listdefinition->end() ; ++i)
   {
@@ -1826,7 +1730,6 @@ void ShowAbsyn::visitFuntionBody(FuntionBody* p)
   bufAppend(' ');
   bufAppend(')');
 }
-<<<<<<< HEAD
 void ShowAbsyn::visitEmptyBody(EmptyBody* p)
 {
   bufAppend("EmptyBody");
@@ -1834,26 +1737,6 @@ void ShowAbsyn::visitEmptyBody(EmptyBody* p)
 void ShowAbsyn::visitStm(Stm* p) {} //abstract class
 
 void ShowAbsyn::visitStmDecl(StmDecl* p)
-=======
-void ShowAbsyn::visitTemplateInstantiations(TemplateInstantiations* p)
-{
-  bufAppend('(');
-  bufAppend("TemplateInstantiations");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->exp_)  p->exp_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->listtype_)  p->listtype_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  visitIdent(p->id_);
-  bufAppend(' ');
-  bufAppend(')');
-}
-void ShowAbsyn::visitStatementInitialization(StatementInitialization* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   bufAppend('(');
   bufAppend("StmDecl");
@@ -2033,7 +1916,6 @@ void ShowAbsyn::visitStructDef(StructDef* p)
   bufAppend(' ');
   bufAppend(')');
 }
-<<<<<<< HEAD
 void ShowAbsyn::visitTypeDef(TypeDef* p) {} //abstract class
 
 void ShowAbsyn::visitTypeDefForm(TypeDefForm* p)
@@ -2052,9 +1934,6 @@ void ShowAbsyn::visitTypeDefForm(TypeDefForm* p)
   bufAppend(')');
 }
 void ShowAbsyn::visitTypeDefForm2(TypeDefForm2* p)
-=======
-void ShowAbsyn::visitStatementTypedef(StatementTypedef* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   bufAppend('(');
   bufAppend("TypeDefForm2");
@@ -2065,7 +1944,6 @@ void ShowAbsyn::visitStatementTypedef(StatementTypedef* p)
   bufAppend(' ');
   bufAppend(')');
 }
-<<<<<<< HEAD
 void ShowAbsyn::visitDecl(Decl* p) {} //abstract class
 
 void ShowAbsyn::visitConstDecl(ConstDecl* p)
@@ -2099,9 +1977,6 @@ void ShowAbsyn::visitDeclaration(Declaration* p)
 void ShowAbsyn::visitVar(Var* p) {} //abstract class
 
 void ShowAbsyn::visitVariableInitialization(VariableInitialization* p)
-=======
-void ShowAbsyn::visitStatementDefinition(StatementDefinition* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   bufAppend('(');
   bufAppend("VariableInitialization");
@@ -2213,23 +2088,7 @@ void ShowAbsyn::visitELiteral(ELiteral* p)
   bufAppend(']');
   bufAppend(')');
 }
-<<<<<<< HEAD
 void ShowAbsyn::visitEBracket(EBracket* p)
-=======
-void ShowAbsyn::visitStringList(StringList* p)
-{
-  bufAppend('(');
-  bufAppend("StringList");
-  bufAppend(' ');
-  visitString(p->string_);
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->exp_)  p->exp_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitEInde(EInde* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   bufAppend('(');
   bufAppend("EBracket");
@@ -2257,33 +2116,11 @@ void ShowAbsyn::visitEQCon(EQCon* p)
   bufAppend("EQCon");
   bufAppend(' ');
   bufAppend('[');
-<<<<<<< HEAD
   if (p->qcon_)  p->qcon_->accept(this);
-=======
-  if (p->con_)  p->con_->accept(this);
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
   bufAppend(']');
   bufAppend(')');
 }
-<<<<<<< HEAD
 void ShowAbsyn::visitEFunCall(EFunCall* p)
-=======
-void ShowAbsyn::visitEQualifiedConType(EQualifiedConType* p)
-{
-  bufAppend('(');
-  bufAppend("EQualifiedConType");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->con_)  p->con_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->type_)  p->type_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-void ShowAbsyn::visitEFunC(EFunC* p)
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 {
   bufAppend('(');
   bufAppend("EFunCall");
@@ -2611,7 +2448,6 @@ void ShowAbsyn::visitListExp(ListExp *listexp)
   }
 }
 
-<<<<<<< HEAD
 void ShowAbsyn::visitTempInst(TempInst* p) {} //abstract class
 
 void ShowAbsyn::visitTemplateInst(TemplateInst* p)
@@ -2650,14 +2486,6 @@ void ShowAbsyn::visitListType(ListType *listtype)
   }
 }
 
-=======
-void ShowAbsyn::visitCon(Con* p) {} //abstract class
-
-void ShowAbsyn::visitCStd(CStd* p)
-{
-  bufAppend("CStd");
-}
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 void ShowAbsyn::visitType(Type* p) {} //abstract class
 
 void ShowAbsyn::visitPointer(Pointer* p)
@@ -2770,7 +2598,6 @@ void ShowAbsyn::visitLStringListDef(LStringListDef* p)
   visitString(p->string_);
   bufAppend(')');
 }
-<<<<<<< HEAD
 void ShowAbsyn::visitLString(LString* p)
 {
   bufAppend('(');
@@ -2788,11 +2615,6 @@ void ShowAbsyn::visitIdentif(Identif* p)
   bufAppend(' ');
   visitIdent(p->ident_);
   bufAppend(')');
-=======
-void ShowAbsyn::visitTVector(TVector* p)
-{
-  bufAppend("TVector");
->>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 }
 void ShowAbsyn::visitInteger(Integer i)
 {

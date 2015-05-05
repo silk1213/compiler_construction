@@ -11,7 +11,7 @@ FunctionDefIn . Definition ::= "inline" Type Id ArgumentList Body ;
 FunctionDef . Definition ::= Type Id ArgumentList Body ;
 Function . Definition ::= Type Id ArgumentList ";" ;
 GlobVar . Definition ::= Decl ";" ;
-GlobStruct . Definition ::= Struct ;
+GlobStruct . Definition ::= Struct ";" ;
 GlobTypeDef . Definition ::= TypeDef ;
 UsingNSDef . Definition ::= "using" "namespace" Id ";" ;
 UsingDef . Definition ::= "using" QCon ";" ;
@@ -44,7 +44,7 @@ StmIf . Stm ::= "if" "(" Exp ")" Stm ;
 StmBlock . Stm ::= "{" [Stm] "}" ;
 StmEmptyBlock . Stm ::= "{" "}" ;
 StmTypeDef . Stm ::= TypeDef ;
-StmeStruct . Stm ::= Struct ;
+StmeStruct . Stm ::= Struct ";" ;
 StmExpression . Stm ::= Exp ";" ;
 terminator Stm "";
 

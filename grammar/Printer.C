@@ -177,6 +177,7 @@ void PrintAbsyn::visitGlobStruct(GlobStruct* p)
   if (oldi > 0) render(_L_PAREN);
 
   _i_ = 0; p->struct_->accept(this);
+  render(';');
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -517,6 +518,7 @@ void PrintAbsyn::visitStmeStruct(StmeStruct* p)
   if (oldi > 0) render(_L_PAREN);
 
   _i_ = 0; p->struct_->accept(this);
+  render(';');
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -1600,6 +1602,7 @@ void ShowAbsyn::visitGlobStruct(GlobStruct* p)
   bufAppend('[');
   if (p->struct_)  p->struct_->accept(this);
   bufAppend(']');
+  bufAppend(' ');
   bufAppend(')');
 }
 void ShowAbsyn::visitGlobTypeDef(GlobTypeDef* p)
@@ -1875,6 +1878,7 @@ void ShowAbsyn::visitStmeStruct(StmeStruct* p)
   bufAppend('[');
   if (p->struct_)  p->struct_->accept(this);
   bufAppend(']');
+  bufAppend(' ');
   bufAppend(')');
 }
 void ShowAbsyn::visitStmExpression(StmExpression* p)

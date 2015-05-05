@@ -4,15 +4,14 @@ comment "/*" "*/" ;
 comment "#" ;
 
 -- PROGRAM
-Program . Prog ::= [Definition] ;
+Prog . Program ::= [Definition] ;
 
 -- DEFINITIONS
 FunctionDefIn . Definition ::= "inline" Type Id ArgumentList Body ;
 FunctionDef . Definition ::= Type Id ArgumentList Body ;
-FunctionDeclInline . Definition ::= "inline" Type Id ArgumentList ";" ;
-FunctionDecl . Definition ::= Type Id ArgumentList ";" ;
+Function . Definition ::= Type Id ArgumentList ";" ;
 GlobVar . Definition ::= Decl ";" ;
-GlobStruct . Definition ::= Struct ;
+GlobStruct . Definition ::= Struct ";" ;
 GlobTypeDef . Definition ::= TypeDef ;
 UsingNSDef . Definition ::= "using" "namespace" Id ";" ;
 UsingDef . Definition ::= "using" QCon ";" ;
@@ -51,7 +50,6 @@ terminator Stm "";
 
 -- STRUCTS
 StructDef . Struct ::= "struct" Id "{" [Decl] "}" ;
-EmptyStruct . Struct ::= "struct" Id "{" "}";
 
 -- TYPEDEF
 TypeDefForm . TypeDef ::= "typedef" Type Id ";" ;
@@ -69,7 +67,7 @@ terminator Decl "" ;
 --Variable . Var ::= Exp ;
 
 -- QUALIFIED CONSTANTS
-QualCon . QCon ::= Name "::" QCon ;
+QualCon . QCon ::= QCon "::" Name ;
 QualConN . QCon ::= Name ;
 --separator nonempty Name "::" ;
 --terminator Name "" ;
@@ -81,7 +79,7 @@ EIdent . Exp16 ::= Id ;
 ELiteral . Exp16 ::= Literal ;
 EBracket . Exp16 ::= "(" Exp ")" ;
 EIndex . Exp15 ::= Exp15 "[" Exp "]" ;
-EQCon . Exp15 ::= QCon "::" Id;
+EQCon . Exp15 ::= QCon;
 EFunCall . Exp15 ::= Exp15 "(" [Exp] ")" ;
 EStrucProj . Exp14 ::= Exp15 "." Exp15 ; 
 EStrucPro . Exp14 ::= Exp15 "->" Exp15 ;
@@ -128,7 +126,6 @@ Pointer . Type ::= BType "*" ;
 Reference . Type ::= BType "&" ;
 BaseType . Type ::= BType ;
 TQCon . BType ::= QCon ;
-TString . BType ::= "string" ;
 TInt . BType ::= "int" ;
 TVoid . BType ::= "void" ;
 TBool . BType ::= "bool" ;
