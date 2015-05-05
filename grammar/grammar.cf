@@ -54,17 +54,19 @@ StructDef . Struct ::= "struct" Id "{" [Decl] "}" ;
 
 -- TYPEDEF
 TypeDefForm . TypeDef ::= "typedef" Type Id ";" ;
-TypeDefForm2 . TypeDef ::= "typedef" Type ";" ;
+--TypeDefForm2 . TypeDef ::= "typedef" Type ";" ;
 
 -- DECLARATIONS
-ConstDecl . Decl ::= "const" Type [Var] ;
-Declaration . Decl ::= Type [Var] ;
+ConstMulDecl . Decl ::= "const" Type Var "," [Var] ;
+ConstDecl . Decl ::= "const" Type Var ;
+MulDeclaration . Decl ::= Type Var "," [Var] ;
+Declaration . Decl ::= Type Var ;
 VariableInitialization . Var ::= Id "=" Exp ;
 VariableName . Var ::= Id ;
 separator nonempty Var "," ;
 terminator Var "" ;
 separator Decl ";" ;
-terminator Decl "" ;
+terminator Decl ";" ;
 --Variable . Var ::= Exp ;
 
 -- QUALIFIED CONSTANTS
@@ -118,8 +120,9 @@ terminator Exp "" ;
 
 -- TEMPLATE INSTANTIATIONS
 TemplateInst . TempInst ::= Id "<" TypeList ">" ;
-TypeListDef . TypeList ::= [Type] ;
-separator Type "," ;
+TypeListDef . TypeList ::= Type "," TypeList ;
+TypeList1 . TypeList ::= Type ;
+separator nonempty Type "," ;
 terminator Type "" ;
 
 -- TYPES
