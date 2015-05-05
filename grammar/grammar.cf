@@ -11,7 +11,7 @@ FunctionDefIn . Definition ::= "inline" Type Id ArgumentList Body ;
 FunctionDef . Definition ::= Type Id ArgumentList Body ;
 FuctionDeclInline . Definition ::= "inline" Type Id ArgumentList ";" ;
 FunctionDecl . Definition ::= Type Id ArgumentList ";" ;
-GlobVar . Definition ::= Decl ";" ;
+GlobVar . Definition ::= Decl ;
 GlobStruct . Definition ::= Struct ";" ;
 GlobTypeDef . Definition ::= TypeDef ;
 UsingNSDef . Definition ::= "using" "namespace" Id ";" ;
@@ -34,12 +34,12 @@ FuntionBody . Body ::= "{" [Stm] "}" ;
 EmptyBody . Body ::= "{" ";" "}" ;
 
 -- STATEMENTS
-StmDecl . Stm ::= Decl ";" ;
+StmDecl . Stm ::= Decl ;
 StmReturn . Stm ::= "return" Exp ";" ;
 StmExit . Stm ::= "exit" "(" Exp ")" ";" ;
 StmWhile . Stm ::= "while" "(" Exp ")" Stm ;
 StmDoWhile . Stm ::= "do" Stm "while" "(" Exp ")" ";" ;
-StmFor . Stm ::= "for" "(" Decl ";" Exp ";" Exp ")" Stm ;
+StmFor . Stm ::= "for" "(" Decl Exp ";" Exp ")" Stm ;
 StmIfElse . Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
 StmIf . Stm ::= "if" "(" Exp ")" Stm ;
 StmBlock . Stm ::= "{" [Stm] "}" ;
@@ -57,16 +57,15 @@ TypeDefForm . TypeDef ::= "typedef" Type Id ";" ;
 --TypeDefForm2 . TypeDef ::= "typedef" Type ";" ;
 
 -- DECLARATIONS
-ConstMulDecl . Decl ::= "const" Type Var "," [Var] ;
-ConstDecl . Decl ::= "const" Type Var ;
-MulDeclaration . Decl ::= Type Var "," [Var] ;
-Declaration . Decl ::= Type Var ;
+ConstMulDecl . Decl ::= "const" Type Var "," [Var] ";" ;
+ConstDecl . Decl ::= "const" Type Var ";" ;
+MulDeclaration . Decl ::= Type Var "," [Var] ";" ;
+Declaration . Decl ::= Type Var ";" ;
 VariableInitialization . Var ::= Id "=" Exp ;
 VariableName . Var ::= Id ;
 separator nonempty Var "," ;
 terminator Var "" ;
-separator Decl ";" ;
-terminator Decl ";" ;
+terminator Decl "" ;
 --Variable . Var ::= Exp ;
 
 -- QUALIFIED CONSTANTS
