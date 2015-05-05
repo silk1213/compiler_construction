@@ -34,7 +34,6 @@ class PrintAbsyn : public Visitor
   void visitDef(Def *p); /* abstract class */
   void visitDefinitionFunction(DefinitionFunction *p);
   void visitDefinitionUsing(DefinitionUsing *p);
-  void visitDefinitionUsingType(DefinitionUsingType *p);
   void visitDefinitionTypedef(DefinitionTypedef *p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
@@ -56,14 +55,18 @@ class PrintAbsyn : public Visitor
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
   void visitListType(ListType* p);
+  void visitQCo(QCo *p); /* abstract class */
+  void visitQualifiedConstants(QualifiedConstants *p);
+  void visitQualifiedSingleID(QualifiedSingleID *p);
+  void visitQualifiedType(QualifiedType *p);
   void visitArg(Arg *p); /* abstract class */
   void visitArgumentDefinition(ArgumentDefinition *p);
   void visitExp(Exp *p); /* abstract class */
   void visitEId(EId *p);
   void visitEInteger(EInteger *p);
   void visitEString(EString *p);
+  void visitEMultiString(EMultiString *p);
   void visitEInde(EInde *p);
-  void visitEQCon(EQCon *p);
   void visitEFunC(EFunC *p);
   void visitEStPP(EStPP *p);
   void visitEStPA(EStPA *p);
@@ -100,8 +103,6 @@ class PrintAbsyn : public Visitor
   void visitTDouble(TDouble *p);
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
-  void visitTStringStd(TStringStd *p);
-  void visitTVectorStd(TVectorStd *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);
@@ -177,7 +178,6 @@ class ShowAbsyn : public Visitor
   void visitDef(Def *p); /* abstract class */
   void visitDefinitionFunction(DefinitionFunction *p);
   void visitDefinitionUsing(DefinitionUsing *p);
-  void visitDefinitionUsingType(DefinitionUsingType *p);
   void visitDefinitionTypedef(DefinitionTypedef *p);
   void visitListArg(ListArg* p);
   void visitListStm(ListStm* p);
@@ -199,14 +199,18 @@ class ShowAbsyn : public Visitor
   void visitStatementDefinition(StatementDefinition *p);
   void visitListId(ListId* p);
   void visitListType(ListType* p);
+  void visitQCo(QCo *p); /* abstract class */
+  void visitQualifiedConstants(QualifiedConstants *p);
+  void visitQualifiedSingleID(QualifiedSingleID *p);
+  void visitQualifiedType(QualifiedType *p);
   void visitArg(Arg *p); /* abstract class */
   void visitArgumentDefinition(ArgumentDefinition *p);
   void visitExp(Exp *p); /* abstract class */
   void visitEId(EId *p);
   void visitEInteger(EInteger *p);
   void visitEString(EString *p);
+  void visitEMultiString(EMultiString *p);
   void visitEInde(EInde *p);
-  void visitEQCon(EQCon *p);
   void visitEFunC(EFunC *p);
   void visitEStPP(EStPP *p);
   void visitEStPA(EStPA *p);
@@ -243,8 +247,6 @@ class ShowAbsyn : public Visitor
   void visitTDouble(TDouble *p);
   void visitTVoid(TVoid *p);
   void visitTString(TString *p);
-  void visitTStringStd(TStringStd *p);
-  void visitTVectorStd(TVectorStd *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);

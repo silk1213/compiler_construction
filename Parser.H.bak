@@ -5,13 +5,15 @@
 #include<string>
 
 
-class Def;
+class Prog;
 class ListDef;
+class Def;
 class ListArg;
 class ListStm;
 class Stm;
 class ListId;
 class ListType;
+class QCo;
 class Arg;
 class ListExp;
 class Type;
@@ -23,23 +25,27 @@ typedef union
   char char_;
   double double_;
   char* string_;
-  Def* def_;
+  Prog* prog_;
   ListDef* listdef_;
+  Def* def_;
   ListArg* listarg_;
   ListStm* liststm_;
   Stm* stm_;
   ListId* listid_;
   ListType* listtype_;
+  QCo* qco_;
   Arg* arg_;
   ListExp* listexp_;
   Type* type_;
   Exp* exp_;
 } YYSTYPE;
 
-Def* pDef(FILE *inp);
-Def* pDef(const char *str);
+Prog* pProg(FILE *inp);
+Prog* pProg(const char *str);
 ListDef* pListDef(FILE *inp);
 ListDef* pListDef(const char *str);
+Def* pDef(FILE *inp);
+Def* pDef(const char *str);
 ListArg* pListArg(FILE *inp);
 ListArg* pListArg(const char *str);
 ListStm* pListStm(FILE *inp);
@@ -50,6 +56,8 @@ ListId* pListId(FILE *inp);
 ListId* pListId(const char *str);
 ListType* pListType(FILE *inp);
 ListType* pListType(const char *str);
+QCo* pQCo(FILE *inp);
+QCo* pQCo(const char *str);
 Arg* pArg(FILE *inp);
 Arg* pArg(const char *str);
 ListExp* pListExp(FILE *inp);
@@ -112,11 +120,8 @@ Exp* pExp(const char *str);
 #define _SYMB_47 306
 #define _SYMB_48 307
 #define _SYMB_49 308
-#define _SYMB_50 309
-#define _SYMB_51 310
-#define _SYMB_52 311
-#define _STRING_ 312
-#define _INTEGER_ 313
+#define _STRING_ 309
+#define _INTEGER_ 310
 
 extern YYSTYPE yylval;
 

@@ -1,0 +1,90 @@
+PDefs . Prog ::= [Def] ;
+terminator Def "";
+
+DefinitionFunction . Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
+DefinitionUsing . Def ::= "using" QCo ";" ;
+DefinitionTypedef . Def ::= "typedef" QCo ";" ;
+
+separator Arg "," ;
+terminator Stm "" ;
+
+StatementDeclaration . Stm ::= Type Id ";" ;
+StatementDeclarations . Stm ::= Type Id "," [Id] ";" ;
+separator Id "," ;
+
+StatementInitialization . Stm ::= Type Id "=" Exp ";" ;
+StatementReturn . Stm ::= "return" Exp ";" ;
+StatementWhile . Stm ::= "while" "(" Exp ")" Stm ";" ;
+StatementDo . Stm ::= "do" Stm ";" "while" "(" Exp ")" ";" ;
+StatementFor . Stm ::= "for" "(" Type Id "=" Exp ";" Exp ";" Stm ")" Stm ";" ;
+StatementIf . Stm ::= "if" "(" Exp ")" Stm ";" ;
+StatementIfElse . Stm ::= "if" "(" Exp ")" Stm ";" "else" Stm ";" ;
+StatementBlock . Stm ::= "{" [Stm] "}" ;
+StatementStruct . Stm ::= "struct" Id "{" [Stm] "}" ";" ;
+StatementTemplate . Stm ::= Id "<" Type ">" Exp ";" ;
+StatementTypedef . Stm ::= "typedef" Exp ";" ;
+
+TemplateInstantiations . Stm ::= Id "<" [Type] ">" ";" ;
+separator Type "," ;
+
+QualifiedConstants . QCo ::= Id "::" QCo1 ;
+QualifiedSingleID . QCo1 ::= Id ;
+QualifiedType . QCo1 ::= Type ;
+
+coercions QCo 1 ;
+
+StatementDefinition . Stm ::= Exp ";" ;
+ArgumentDefinition . Arg ::= Exp ;
+
+EId . Exp17 ::= Id ;
+EInteger . Exp17 ::= Integer ;
+EString . Exp17 ::= String ;
+EMultiString . Exp16 ::= String Exp16 ;
+
+EInde . Exp15 ::= Exp "[" Id "]" ;
+EFunC . Exp15 ::= Exp "(" [Exp] ")" ;
+separator Exp "," ;
+EStPP . Exp14 ::= Exp "." Exp ;
+EStPA . Exp14 ::= Exp "->" Exp ;
+EInEP . Exp14 ::= Exp "++" ;
+EDeEM . Exp14 ::= Exp "--" ;
+EDere . Exp14 ::= "*" Exp ;
+EInPE . Exp13 ::= "++" Exp ;
+EDeME . Exp13 ::= "--" Exp ;
+ENega . Exp13 ::= "!" Exp ;
+EMult . Exp12 ::= Exp "*" Exp ;
+EDivi . Exp12 ::= Exp "/" Exp ;
+ERema . Exp12 ::= Exp "%" Exp ;
+EAddi . Exp11 ::= Exp "+" Exp ;
+ESubt . Exp11 ::= Exp "-" Exp ;
+ELShi . Exp10 ::= Exp "<<" Exp ;
+ERShi . Exp10 ::= Exp ">>" Exp ;
+ECoSm . Exp9 ::= Exp "<" Exp ;
+ECoGr . Exp9 ::= Exp ">" Exp ;
+ECoSE . Exp9 ::= Exp "<=" Exp ;
+ECoGE . Exp9 ::= Exp ">=" Exp ;
+EInEq . Exp8 ::= Exp "!=" Exp ;
+EEqua . Exp8 ::= Exp "==" Exp ;
+EConj . Exp4 ::= Exp "&&" Exp ;
+EDisj . Exp3 ::= Exp "||" Exp ;
+EAssi . Exp2 ::= Exp "=" Exp ;
+EAsPl . Exp2 ::= Exp "+=" Exp ;
+EAsMi . Exp2 ::= Exp "-=" Exp ;
+ECond . Exp2 ::= Exp "?" Exp ":" Exp ;
+EExce . Exp1 ::= "throw" Exp ;
+
+TInt . Type ::= "int" ;
+TBool . Type ::= "bool" ;
+TDouble . Type ::= "double" ;
+TVoid . Type ::= "void" ;
+TString . Type ::= "string" ;
+
+
+
+comment "//" ;
+comment "/*" "*/" ;
+comment "#" ;
+
+token Id (letter (letter | digit | '_')*) ;
+
+coercions Exp 17;

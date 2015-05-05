@@ -28,88 +28,132 @@ class PrintAbsyn : public Visitor
   ~PrintAbsyn(void);
   char* print(Visitable* v);
 
-  void visitProg(Prog *p); /* abstract class */
-  void visitPDefs(PDefs *p);
-  void visitListDef(ListDef* p);
-  void visitDef(Def *p); /* abstract class */
-  void visitDefinitionFunction(DefinitionFunction *p);
-  void visitDefinitionUsing(DefinitionUsing *p);
-  void visitDefinitionUsingType(DefinitionUsingType *p);
-  void visitDefinitionTypedef(DefinitionTypedef *p);
-  void visitDefinitionTypedefExp(DefinitionTypedefExp *p);
-  void visitListArg(ListArg* p);
-  void visitListStm(ListStm* p);
+  void visitProgram(Program *p); /* abstract class */
+  void visitProg(Prog *p);
+  void visitDefinition(Definition *p); /* abstract class */
+  void visitFunctionDefIn(FunctionDefIn *p);
+  void visitFunctionDef(FunctionDef *p);
+  void visitFunction(Function *p);
+  void visitGlobVar(GlobVar *p);
+  void visitGlobStruct(GlobStruct *p);
+  void visitGlobTypeDef(GlobTypeDef *p);
+  void visitUsingNSDef(UsingNSDef *p);
+  void visitUsingDef(UsingDef *p);
+  void visitListDefinition(ListDefinition* p);
+  void visitArgumentList(ArgumentList *p); /* abstract class */
+  void visitArgumentListDef(ArgumentListDef *p);
+  void visitListArgument(ListArgument* p);
+  void visitArgument(Argument *p); /* abstract class */
+  void visitArgumentConstDecl(ArgumentConstDecl *p);
+  void visitArgumentDecl(ArgumentDecl *p);
+  void visitArgumentConsttype(ArgumentConsttype *p);
+  void visitArgumentType(ArgumentType *p);
+  void visitBody(Body *p); /* abstract class */
+  void visitFuntionBody(FuntionBody *p);
+  void visitEmptyBody(EmptyBody *p);
   void visitStm(Stm *p); /* abstract class */
-  void visitStatementDeclaration(StatementDeclaration *p);
-  void visitStatementDeclarations(StatementDeclarations *p);
-  void visitStatementInitialization(StatementInitialization *p);
-  void visitStatementReturn(StatementReturn *p);
-  void visitStatementWhile(StatementWhile *p);
-  void visitStatementDo(StatementDo *p);
-  void visitStatementFor(StatementFor *p);
-  void visitStatementIf(StatementIf *p);
-  void visitStatementIfElse(StatementIfElse *p);
-  void visitStatementBlock(StatementBlock *p);
-  void visitStatementStruct(StatementStruct *p);
-  void visitStatementTemplate(StatementTemplate *p);
-  void visitStatementTypedef(StatementTypedef *p);
-  void visitTemplateInstantiations(TemplateInstantiations *p);
-  void visitStatementDefinition(StatementDefinition *p);
-  void visitListId(ListId* p);
-  void visitListType(ListType* p);
-  void visitArg(Arg *p); /* abstract class */
-  void visitArgumentDefinition(ArgumentDefinition *p);
+  void visitStmDecl(StmDecl *p);
+  void visitStmReturn(StmReturn *p);
+  void visitStmExit(StmExit *p);
+  void visitStmWhile(StmWhile *p);
+  void visitStmDoWhile(StmDoWhile *p);
+  void visitStmFor(StmFor *p);
+  void visitStmIfElse(StmIfElse *p);
+  void visitStmIf(StmIf *p);
+  void visitStmBlock(StmBlock *p);
+  void visitStmEmptyBlock(StmEmptyBlock *p);
+  void visitStmTypeDef(StmTypeDef *p);
+  void visitStmeStruct(StmeStruct *p);
+  void visitStmExpression(StmExpression *p);
+  void visitListStm(ListStm* p);
+  void visitStruct(Struct *p); /* abstract class */
+  void visitStructDef(StructDef *p);
+  void visitTypeDef(TypeDef *p); /* abstract class */
+  void visitTypeDefForm(TypeDefForm *p);
+  void visitTypeDefForm2(TypeDefForm2 *p);
+  void visitDecl(Decl *p); /* abstract class */
+  void visitConstDecl(ConstDecl *p);
+  void visitDeclaration(Declaration *p);
+  void visitVar(Var *p); /* abstract class */
+  void visitVariableInitialization(VariableInitialization *p);
+  void visitVariableName(VariableName *p);
+  void visitListVar(ListVar* p);
+  void visitListDecl(ListDecl* p);
+  void visitQCon(QCon *p); /* abstract class */
+  void visitQualCon(QualCon *p);
+  void visitQualConN(QualConN *p);
+  void visitName(Name *p); /* abstract class */
+  void visitIdName(IdName *p);
+  void visitTempInstName(TempInstName *p);
   void visitExp(Exp *p); /* abstract class */
-  void visitEId(EId *p);
-  void visitEInteger(EInteger *p);
-  void visitEString(EString *p);
-  void visitEInde(EInde *p);
+  void visitEIdent(EIdent *p);
+  void visitELiteral(ELiteral *p);
+  void visitEBracket(EBracket *p);
+  void visitEIndex(EIndex *p);
   void visitEQCon(EQCon *p);
-  void visitEFunC(EFunC *p);
-  void visitEStPP(EStPP *p);
-  void visitEStPA(EStPA *p);
-  void visitEInEP(EInEP *p);
-  void visitEDeEM(EDeEM *p);
-  void visitEDere(EDere *p);
-  void visitEInPE(EInPE *p);
-  void visitEDeME(EDeME *p);
-  void visitENega(ENega *p);
-  void visitEMult(EMult *p);
-  void visitEDivi(EDivi *p);
-  void visitERema(ERema *p);
-  void visitEAddi(EAddi *p);
-  void visitESubt(ESubt *p);
-  void visitELShi(ELShi *p);
-  void visitERShi(ERShi *p);
-  void visitECoSm(ECoSm *p);
-  void visitECoGr(ECoGr *p);
-  void visitECoSE(ECoSE *p);
-  void visitECoGE(ECoGE *p);
-  void visitEInEq(EInEq *p);
-  void visitEEqua(EEqua *p);
-  void visitEConj(EConj *p);
-  void visitEDisj(EDisj *p);
-  void visitEAssi(EAssi *p);
-  void visitEAsPl(EAsPl *p);
-  void visitEAsMi(EAsMi *p);
+  void visitEFunCall(EFunCall *p);
+  void visitEStrucProj(EStrucProj *p);
+  void visitEStrucPro(EStrucPro *p);
+  void visitEInC(EInC *p);
+  void visitEDeC(EDeC *p);
+  void visitEDeRef(EDeRef *p);
+  void visitEInCr(EInCr *p);
+  void visitEDeCr(EDeCr *p);
+  void visitENeg(ENeg *p);
+  void visitEMul(EMul *p);
+  void visitEDiv(EDiv *p);
+  void visitERem(ERem *p);
+  void visitEAdd(EAdd *p);
+  void visitESub(ESub *p);
+  void visitELSh(ELSh *p);
+  void visitERSh(ERSh *p);
+  void visitEGT(EGT *p);
+  void visitELT(ELT *p);
+  void visitEGQ(EGQ *p);
+  void visitEGQ1(EGQ1 *p);
+  void visitELQ(ELQ *p);
+  void visitELQ1(ELQ1 *p);
+  void visitEQu(EQu *p);
+  void visitEIQ(EIQ *p);
+  void visitEAnd(EAnd *p);
+  void visitEOr(EOr *p);
+  void visitEIs(EIs *p);
+  void visitEIsP(EIsP *p);
+  void visitEIsM(EIsM *p);
   void visitECond(ECond *p);
-  void visitEExce(EExce *p);
+  void visitEEx(EEx *p);
   void visitListExp(ListExp* p);
+  void visitTempInst(TempInst *p); /* abstract class */
+  void visitTemplateInst(TemplateInst *p);
+  void visitTypeList(TypeList *p); /* abstract class */
+  void visitTypeListDef(TypeListDef *p);
+  void visitListType(ListType* p);
   void visitType(Type *p); /* abstract class */
+  void visitPointer(Pointer *p);
+  void visitReference(Reference *p);
+  void visitBaseType(BaseType *p);
+  void visitBType(BType *p); /* abstract class */
+  void visitTQCon(TQCon *p);
   void visitTInt(TInt *p);
+  void visitTVoid(TVoid *p);
   void visitTBool(TBool *p);
   void visitTDouble(TDouble *p);
-  void visitTVoid(TVoid *p);
-  void visitTString(TString *p);
-  void visitTStringStd(TStringStd *p);
-  void visitTVectorStd(TVectorStd *p);
+  void visitLiteral(Literal *p); /* abstract class */
+  void visitLStringList(LStringList *p);
+  void visitLInt(LInt *p);
+  void visitLDouble(LDouble *p);
+  void visitLChar(LChar *p);
+  void visitStringList(StringList *p); /* abstract class */
+  void visitLStringListDef(LStringListDef *p);
+  void visitLString(LString *p);
+  void visitId(Id *p); /* abstract class */
+  void visitIdentif(Identif *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);
   void visitChar(Char c);
   void visitString(String s);
   void visitIdent(String s);
-  void visitId(String s);
  protected:
   void inline bufAppend(const char* s)
   {
@@ -172,88 +216,132 @@ class ShowAbsyn : public Visitor
   ~ShowAbsyn(void);
   char* show(Visitable* v);
 
-  void visitProg(Prog *p); /* abstract class */
-  void visitPDefs(PDefs *p);
-  void visitListDef(ListDef* p);
-  void visitDef(Def *p); /* abstract class */
-  void visitDefinitionFunction(DefinitionFunction *p);
-  void visitDefinitionUsing(DefinitionUsing *p);
-  void visitDefinitionUsingType(DefinitionUsingType *p);
-  void visitDefinitionTypedef(DefinitionTypedef *p);
-  void visitDefinitionTypedefExp(DefinitionTypedefExp *p);
-  void visitListArg(ListArg* p);
-  void visitListStm(ListStm* p);
+  void visitProgram(Program *p); /* abstract class */
+  void visitProg(Prog *p);
+  void visitDefinition(Definition *p); /* abstract class */
+  void visitFunctionDefIn(FunctionDefIn *p);
+  void visitFunctionDef(FunctionDef *p);
+  void visitFunction(Function *p);
+  void visitGlobVar(GlobVar *p);
+  void visitGlobStruct(GlobStruct *p);
+  void visitGlobTypeDef(GlobTypeDef *p);
+  void visitUsingNSDef(UsingNSDef *p);
+  void visitUsingDef(UsingDef *p);
+  void visitListDefinition(ListDefinition* p);
+  void visitArgumentList(ArgumentList *p); /* abstract class */
+  void visitArgumentListDef(ArgumentListDef *p);
+  void visitListArgument(ListArgument* p);
+  void visitArgument(Argument *p); /* abstract class */
+  void visitArgumentConstDecl(ArgumentConstDecl *p);
+  void visitArgumentDecl(ArgumentDecl *p);
+  void visitArgumentConsttype(ArgumentConsttype *p);
+  void visitArgumentType(ArgumentType *p);
+  void visitBody(Body *p); /* abstract class */
+  void visitFuntionBody(FuntionBody *p);
+  void visitEmptyBody(EmptyBody *p);
   void visitStm(Stm *p); /* abstract class */
-  void visitStatementDeclaration(StatementDeclaration *p);
-  void visitStatementDeclarations(StatementDeclarations *p);
-  void visitStatementInitialization(StatementInitialization *p);
-  void visitStatementReturn(StatementReturn *p);
-  void visitStatementWhile(StatementWhile *p);
-  void visitStatementDo(StatementDo *p);
-  void visitStatementFor(StatementFor *p);
-  void visitStatementIf(StatementIf *p);
-  void visitStatementIfElse(StatementIfElse *p);
-  void visitStatementBlock(StatementBlock *p);
-  void visitStatementStruct(StatementStruct *p);
-  void visitStatementTemplate(StatementTemplate *p);
-  void visitStatementTypedef(StatementTypedef *p);
-  void visitTemplateInstantiations(TemplateInstantiations *p);
-  void visitStatementDefinition(StatementDefinition *p);
-  void visitListId(ListId* p);
-  void visitListType(ListType* p);
-  void visitArg(Arg *p); /* abstract class */
-  void visitArgumentDefinition(ArgumentDefinition *p);
+  void visitStmDecl(StmDecl *p);
+  void visitStmReturn(StmReturn *p);
+  void visitStmExit(StmExit *p);
+  void visitStmWhile(StmWhile *p);
+  void visitStmDoWhile(StmDoWhile *p);
+  void visitStmFor(StmFor *p);
+  void visitStmIfElse(StmIfElse *p);
+  void visitStmIf(StmIf *p);
+  void visitStmBlock(StmBlock *p);
+  void visitStmEmptyBlock(StmEmptyBlock *p);
+  void visitStmTypeDef(StmTypeDef *p);
+  void visitStmeStruct(StmeStruct *p);
+  void visitStmExpression(StmExpression *p);
+  void visitListStm(ListStm* p);
+  void visitStruct(Struct *p); /* abstract class */
+  void visitStructDef(StructDef *p);
+  void visitTypeDef(TypeDef *p); /* abstract class */
+  void visitTypeDefForm(TypeDefForm *p);
+  void visitTypeDefForm2(TypeDefForm2 *p);
+  void visitDecl(Decl *p); /* abstract class */
+  void visitConstDecl(ConstDecl *p);
+  void visitDeclaration(Declaration *p);
+  void visitVar(Var *p); /* abstract class */
+  void visitVariableInitialization(VariableInitialization *p);
+  void visitVariableName(VariableName *p);
+  void visitListVar(ListVar* p);
+  void visitListDecl(ListDecl* p);
+  void visitQCon(QCon *p); /* abstract class */
+  void visitQualCon(QualCon *p);
+  void visitQualConN(QualConN *p);
+  void visitName(Name *p); /* abstract class */
+  void visitIdName(IdName *p);
+  void visitTempInstName(TempInstName *p);
   void visitExp(Exp *p); /* abstract class */
-  void visitEId(EId *p);
-  void visitEInteger(EInteger *p);
-  void visitEString(EString *p);
-  void visitEInde(EInde *p);
+  void visitEIdent(EIdent *p);
+  void visitELiteral(ELiteral *p);
+  void visitEBracket(EBracket *p);
+  void visitEIndex(EIndex *p);
   void visitEQCon(EQCon *p);
-  void visitEFunC(EFunC *p);
-  void visitEStPP(EStPP *p);
-  void visitEStPA(EStPA *p);
-  void visitEInEP(EInEP *p);
-  void visitEDeEM(EDeEM *p);
-  void visitEDere(EDere *p);
-  void visitEInPE(EInPE *p);
-  void visitEDeME(EDeME *p);
-  void visitENega(ENega *p);
-  void visitEMult(EMult *p);
-  void visitEDivi(EDivi *p);
-  void visitERema(ERema *p);
-  void visitEAddi(EAddi *p);
-  void visitESubt(ESubt *p);
-  void visitELShi(ELShi *p);
-  void visitERShi(ERShi *p);
-  void visitECoSm(ECoSm *p);
-  void visitECoGr(ECoGr *p);
-  void visitECoSE(ECoSE *p);
-  void visitECoGE(ECoGE *p);
-  void visitEInEq(EInEq *p);
-  void visitEEqua(EEqua *p);
-  void visitEConj(EConj *p);
-  void visitEDisj(EDisj *p);
-  void visitEAssi(EAssi *p);
-  void visitEAsPl(EAsPl *p);
-  void visitEAsMi(EAsMi *p);
+  void visitEFunCall(EFunCall *p);
+  void visitEStrucProj(EStrucProj *p);
+  void visitEStrucPro(EStrucPro *p);
+  void visitEInC(EInC *p);
+  void visitEDeC(EDeC *p);
+  void visitEDeRef(EDeRef *p);
+  void visitEInCr(EInCr *p);
+  void visitEDeCr(EDeCr *p);
+  void visitENeg(ENeg *p);
+  void visitEMul(EMul *p);
+  void visitEDiv(EDiv *p);
+  void visitERem(ERem *p);
+  void visitEAdd(EAdd *p);
+  void visitESub(ESub *p);
+  void visitELSh(ELSh *p);
+  void visitERSh(ERSh *p);
+  void visitEGT(EGT *p);
+  void visitELT(ELT *p);
+  void visitEGQ(EGQ *p);
+  void visitEGQ1(EGQ1 *p);
+  void visitELQ(ELQ *p);
+  void visitELQ1(ELQ1 *p);
+  void visitEQu(EQu *p);
+  void visitEIQ(EIQ *p);
+  void visitEAnd(EAnd *p);
+  void visitEOr(EOr *p);
+  void visitEIs(EIs *p);
+  void visitEIsP(EIsP *p);
+  void visitEIsM(EIsM *p);
   void visitECond(ECond *p);
-  void visitEExce(EExce *p);
+  void visitEEx(EEx *p);
   void visitListExp(ListExp* p);
+  void visitTempInst(TempInst *p); /* abstract class */
+  void visitTemplateInst(TemplateInst *p);
+  void visitTypeList(TypeList *p); /* abstract class */
+  void visitTypeListDef(TypeListDef *p);
+  void visitListType(ListType* p);
   void visitType(Type *p); /* abstract class */
+  void visitPointer(Pointer *p);
+  void visitReference(Reference *p);
+  void visitBaseType(BaseType *p);
+  void visitBType(BType *p); /* abstract class */
+  void visitTQCon(TQCon *p);
   void visitTInt(TInt *p);
+  void visitTVoid(TVoid *p);
   void visitTBool(TBool *p);
   void visitTDouble(TDouble *p);
-  void visitTVoid(TVoid *p);
-  void visitTString(TString *p);
-  void visitTStringStd(TStringStd *p);
-  void visitTVectorStd(TVectorStd *p);
+  void visitLiteral(Literal *p); /* abstract class */
+  void visitLStringList(LStringList *p);
+  void visitLInt(LInt *p);
+  void visitLDouble(LDouble *p);
+  void visitLChar(LChar *p);
+  void visitStringList(StringList *p); /* abstract class */
+  void visitLStringListDef(LStringListDef *p);
+  void visitLString(LString *p);
+  void visitId(Id *p); /* abstract class */
+  void visitIdentif(Identif *p);
 
   void visitInteger(Integer i);
   void visitDouble(Double d);
   void visitChar(Char c);
   void visitString(String s);
   void visitIdent(String s);
-  void visitId(String s);
  protected:
   void inline bufAppend(const char* s)
   {

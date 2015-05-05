@@ -144,21 +144,7 @@ void PrintAbsyn::visitDefinitionUsing(DefinitionUsing* p)
   if (oldi > 0) render(_L_PAREN);
 
   render("using");
-  _i_ = 0; p->exp_->accept(this);
-  render(';');
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitDefinitionUsingType(DefinitionUsingType* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render("using");
-  _i_ = 0; p->type_->accept(this);
+  _i_ = 0; p->qco_->accept(this);
   render(';');
 
   if (oldi > 0) render(_R_PAREN);
@@ -172,7 +158,7 @@ void PrintAbsyn::visitDefinitionTypedef(DefinitionTypedef* p)
   if (oldi > 0) render(_L_PAREN);
 
   render("typedef");
-  _i_ = 0; p->type_->accept(this);
+  _i_ = 0; p->qco_->accept(this);
   render(';');
 
   if (oldi > 0) render(_R_PAREN);
@@ -421,7 +407,7 @@ void PrintAbsyn::visitTemplateInstantiations(TemplateInstantiations* p)
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  render("ident");
+  visitIdent(p->id_);
   render('<');
   if(p->listtype_) {_i_ = 0; p->listtype_->accept(this);}  render('>');
   render(';');
@@ -462,6 +448,46 @@ void PrintAbsyn::visitListType(ListType *listtype)
   }
 }
 
+void PrintAbsyn::visitQCo(QCo*p) {} //abstract class
+
+void PrintAbsyn::visitQualifiedConstants(QualifiedConstants* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  visitIdent(p->id_);
+  render("::");
+  _i_ = 1; p->qco_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitQualifiedSingleID(QualifiedSingleID* p)
+{
+  int oldi = _i_;
+  if (oldi > 1) render(_L_PAREN);
+
+  visitIdent(p->id_);
+
+  if (oldi > 1) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitQualifiedType(QualifiedType* p)
+{
+  int oldi = _i_;
+  if (oldi > 1) render(_L_PAREN);
+
+  _i_ = 0; p->type_->accept(this);
+
+  if (oldi > 1) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
 void PrintAbsyn::visitArg(Arg*p) {} //abstract class
 
 void PrintAbsyn::visitArgumentDefinition(ArgumentDefinition* p)
@@ -481,11 +507,11 @@ void PrintAbsyn::visitExp(Exp*p) {} //abstract class
 void PrintAbsyn::visitEId(EId* p)
 {
   int oldi = _i_;
-  if (oldi > 16) render(_L_PAREN);
+  if (oldi > 17) render(_L_PAREN);
 
   visitIdent(p->id_);
 
-  if (oldi > 16) render(_R_PAREN);
+  if (oldi > 17) render(_R_PAREN);
 
   _i_ = oldi;
 }
@@ -493,11 +519,11 @@ void PrintAbsyn::visitEId(EId* p)
 void PrintAbsyn::visitEInteger(EInteger* p)
 {
   int oldi = _i_;
-  if (oldi > 16) render(_L_PAREN);
+  if (oldi > 17) render(_L_PAREN);
 
   visitInteger(p->integer_);
 
-  if (oldi > 16) render(_R_PAREN);
+  if (oldi > 17) render(_R_PAREN);
 
   _i_ = oldi;
 }
@@ -505,9 +531,22 @@ void PrintAbsyn::visitEInteger(EInteger* p)
 void PrintAbsyn::visitEString(EString* p)
 {
   int oldi = _i_;
+  if (oldi > 17) render(_L_PAREN);
+
+  visitString(p->string_);
+
+  if (oldi > 17) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+void PrintAbsyn::visitEMultiString(EMultiString* p)
+{
+  int oldi = _i_;
   if (oldi > 16) render(_L_PAREN);
 
   visitString(p->string_);
+  _i_ = 16; p->exp_->accept(this);
 
   if (oldi > 16) render(_R_PAREN);
 
@@ -523,20 +562,6 @@ void PrintAbsyn::visitEInde(EInde* p)
   render('[');
   visitIdent(p->id_);
   render(']');
-
-  if (oldi > 15) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitEQCon(EQCon* p)
-{
-  int oldi = _i_;
-  if (oldi > 15) render(_L_PAREN);
-
-  _i_ = 0; p->exp_->accept(this);
-  render("::");
-  visitIdent(p->id_);
 
   if (oldi > 15) render(_R_PAREN);
 
@@ -1015,30 +1040,6 @@ void PrintAbsyn::visitTString(TString* p)
   _i_ = oldi;
 }
 
-void PrintAbsyn::visitTStringStd(TStringStd* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render("std::string");
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-void PrintAbsyn::visitTVectorStd(TVectorStd* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render("std::vector");
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
 void PrintAbsyn::visitInteger(Integer i)
 {
   char tmp[16];
@@ -1143,18 +1144,7 @@ void ShowAbsyn::visitDefinitionUsing(DefinitionUsing* p)
   bufAppend("DefinitionUsing");
   bufAppend(' ');
   bufAppend('[');
-  if (p->exp_)  p->exp_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  bufAppend(')');
-}
-void ShowAbsyn::visitDefinitionUsingType(DefinitionUsingType* p)
-{
-  bufAppend('(');
-  bufAppend("DefinitionUsingType");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->type_)  p->type_->accept(this);
+  if (p->qco_)  p->qco_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -1165,7 +1155,7 @@ void ShowAbsyn::visitDefinitionTypedef(DefinitionTypedef* p)
   bufAppend("DefinitionTypedef");
   bufAppend(' ');
   bufAppend('[');
-  if (p->type_)  p->type_->accept(this);
+  if (p->qco_)  p->qco_->accept(this);
   bufAppend(']');
   bufAppend(' ');
   bufAppend(')');
@@ -1386,6 +1376,8 @@ void ShowAbsyn::visitTemplateInstantiations(TemplateInstantiations* p)
   bufAppend('(');
   bufAppend("TemplateInstantiations");
   bufAppend(' ');
+  visitIdent(p->id_);
+  bufAppend(' ');
   bufAppend('[');
   if (p->listtype_)  p->listtype_->accept(this);
   bufAppend(']');
@@ -1421,6 +1413,38 @@ void ShowAbsyn::visitListType(ListType *listtype)
   }
 }
 
+void ShowAbsyn::visitQCo(QCo* p) {} //abstract class
+
+void ShowAbsyn::visitQualifiedConstants(QualifiedConstants* p)
+{
+  bufAppend('(');
+  bufAppend("QualifiedConstants");
+  bufAppend(' ');
+  visitIdent(p->id_);
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->qco_)  p->qco_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+void ShowAbsyn::visitQualifiedSingleID(QualifiedSingleID* p)
+{
+  bufAppend('(');
+  bufAppend("QualifiedSingleID");
+  bufAppend(' ');
+  visitIdent(p->id_);
+  bufAppend(')');
+}
+void ShowAbsyn::visitQualifiedType(QualifiedType* p)
+{
+  bufAppend('(');
+  bufAppend("QualifiedType");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->type_)  p->type_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
 void ShowAbsyn::visitArg(Arg* p) {} //abstract class
 
 void ShowAbsyn::visitArgumentDefinition(ArgumentDefinition* p)
@@ -1459,6 +1483,18 @@ void ShowAbsyn::visitEString(EString* p)
   visitString(p->string_);
   bufAppend(')');
 }
+void ShowAbsyn::visitEMultiString(EMultiString* p)
+{
+  bufAppend('(');
+  bufAppend("EMultiString");
+  bufAppend(' ');
+  visitString(p->string_);
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->exp_)  p->exp_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
 void ShowAbsyn::visitEInde(EInde* p)
 {
   bufAppend('(');
@@ -1470,18 +1506,6 @@ void ShowAbsyn::visitEInde(EInde* p)
   bufAppend(' ');
   visitIdent(p->id_);
   bufAppend(' ');
-  bufAppend(')');
-}
-void ShowAbsyn::visitEQCon(EQCon* p)
-{
-  bufAppend('(');
-  bufAppend("EQCon");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->exp_)  p->exp_->accept(this);
-  bufAppend(']');
-  bufAppend(' ');
-  visitIdent(p->id_);
   bufAppend(')');
 }
 void ShowAbsyn::visitEFunC(EFunC* p)
@@ -1813,14 +1837,6 @@ void ShowAbsyn::visitTVoid(TVoid* p)
 void ShowAbsyn::visitTString(TString* p)
 {
   bufAppend("TString");
-}
-void ShowAbsyn::visitTStringStd(TStringStd* p)
-{
-  bufAppend("TStringStd");
-}
-void ShowAbsyn::visitTVectorStd(TVectorStd* p)
-{
-  bufAppend("TVectorStd");
 }
 void ShowAbsyn::visitInteger(Integer i)
 {

@@ -23,13 +23,13 @@ typedef std::string Id;
 class Prog;
 class Def;
 class Stm;
+class QCo;
 class Arg;
 class Exp;
 class Type;
 class PDefs;
 class DefinitionFunction;
 class DefinitionUsing;
-class DefinitionUsingType;
 class DefinitionTypedef;
 class StatementDeclaration;
 class StatementDeclarations;
@@ -45,13 +45,16 @@ class StatementStruct;
 class StatementTemplate;
 class StatementTypedef;
 class TemplateInstantiations;
+class QualifiedConstants;
+class QualifiedSingleID;
+class QualifiedType;
 class StatementDefinition;
 class ArgumentDefinition;
 class EId;
 class EInteger;
 class EString;
+class EMultiString;
 class EInde;
-class EQCon;
 class EFunC;
 class EStPP;
 class EStPA;
@@ -86,8 +89,6 @@ class TBool;
 class TDouble;
 class TVoid;
 class TString;
-class TStringStd;
-class TVectorStd;
 class ListDef;
 class ListArg;
 class ListStm;
@@ -104,13 +105,13 @@ public:
   virtual void visitProg(Prog *p) = 0;
   virtual void visitDef(Def *p) = 0;
   virtual void visitStm(Stm *p) = 0;
+  virtual void visitQCo(QCo *p) = 0;
   virtual void visitArg(Arg *p) = 0;
   virtual void visitExp(Exp *p) = 0;
   virtual void visitType(Type *p) = 0;
   virtual void visitPDefs(PDefs *p) = 0;
   virtual void visitDefinitionFunction(DefinitionFunction *p) = 0;
   virtual void visitDefinitionUsing(DefinitionUsing *p) = 0;
-  virtual void visitDefinitionUsingType(DefinitionUsingType *p) = 0;
   virtual void visitDefinitionTypedef(DefinitionTypedef *p) = 0;
   virtual void visitStatementDeclaration(StatementDeclaration *p) = 0;
   virtual void visitStatementDeclarations(StatementDeclarations *p) = 0;
@@ -126,13 +127,16 @@ public:
   virtual void visitStatementTemplate(StatementTemplate *p) = 0;
   virtual void visitStatementTypedef(StatementTypedef *p) = 0;
   virtual void visitTemplateInstantiations(TemplateInstantiations *p) = 0;
+  virtual void visitQualifiedConstants(QualifiedConstants *p) = 0;
+  virtual void visitQualifiedSingleID(QualifiedSingleID *p) = 0;
+  virtual void visitQualifiedType(QualifiedType *p) = 0;
   virtual void visitStatementDefinition(StatementDefinition *p) = 0;
   virtual void visitArgumentDefinition(ArgumentDefinition *p) = 0;
   virtual void visitEId(EId *p) = 0;
   virtual void visitEInteger(EInteger *p) = 0;
   virtual void visitEString(EString *p) = 0;
+  virtual void visitEMultiString(EMultiString *p) = 0;
   virtual void visitEInde(EInde *p) = 0;
-  virtual void visitEQCon(EQCon *p) = 0;
   virtual void visitEFunC(EFunC *p) = 0;
   virtual void visitEStPP(EStPP *p) = 0;
   virtual void visitEStPA(EStPA *p) = 0;
@@ -167,8 +171,6 @@ public:
   virtual void visitTDouble(TDouble *p) = 0;
   virtual void visitTVoid(TVoid *p) = 0;
   virtual void visitTString(TString *p) = 0;
-  virtual void visitTStringStd(TStringStd *p) = 0;
-  virtual void visitTVectorStd(TVectorStd *p) = 0;
   virtual void visitListDef(ListDef *p) = 0;
   virtual void visitListArg(ListArg *p) = 0;
   virtual void visitListStm(ListStm *p) = 0;
@@ -215,6 +217,13 @@ class Stm : public Visitable
 {
 public:
   virtual Stm *clone() const = 0;
+
+};
+
+class QCo : public Visitable
+{
+public:
+  virtual QCo *clone() const = 0;
 
 };
 
@@ -275,39 +284,25 @@ public:
 class DefinitionUsing : public Def
 {
 public:
-  Exp *exp_;
+  QCo *qco_;
 
   DefinitionUsing(const DefinitionUsing &);
   DefinitionUsing &operator=(const DefinitionUsing &);
-  DefinitionUsing(Exp *p1);
+  DefinitionUsing(QCo *p1);
   ~DefinitionUsing();
   virtual void accept(Visitor *v);
   virtual DefinitionUsing *clone() const;
   void swap(DefinitionUsing &);
 };
 
-class DefinitionUsingType : public Def
-{
-public:
-  Type *type_;
-
-  DefinitionUsingType(const DefinitionUsingType &);
-  DefinitionUsingType &operator=(const DefinitionUsingType &);
-  DefinitionUsingType(Type *p1);
-  ~DefinitionUsingType();
-  virtual void accept(Visitor *v);
-  virtual DefinitionUsingType *clone() const;
-  void swap(DefinitionUsingType &);
-};
-
 class DefinitionTypedef : public Def
 {
 public:
-  Type *type_;
+  QCo *qco_;
 
   DefinitionTypedef(const DefinitionTypedef &);
   DefinitionTypedef &operator=(const DefinitionTypedef &);
-  DefinitionTypedef(Type *p1);
+  DefinitionTypedef(QCo *p1);
   ~DefinitionTypedef();
   virtual void accept(Visitor *v);
   virtual DefinitionTypedef *clone() const;
@@ -517,11 +512,12 @@ public:
 class TemplateInstantiations : public Stm
 {
 public:
+  Id id_;
   ListType *listtype_;
 
   TemplateInstantiations(const TemplateInstantiations &);
   TemplateInstantiations &operator=(const TemplateInstantiations &);
-  TemplateInstantiations(ListType *p1);
+  TemplateInstantiations(Id p1, ListType *p2);
   ~TemplateInstantiations();
   virtual void accept(Visitor *v);
   virtual TemplateInstantiations *clone() const;
@@ -540,6 +536,49 @@ public:
   virtual void accept(Visitor *v);
   virtual StatementDefinition *clone() const;
   void swap(StatementDefinition &);
+};
+
+class QualifiedConstants : public QCo
+{
+public:
+  Id id_;
+  QCo *qco_;
+
+  QualifiedConstants(const QualifiedConstants &);
+  QualifiedConstants &operator=(const QualifiedConstants &);
+  QualifiedConstants(Id p1, QCo *p2);
+  ~QualifiedConstants();
+  virtual void accept(Visitor *v);
+  virtual QualifiedConstants *clone() const;
+  void swap(QualifiedConstants &);
+};
+
+class QualifiedSingleID : public QCo
+{
+public:
+  Id id_;
+
+  QualifiedSingleID(const QualifiedSingleID &);
+  QualifiedSingleID &operator=(const QualifiedSingleID &);
+  QualifiedSingleID(Id p1);
+  ~QualifiedSingleID();
+  virtual void accept(Visitor *v);
+  virtual QualifiedSingleID *clone() const;
+  void swap(QualifiedSingleID &);
+};
+
+class QualifiedType : public QCo
+{
+public:
+  Type *type_;
+
+  QualifiedType(const QualifiedType &);
+  QualifiedType &operator=(const QualifiedType &);
+  QualifiedType(Type *p1);
+  ~QualifiedType();
+  virtual void accept(Visitor *v);
+  virtual QualifiedType *clone() const;
+  void swap(QualifiedType &);
 };
 
 class ArgumentDefinition : public Arg
@@ -621,32 +660,6 @@ public:
   void swap(TString &);
 };
 
-class TStringStd : public Type
-{
-public:
-
-  TStringStd(const TStringStd &);
-  TStringStd &operator=(const TStringStd &);
-  TStringStd();
-  ~TStringStd();
-  virtual void accept(Visitor *v);
-  virtual TStringStd *clone() const;
-  void swap(TStringStd &);
-};
-
-class TVectorStd : public Type
-{
-public:
-
-  TVectorStd(const TVectorStd &);
-  TVectorStd &operator=(const TVectorStd &);
-  TVectorStd();
-  ~TVectorStd();
-  virtual void accept(Visitor *v);
-  virtual TVectorStd *clone() const;
-  void swap(TVectorStd &);
-};
-
 class EId : public Exp
 {
 public:
@@ -689,6 +702,21 @@ public:
   void swap(EString &);
 };
 
+class EMultiString : public Exp
+{
+public:
+  String string_;
+  Exp *exp_;
+
+  EMultiString(const EMultiString &);
+  EMultiString &operator=(const EMultiString &);
+  EMultiString(String p1, Exp *p2);
+  ~EMultiString();
+  virtual void accept(Visitor *v);
+  virtual EMultiString *clone() const;
+  void swap(EMultiString &);
+};
+
 class EInde : public Exp
 {
 public:
@@ -702,21 +730,6 @@ public:
   virtual void accept(Visitor *v);
   virtual EInde *clone() const;
   void swap(EInde &);
-};
-
-class EQCon : public Exp
-{
-public:
-  Exp *exp_;
-  Id id_;
-
-  EQCon(const EQCon &);
-  EQCon &operator=(const EQCon &);
-  EQCon(Exp *p1, Id p2);
-  ~EQCon();
-  virtual void accept(Visitor *v);
-  virtual EQCon *clone() const;
-  void swap(EQCon &);
 };
 
 class EFunC : public Exp

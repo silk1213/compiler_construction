@@ -11,6 +11,7 @@
 void Skeleton::visitProg(Prog* t) {} //abstract class
 void Skeleton::visitDef(Def* t) {} //abstract class
 void Skeleton::visitStm(Stm* t) {} //abstract class
+void Skeleton::visitQCo(QCo* t) {} //abstract class
 void Skeleton::visitArg(Arg* t) {} //abstract class
 void Skeleton::visitExp(Exp* t) {} //abstract class
 void Skeleton::visitType(Type* t) {} //abstract class
@@ -38,15 +39,7 @@ void Skeleton::visitDefinitionUsing(DefinitionUsing *definitionusing)
 {
   /* Code For DefinitionUsing Goes Here */
 
-  definitionusing->exp_->accept(this);
-
-}
-
-void Skeleton::visitDefinitionUsingType(DefinitionUsingType *definitionusingtype)
-{
-  /* Code For DefinitionUsingType Goes Here */
-
-  definitionusingtype->type_->accept(this);
+  definitionusing->qco_->accept(this);
 
 }
 
@@ -54,7 +47,7 @@ void Skeleton::visitDefinitionTypedef(DefinitionTypedef *definitiontypedef)
 {
   /* Code For DefinitionTypedef Goes Here */
 
-  definitiontypedef->type_->accept(this);
+  definitiontypedef->qco_->accept(this);
 
 }
 
@@ -184,6 +177,7 @@ void Skeleton::visitTemplateInstantiations(TemplateInstantiations *templateinsta
 {
   /* Code For TemplateInstantiations Goes Here */
 
+  visitId(templateinstantiations->id_);
   templateinstantiations->listtype_->accept(this);
 
 }
@@ -193,6 +187,31 @@ void Skeleton::visitStatementDefinition(StatementDefinition *statementdefinition
   /* Code For StatementDefinition Goes Here */
 
   statementdefinition->exp_->accept(this);
+
+}
+
+void Skeleton::visitQualifiedConstants(QualifiedConstants *qualifiedconstants)
+{
+  /* Code For QualifiedConstants Goes Here */
+
+  visitId(qualifiedconstants->id_);
+  qualifiedconstants->qco_->accept(this);
+
+}
+
+void Skeleton::visitQualifiedSingleID(QualifiedSingleID *qualifiedsingleid)
+{
+  /* Code For QualifiedSingleID Goes Here */
+
+  visitId(qualifiedsingleid->id_);
+
+}
+
+void Skeleton::visitQualifiedType(QualifiedType *qualifiedtype)
+{
+  /* Code For QualifiedType Goes Here */
+
+  qualifiedtype->type_->accept(this);
 
 }
 
@@ -239,20 +258,6 @@ void Skeleton::visitTString(TString *tstring)
 
 }
 
-void Skeleton::visitTStringStd(TStringStd *tstringstd)
-{
-  /* Code For TStringStd Goes Here */
-
-
-}
-
-void Skeleton::visitTVectorStd(TVectorStd *tvectorstd)
-{
-  /* Code For TVectorStd Goes Here */
-
-
-}
-
 void Skeleton::visitEId(EId *eid)
 {
   /* Code For EId Goes Here */
@@ -277,21 +282,21 @@ void Skeleton::visitEString(EString *estring)
 
 }
 
+void Skeleton::visitEMultiString(EMultiString *emultistring)
+{
+  /* Code For EMultiString Goes Here */
+
+  visitString(emultistring->string_);
+  emultistring->exp_->accept(this);
+
+}
+
 void Skeleton::visitEInde(EInde *einde)
 {
   /* Code For EInde Goes Here */
 
   einde->exp_->accept(this);
   visitId(einde->id_);
-
-}
-
-void Skeleton::visitEQCon(EQCon *eqcon)
-{
-  /* Code For EQCon Goes Here */
-
-  eqcon->exp_->accept(this);
-  visitId(eqcon->id_);
 
 }
 

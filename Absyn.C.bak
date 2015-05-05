@@ -105,15 +105,15 @@ DefinitionFunction *DefinitionFunction::clone() const
 
 
 /********************   DefinitionUsing    ********************/
-DefinitionUsing::DefinitionUsing(Exp *p1)
+DefinitionUsing::DefinitionUsing(QCo *p1)
 {
-  exp_ = p1;
+  qco_ = p1;
 
 }
 
 DefinitionUsing::DefinitionUsing(const DefinitionUsing & other)
 {
-  exp_ = other.exp_->clone();
+  qco_ = other.qco_->clone();
 
 }
 
@@ -126,13 +126,13 @@ DefinitionUsing &DefinitionUsing::operator=(const DefinitionUsing & other)
 
 void DefinitionUsing::swap(DefinitionUsing & other)
 {
-  std::swap(exp_, other.exp_);
+  std::swap(qco_, other.qco_);
 
 }
 
 DefinitionUsing::~DefinitionUsing()
 {
-  delete(exp_);
+  delete(qco_);
 
 }
 
@@ -148,60 +148,16 @@ DefinitionUsing *DefinitionUsing::clone() const
 
 
 
-/********************   DefinitionUsingType    ********************/
-DefinitionUsingType::DefinitionUsingType(Type *p1)
-{
-  type_ = p1;
-
-}
-
-DefinitionUsingType::DefinitionUsingType(const DefinitionUsingType & other)
-{
-  type_ = other.type_->clone();
-
-}
-
-DefinitionUsingType &DefinitionUsingType::operator=(const DefinitionUsingType & other)
-{
-  DefinitionUsingType tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void DefinitionUsingType::swap(DefinitionUsingType & other)
-{
-  std::swap(type_, other.type_);
-
-}
-
-DefinitionUsingType::~DefinitionUsingType()
-{
-  delete(type_);
-
-}
-
-void DefinitionUsingType::accept(Visitor *v)
-{
-  v->visitDefinitionUsingType(this);
-}
-
-DefinitionUsingType *DefinitionUsingType::clone() const
-{
-  return new DefinitionUsingType(*this);
-}
-
-
-
 /********************   DefinitionTypedef    ********************/
-DefinitionTypedef::DefinitionTypedef(Type *p1)
+DefinitionTypedef::DefinitionTypedef(QCo *p1)
 {
-  type_ = p1;
+  qco_ = p1;
 
 }
 
 DefinitionTypedef::DefinitionTypedef(const DefinitionTypedef & other)
 {
-  type_ = other.type_->clone();
+  qco_ = other.qco_->clone();
 
 }
 
@@ -214,13 +170,13 @@ DefinitionTypedef &DefinitionTypedef::operator=(const DefinitionTypedef & other)
 
 void DefinitionTypedef::swap(DefinitionTypedef & other)
 {
-  std::swap(type_, other.type_);
+  std::swap(qco_, other.qco_);
 
 }
 
 DefinitionTypedef::~DefinitionTypedef()
 {
-  delete(type_);
+  delete(qco_);
 
 }
 
@@ -875,14 +831,16 @@ StatementTypedef *StatementTypedef::clone() const
 
 
 /********************   TemplateInstantiations    ********************/
-TemplateInstantiations::TemplateInstantiations(ListType *p1)
+TemplateInstantiations::TemplateInstantiations(Id p1, ListType *p2)
 {
-  listtype_ = p1;
+  id_ = p1;
+  listtype_ = p2;
 
 }
 
 TemplateInstantiations::TemplateInstantiations(const TemplateInstantiations & other)
 {
+  id_ = other.id_;
   listtype_ = other.listtype_->clone();
 
 }
@@ -896,6 +854,7 @@ TemplateInstantiations &TemplateInstantiations::operator=(const TemplateInstanti
 
 void TemplateInstantiations::swap(TemplateInstantiations & other)
 {
+  std::swap(id_, other.id_);
   std::swap(listtype_, other.listtype_);
 
 }
@@ -958,6 +917,140 @@ void StatementDefinition::accept(Visitor *v)
 StatementDefinition *StatementDefinition::clone() const
 {
   return new StatementDefinition(*this);
+}
+
+
+
+/********************   QualifiedConstants    ********************/
+QualifiedConstants::QualifiedConstants(Id p1, QCo *p2)
+{
+  id_ = p1;
+  qco_ = p2;
+
+}
+
+QualifiedConstants::QualifiedConstants(const QualifiedConstants & other)
+{
+  id_ = other.id_;
+  qco_ = other.qco_->clone();
+
+}
+
+QualifiedConstants &QualifiedConstants::operator=(const QualifiedConstants & other)
+{
+  QualifiedConstants tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void QualifiedConstants::swap(QualifiedConstants & other)
+{
+  std::swap(id_, other.id_);
+  std::swap(qco_, other.qco_);
+
+}
+
+QualifiedConstants::~QualifiedConstants()
+{
+  delete(qco_);
+
+}
+
+void QualifiedConstants::accept(Visitor *v)
+{
+  v->visitQualifiedConstants(this);
+}
+
+QualifiedConstants *QualifiedConstants::clone() const
+{
+  return new QualifiedConstants(*this);
+}
+
+
+
+/********************   QualifiedSingleID    ********************/
+QualifiedSingleID::QualifiedSingleID(Id p1)
+{
+  id_ = p1;
+
+}
+
+QualifiedSingleID::QualifiedSingleID(const QualifiedSingleID & other)
+{
+  id_ = other.id_;
+
+}
+
+QualifiedSingleID &QualifiedSingleID::operator=(const QualifiedSingleID & other)
+{
+  QualifiedSingleID tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void QualifiedSingleID::swap(QualifiedSingleID & other)
+{
+  std::swap(id_, other.id_);
+
+}
+
+QualifiedSingleID::~QualifiedSingleID()
+{
+
+}
+
+void QualifiedSingleID::accept(Visitor *v)
+{
+  v->visitQualifiedSingleID(this);
+}
+
+QualifiedSingleID *QualifiedSingleID::clone() const
+{
+  return new QualifiedSingleID(*this);
+}
+
+
+
+/********************   QualifiedType    ********************/
+QualifiedType::QualifiedType(Type *p1)
+{
+  type_ = p1;
+
+}
+
+QualifiedType::QualifiedType(const QualifiedType & other)
+{
+  type_ = other.type_->clone();
+
+}
+
+QualifiedType &QualifiedType::operator=(const QualifiedType & other)
+{
+  QualifiedType tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void QualifiedType::swap(QualifiedType & other)
+{
+  std::swap(type_, other.type_);
+
+}
+
+QualifiedType::~QualifiedType()
+{
+  delete(type_);
+
+}
+
+void QualifiedType::accept(Visitor *v)
+{
+  v->visitQualifiedType(this);
+}
+
+QualifiedType *QualifiedType::clone() const
+{
+  return new QualifiedType(*this);
 }
 
 
@@ -1206,86 +1299,6 @@ TString *TString::clone() const
 
 
 
-/********************   TStringStd    ********************/
-TStringStd::TStringStd()
-{
-
-}
-
-TStringStd::TStringStd(const TStringStd & other)
-{
-
-}
-
-TStringStd &TStringStd::operator=(const TStringStd & other)
-{
-  TStringStd tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void TStringStd::swap(TStringStd & other)
-{
-
-}
-
-TStringStd::~TStringStd()
-{
-
-}
-
-void TStringStd::accept(Visitor *v)
-{
-  v->visitTStringStd(this);
-}
-
-TStringStd *TStringStd::clone() const
-{
-  return new TStringStd(*this);
-}
-
-
-
-/********************   TVectorStd    ********************/
-TVectorStd::TVectorStd()
-{
-
-}
-
-TVectorStd::TVectorStd(const TVectorStd & other)
-{
-
-}
-
-TVectorStd &TVectorStd::operator=(const TVectorStd & other)
-{
-  TVectorStd tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void TVectorStd::swap(TVectorStd & other)
-{
-
-}
-
-TVectorStd::~TVectorStd()
-{
-
-}
-
-void TVectorStd::accept(Visitor *v)
-{
-  v->visitTVectorStd(this);
-}
-
-TVectorStd *TVectorStd::clone() const
-{
-  return new TVectorStd(*this);
-}
-
-
-
 /********************   EId    ********************/
 EId::EId(Id p1)
 {
@@ -1415,6 +1428,53 @@ EString *EString::clone() const
 
 
 
+/********************   EMultiString    ********************/
+EMultiString::EMultiString(String p1, Exp *p2)
+{
+  string_ = p1;
+  exp_ = p2;
+
+}
+
+EMultiString::EMultiString(const EMultiString & other)
+{
+  string_ = other.string_;
+  exp_ = other.exp_->clone();
+
+}
+
+EMultiString &EMultiString::operator=(const EMultiString & other)
+{
+  EMultiString tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EMultiString::swap(EMultiString & other)
+{
+  std::swap(string_, other.string_);
+  std::swap(exp_, other.exp_);
+
+}
+
+EMultiString::~EMultiString()
+{
+  delete(exp_);
+
+}
+
+void EMultiString::accept(Visitor *v)
+{
+  v->visitEMultiString(this);
+}
+
+EMultiString *EMultiString::clone() const
+{
+  return new EMultiString(*this);
+}
+
+
+
 /********************   EInde    ********************/
 EInde::EInde(Exp *p1, Id p2)
 {
@@ -1458,53 +1518,6 @@ void EInde::accept(Visitor *v)
 EInde *EInde::clone() const
 {
   return new EInde(*this);
-}
-
-
-
-/********************   EQCon    ********************/
-EQCon::EQCon(Exp *p1, Id p2)
-{
-  exp_ = p1;
-  id_ = p2;
-
-}
-
-EQCon::EQCon(const EQCon & other)
-{
-  exp_ = other.exp_->clone();
-  id_ = other.id_;
-
-}
-
-EQCon &EQCon::operator=(const EQCon & other)
-{
-  EQCon tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void EQCon::swap(EQCon & other)
-{
-  std::swap(exp_, other.exp_);
-  std::swap(id_, other.id_);
-
-}
-
-EQCon::~EQCon()
-{
-  delete(exp_);
-
-}
-
-void EQCon::accept(Visitor *v)
-{
-  v->visitEQCon(this);
-}
-
-EQCon *EQCon::clone() const
-{
-  return new EQCon(*this);
 }
 
 

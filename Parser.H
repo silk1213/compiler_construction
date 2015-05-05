@@ -5,18 +5,33 @@
 #include<string>
 
 
-class Prog;
-class ListDef;
-class Def;
-class ListArg;
-class ListStm;
+class Program;
+class Definition;
+class ListDefinition;
+class ArgumentList;
+class ListArgument;
+class Argument;
+class Body;
 class Stm;
-class ListId;
-class ListType;
-class Arg;
-class ListExp;
-class Type;
+class ListStm;
+class Struct;
+class TypeDef;
+class Decl;
+class Var;
+class ListVar;
+class ListDecl;
+class QCon;
+class Name;
 class Exp;
+class ListExp;
+class TempInst;
+class TypeList;
+class ListType;
+class Type;
+class BType;
+class Literal;
+class StringList;
+class Id;
 
 typedef union
 {
@@ -24,44 +39,89 @@ typedef union
   char char_;
   double double_;
   char* string_;
-  Prog* prog_;
-  ListDef* listdef_;
-  Def* def_;
-  ListArg* listarg_;
-  ListStm* liststm_;
+  Program* program_;
+  Definition* definition_;
+  ListDefinition* listdefinition_;
+  ArgumentList* argumentlist_;
+  ListArgument* listargument_;
+  Argument* argument_;
+  Body* body_;
   Stm* stm_;
-  ListId* listid_;
-  ListType* listtype_;
-  Arg* arg_;
-  ListExp* listexp_;
-  Type* type_;
+  ListStm* liststm_;
+  Struct* struct_;
+  TypeDef* typedef_;
+  Decl* decl_;
+  Var* var_;
+  ListVar* listvar_;
+  ListDecl* listdecl_;
+  QCon* qcon_;
+  Name* name_;
   Exp* exp_;
+  ListExp* listexp_;
+  TempInst* tempinst_;
+  TypeList* typelist_;
+  ListType* listtype_;
+  Type* type_;
+  BType* btype_;
+  Literal* literal_;
+  StringList* stringlist_;
+  Id* id_;
 } YYSTYPE;
 
-Prog* pProg(FILE *inp);
-Prog* pProg(const char *str);
-ListDef* pListDef(FILE *inp);
-ListDef* pListDef(const char *str);
-Def* pDef(FILE *inp);
-Def* pDef(const char *str);
-ListArg* pListArg(FILE *inp);
-ListArg* pListArg(const char *str);
-ListStm* pListStm(FILE *inp);
-ListStm* pListStm(const char *str);
+Program* pProgram(FILE *inp);
+Program* pProgram(const char *str);
+Definition* pDefinition(FILE *inp);
+Definition* pDefinition(const char *str);
+ListDefinition* pListDefinition(FILE *inp);
+ListDefinition* pListDefinition(const char *str);
+ArgumentList* pArgumentList(FILE *inp);
+ArgumentList* pArgumentList(const char *str);
+ListArgument* pListArgument(FILE *inp);
+ListArgument* pListArgument(const char *str);
+Argument* pArgument(FILE *inp);
+Argument* pArgument(const char *str);
+Body* pBody(FILE *inp);
+Body* pBody(const char *str);
 Stm* pStm(FILE *inp);
 Stm* pStm(const char *str);
-ListId* pListId(FILE *inp);
-ListId* pListId(const char *str);
-ListType* pListType(FILE *inp);
-ListType* pListType(const char *str);
-Arg* pArg(FILE *inp);
-Arg* pArg(const char *str);
-ListExp* pListExp(FILE *inp);
-ListExp* pListExp(const char *str);
-Type* pType(FILE *inp);
-Type* pType(const char *str);
+ListStm* pListStm(FILE *inp);
+ListStm* pListStm(const char *str);
+Struct* pStruct(FILE *inp);
+Struct* pStruct(const char *str);
+TypeDef* pTypeDef(FILE *inp);
+TypeDef* pTypeDef(const char *str);
+Decl* pDecl(FILE *inp);
+Decl* pDecl(const char *str);
+Var* pVar(FILE *inp);
+Var* pVar(const char *str);
+ListVar* pListVar(FILE *inp);
+ListVar* pListVar(const char *str);
+ListDecl* pListDecl(FILE *inp);
+ListDecl* pListDecl(const char *str);
+QCon* pQCon(FILE *inp);
+QCon* pQCon(const char *str);
+Name* pName(FILE *inp);
+Name* pName(const char *str);
 Exp* pExp(FILE *inp);
 Exp* pExp(const char *str);
+ListExp* pListExp(FILE *inp);
+ListExp* pListExp(const char *str);
+TempInst* pTempInst(FILE *inp);
+TempInst* pTempInst(const char *str);
+TypeList* pTypeList(FILE *inp);
+TypeList* pTypeList(const char *str);
+ListType* pListType(FILE *inp);
+ListType* pListType(const char *str);
+Type* pType(FILE *inp);
+Type* pType(const char *str);
+BType* pBType(FILE *inp);
+BType* pBType(const char *str);
+Literal* pLiteral(FILE *inp);
+Literal* pLiteral(const char *str);
+StringList* pStringList(FILE *inp);
+StringList* pStringList(const char *str);
+Id* pId(FILE *inp);
+Id* pId(const char *str);
 
 
 
@@ -119,8 +179,13 @@ Exp* pExp(const char *str);
 #define _SYMB_50 309
 #define _SYMB_51 310
 #define _SYMB_52 311
-#define _STRING_ 312
-#define _INTEGER_ 313
+#define _SYMB_53 312
+#define _SYMB_54 313
+#define _STRING_ 314
+#define _CHAR_ 315
+#define _INTEGER_ 316
+#define _DOUBLE_ 317
+#define _IDENT_ 318
 
 extern YYSTYPE yylval;
 
