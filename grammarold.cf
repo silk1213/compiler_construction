@@ -1,16 +1,129 @@
-PDefs . Prog ::= [Def] ;
-terminator Def "";
+-- COMMENTS & PREPROZESSOR STUFF - ignored by parser
+comment "//" ;
+comment "/*" "*/" ;
+comment "#" ;
 
+<<<<<<< HEAD
+-- PROGRAM
+Prog . Program ::= [Definition] ;
+=======
 DefinitionFunction . Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
-DefinitionUsing . Def ::= "using" QCo ";" ;
-DefinitionTypedef . Def ::= "typedef" QCo ";" ;
+DefinitionUsing . Def ::= "using" Exp ";" ;
+>>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 
-separator Arg "," ;
-terminator Stm "" ;
+-- DEFINITIONS
+FunctionDefIn . Definition ::= "inline" Type Id ArgumentList Body ;
+FunctionDef . Definition ::= Type Id ArgumentList Body ;
+Function . Definition ::= Type Id ArgumentList ";" ;
+GlobVar . Definition ::= Decl ";" ;
+GlobStruct . Definition ::= Struct ;
+GlobTypeDef . Definition ::= TypeDef ;
+UsingNSDef . Definition ::= "using" "namespace" Id ";" ;
+UsingDef . Definition ::= "using" QCon ";" ;
+terminator Definition "" ;
 
+<<<<<<< HEAD
+-- ARGUMENTLISTS
+ArgumentListDef . ArgumentList ::= "(" [Argument] ")" ;
+separator Argument "," ;
+terminator Argument "" ;
+ArgumentConstDecl . Argument ::= "const" Type Exp ;
+ArgumentDecl . Argument ::= Type Exp ;
+ArgumentConsttype . Argument ::= "const" Type;
+ArgumentType . Argument ::= Type ;
+--ArgInitialization . ArgId ::= Id "=" Exp ;
+--ArgName . ArgId ::= Id ;
+
+-- BODY 
+FuntionBody . Body ::= "{" [Stm] "}" ;
+EmptyBody . Body ::= "{" ";" "}" ;
+
+-- STATEMENTS
+StmDecl . Stm ::= Decl ";" ;
+StmReturn . Stm ::= "return" Exp ";" ;
+StmExit . Stm ::= "exit" "(" Exp ")" ";" ;
+StmWhile . Stm ::= "while" "(" Exp ")" Stm ;
+StmDoWhile . Stm ::= "do" Stm "while" "(" Exp ")" ";" ;
+StmFor . Stm ::= "for" "(" Decl ";" Exp ";" Exp ")" Stm ;
+StmIfElse . Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
+StmIf . Stm ::= "if" "(" Exp ")" Stm ;
+StmBlock . Stm ::= "{" [Stm] "}" ;
+StmEmptyBlock . Stm ::= "{" "}" ;
+StmTypeDef . Stm ::= TypeDef ;
+StmeStruct . Stm ::= Struct ;
+StmExpression . Stm ::= Exp ";" ;
+terminator Stm "";
+
+-- STRUCTS
+StructDef . Struct ::= "struct" Id "{" [Decl] "}" ;
+
+-- TYPEDEF
+TypeDefForm . TypeDef ::= "typedef" Type Id ";" ;
+TypeDefForm2 . TypeDef ::= "typedef" Type ";" ;
+
+-- DECLARATIONS
+ConstDecl . Decl ::= "const" Type [Var] ;
+Declaration . Decl ::= Type [Var] ;
+VariableInitialization . Var ::= Id "=" Exp ;
+VariableName . Var ::= Id ;
+separator nonempty Var "," ;
+terminator Var "" ;
+separator Decl ";" ;
+terminator Decl "" ;
+--Variable . Var ::= Exp ;
+
+-- QUALIFIED CONSTANTS
+QualCon . QCon ::= QCon "::" Name ;
+QualConN . QCon ::= Name ;
+--separator nonempty Name "::" ;
+--terminator Name "" ;
+IdName . Name ::= Id ;
+TempInstName . Name ::= TempInst ;
+
+-- EXPRESSIONS
+EIdent . Exp16 ::= Id ;
+ELiteral . Exp16 ::= Literal ;
+EBracket . Exp16 ::= "(" Exp ")" ;
+EIndex . Exp15 ::= Exp15 "[" Exp "]" ;
+EQCon . Exp15 ::= QCon;
+EFunCall . Exp15 ::= Exp15 "(" [Exp] ")" ;
+EStrucProj . Exp14 ::= Exp15 "." Exp15 ; 
+EStrucPro . Exp14 ::= Exp15 "->" Exp15 ;
+EInC . Exp14 ::= Exp15 "++" ;
+EDeC . Exp14 ::= Exp15 "--" ;
+EDeRef . Exp14 ::= "*" Exp15 ;
+EInCr . Exp13 ::= "++" Exp14 ;
+EDeCr . Exp13 ::= "--" Exp14 ;
+ENeg . Exp13 ::= "!" Exp14 ;
+EMul . Exp12 ::= Exp12 "*" Exp13 ;
+EDiv . Exp12 ::= Exp12 "/" Exp13 ;
+ERem . Exp12 ::= Exp12 "%" Exp13 ;
+EAdd . Exp11 ::= Exp11 "+" Exp12 ;
+ESub . Exp11 ::= Exp11 "-" Exp12 ;
+ELSh . Exp10 ::= Exp10 "<<" Exp11 ;
+ERSh . Exp10 ::= Exp10 ">>" Exp11 ;
+EGT . Exp9 ::= Exp9 ">" Exp10 ;
+ELT . Exp9 ::= Exp9 "<" Exp10 ;
+EGQ . Exp9 ::= Exp9 "=>" Exp10 ;
+EGQ1 . Exp9 ::= Exp9 ">=" Exp10 ;
+ELQ . Exp9 ::= Exp9 "<=" Exp10 ;
+ELQ1 . Exp9 ::= Exp9 "=<" Exp10 ;
+EQu . Exp8 ::= Exp8 "==" Exp9 ;
+EIQ . Exp8 ::= Exp8 "!=" Exp9 ;
+EAnd . Exp4 ::= Exp4 "&&" Exp5 ;
+EOr . Exp3 ::= Exp3 "||" Exp4 ;
+EIs . Exp2 ::= Exp2 "=" Exp3 ;
+EIsP . Exp2 ::= Exp2 "+=" Exp3 ;
+EIsM . Exp2 ::= Exp2 "-=" Exp3 ;
+ECond . Exp2 ::= Exp2 "?" Exp3 ":" Exp3 ;
+EEx . Exp1 ::= "throw" Exp2 ;
+coercions Exp 16 ;
+=======
 StatementDeclaration . Stm ::= Type Id ";" ;
 StatementDeclarations . Stm ::= Type Id "," [Id] ";" ;
 separator Id "," ;
+TemplateInstantiations . Stm ::= Exp "<" [Type] ">" Id ";" ;
+separator Type "," ;
 
 StatementInitialization . Stm ::= Type Id "=" Exp ";" ;
 StatementReturn . Stm ::= "return" Exp ";" ;
@@ -21,70 +134,59 @@ StatementIf . Stm ::= "if" "(" Exp ")" Stm ";" ;
 StatementIfElse . Stm ::= "if" "(" Exp ")" Stm ";" "else" Stm ";" ;
 StatementBlock . Stm ::= "{" [Stm] "}" ;
 StatementStruct . Stm ::= "struct" Id "{" [Stm] "}" ";" ;
-StatementTemplate . Stm ::= Id "<" Type ">" Exp ";" ;
 StatementTypedef . Stm ::= "typedef" Exp ";" ;
-
-TemplateInstantiations . Stm ::= Id "<" [Type] ">" ";" ;
-separator Type "," ;
-
-QualifiedConstants . QCo ::= Id "::" QCo1 ;
-QualifiedSingleID . QCo1 ::= Id ;
-QualifiedType . QCo1 ::= Type ;
-
-coercions QCo 1 ;
 
 StatementDefinition . Stm ::= Exp ";" ;
 ArgumentDefinition . Arg ::= Exp ;
 
-EId . Exp17 ::= Id ;
-EInteger . Exp17 ::= Integer ;
-EString . Exp17 ::= String ;
-EMultiString . Exp16 ::= String Exp16 ;
+EId . Exp16 ::= Id ;
+EInteger . Exp16 ::= Integer ;
+EString . Exp16 ::= String ;
+StringList . Exp16 ::= String Exp ;
 
 EInde . Exp15 ::= Exp "[" Id "]" ;
+EQCon . Exp15 ::= Con "::" Id ;
+EQualifiedConType . Exp15 ::= Con "::" Type ;
 EFunC . Exp15 ::= Exp "(" [Exp] ")" ;
+>>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 separator Exp "," ;
-EStPP . Exp14 ::= Exp "." Exp ;
-EStPA . Exp14 ::= Exp "->" Exp ;
-EInEP . Exp14 ::= Exp "++" ;
-EDeEM . Exp14 ::= Exp "--" ;
-EDere . Exp14 ::= "*" Exp ;
-EInPE . Exp13 ::= "++" Exp ;
-EDeME . Exp13 ::= "--" Exp ;
-ENega . Exp13 ::= "!" Exp ;
-EMult . Exp12 ::= Exp "*" Exp ;
-EDivi . Exp12 ::= Exp "/" Exp ;
-ERema . Exp12 ::= Exp "%" Exp ;
-EAddi . Exp11 ::= Exp "+" Exp ;
-ESubt . Exp11 ::= Exp "-" Exp ;
-ELShi . Exp10 ::= Exp "<<" Exp ;
-ERShi . Exp10 ::= Exp ">>" Exp ;
-ECoSm . Exp9 ::= Exp "<" Exp ;
-ECoGr . Exp9 ::= Exp ">" Exp ;
-ECoSE . Exp9 ::= Exp "<=" Exp ;
-ECoGE . Exp9 ::= Exp ">=" Exp ;
-EInEq . Exp8 ::= Exp "!=" Exp ;
-EEqua . Exp8 ::= Exp "==" Exp ;
-EConj . Exp4 ::= Exp "&&" Exp ;
-EDisj . Exp3 ::= Exp "||" Exp ;
-EAssi . Exp2 ::= Exp "=" Exp ;
-EAsPl . Exp2 ::= Exp "+=" Exp ;
-EAsMi . Exp2 ::= Exp "-=" Exp ;
-ECond . Exp2 ::= Exp "?" Exp ":" Exp ;
-EExce . Exp1 ::= "throw" Exp ;
+terminator Exp "" ;
+
+<<<<<<< HEAD
+-- TEMPLATE INSTANTIATIONS
+TemplateInst . TempInst ::= Id "<" TypeList ">" ;
+TypeListDef . TypeList ::= [Type] ;
+separator Type "," ;
+terminator Type "" ;
+=======
+CStd . Con ::= "std" ;
 
 TInt . Type ::= "int" ;
 TBool . Type ::= "bool" ;
 TDouble . Type ::= "double" ;
 TVoid . Type ::= "void" ;
 TString . Type ::= "string" ;
+TVector . Type ::= "vector" ;
+>>>>>>> faa7c58a376bb8386f6bffe449470d6361e10591
 
+-- TYPES
+Pointer . Type ::= BType "*" ;
+Reference . Type ::= BType "&" ;
+BaseType . Type ::= BType ;
+TQCon . BType ::= QCon ;
+TInt . BType ::= "int" ;
+TVoid . BType ::= "void" ;
+TBool . BType ::= "bool" ;
+TDouble . BType ::= "double" ;
 
+-- LITERALS
+LStringList . Literal ::= StringList ;
+LInt . Literal ::= Integer ;
+LDouble . Literal ::= Double ;
+LChar . Literal ::= Char ;
+LStringListDef . StringList ::= StringList String ;
+LString . StringList ::= String ;
+Identif . Id ::= Ident ;
 
-comment "//" ;
-comment "/*" "*/" ;
-comment "#" ;
-
-token Id (letter (letter | digit | '_')*) ;
-
-coercions Exp 17;
+-- TOKENS
+--token Id (letter | (letter | digit | '_' )*) ;

@@ -30,7 +30,7 @@ int main()
     cout << "Enter all your homework grades, "
             "followed by end-of-file: ";
 
-	vector<double> homework;
+	std::vector<double> homework;
 	double x;
 	// invariant: `homework' contains all the homework grades read so far
 	while (cin >> x)
