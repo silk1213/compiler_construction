@@ -9,7 +9,8 @@ Prog . Program ::= [Definition] ;
 -- DEFINITIONS
 FunctionDefIn . Definition ::= "inline" Type Id ArgumentList Body ;
 FunctionDef . Definition ::= Type Id ArgumentList Body ;
-Function . Definition ::= Type Id ArgumentList ";" ;
+FuctionDeclInline . Definition ::= "inline" Type Id ArgumentList ";" ;
+FunctionDecl . Definition ::= Type Id ArgumentList ";" ;
 GlobVar . Definition ::= Decl ";" ;
 GlobStruct . Definition ::= Struct ";" ;
 GlobTypeDef . Definition ::= TypeDef ;

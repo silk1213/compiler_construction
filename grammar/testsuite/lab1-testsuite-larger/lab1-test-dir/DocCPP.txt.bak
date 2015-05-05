@@ -71,7 +71,6 @@ All other symbols are terminals.
   | //Program// | -> | //[Definition]// 
   | //Definition// | -> | ``inline`` //Type// //Id// //ArgumentList// //Body// 
   |  |  **|**  | //Type// //Id// //ArgumentList// //Body// 
-  |  |  **|**  | ``inline`` //Type// //Id// //ArgumentList// ``;`` 
   |  |  **|**  | //Type// //Id// //ArgumentList// ``;`` 
   |  |  **|**  | //Decl// ``;`` 
   |  |  **|**  | //Struct// ``;`` 

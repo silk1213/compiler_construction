@@ -135,8 +135,7 @@ Program : ListDefinition { Prog (reverse $1) }
 Definition :: { Definition }
 Definition : 'inline' Type Id ArgumentList Body { FunctionDefIn $2 $3 $4 $5 } 
   | Type Id ArgumentList Body { FunctionDef $1 $2 $3 $4 }
-  | 'inline' Type Id ArgumentList ';' { FuctionDeclInline $2 $3 $4 }
-  | Type Id ArgumentList ';' { FunctionDecl $1 $2 $3 }
+  | Type Id ArgumentList ';' { Function $1 $2 $3 }
   | Decl ';' { GlobVar $1 }
   | Struct ';' { GlobStruct $1 }
   | TypeDef { GlobTypeDef $1 }

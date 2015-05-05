@@ -15,8 +15,7 @@ data Program =
 data Definition =
    FunctionDefIn Type Id ArgumentList Body
  | FunctionDef Type Id ArgumentList Body
- | FuctionDeclInline Type Id ArgumentList
- | FunctionDecl Type Id ArgumentList
+ | Function Type Id ArgumentList
  | GlobVar Decl
  | GlobStruct Struct
  | GlobTypeDef TypeDef

@@ -664,7 +664,7 @@ void PrintAbsyn::visitListDecl(ListDecl *listdecl)
   for (ListDecl::const_iterator i = listdecl->begin() ; i != listdecl->end() ; ++i)
   {
     (*i)->accept(this);
-    if (i != listdecl->end() - 1) render(';');
+    render("");
   }
 }
 

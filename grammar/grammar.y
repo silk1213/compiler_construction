@@ -1112,7 +1112,7 @@ Stm : Decl _SYMB_0 {  $$ = new StmDecl($1); YY_RESULT_Stm_= $$; }
 ListStm : /* empty */ {  $$ = new ListStm(); YY_RESULT_ListStm_= $$; } 
   | ListStm Stm {  $1->push_back($2) ; $$ = $1 ; YY_RESULT_ListStm_= $$; }
 ;
-Struct : _SYMB_49 Id _SYMB_4 ListDecl _SYMB_5 {  std::reverse($4->begin(),$4->end()) ;$$ = new StructDef($2, $4); YY_RESULT_Struct_= $$; } 
+Struct : _SYMB_49 Id _SYMB_4 ListDecl _SYMB_5 {  $$ = new StructDef($2, $4); YY_RESULT_Struct_= $$; } 
 ;
 TypeDef : _SYMB_51 Type Id _SYMB_0 {  $$ = new TypeDefForm($2, $3); YY_RESULT_TypeDef_= $$; } 
   | _SYMB_51 Type _SYMB_0 {  $$ = new TypeDefForm2($2); YY_RESULT_TypeDef_= $$; }
@@ -1129,10 +1129,7 @@ ListVar : Var {  $$ = new ListVar() ; $$->push_back($1); YY_RESULT_ListVar_= $$;
   | Var ListVar {  $2->push_back($1) ; $$ = $2 ; YY_RESULT_ListVar_= $$; }
 ;
 ListDecl : /* empty */ {  $$ = new ListDecl(); YY_RESULT_ListDecl_= $$; } 
-  | Decl {  $$ = new ListDecl() ; $$->push_back($1); YY_RESULT_ListDecl_= $$; }
-  | Decl _SYMB_0 ListDecl {  $3->push_back($1) ; $$ = $3 ; YY_RESULT_ListDecl_= $$; }
-  | /* empty */ {  $$ = new ListDecl(); YY_RESULT_ListDecl_= $$; }
-  | Decl ListDecl {  $2->push_back($1) ; $$ = $2 ; YY_RESULT_ListDecl_= $$; }
+  | ListDecl Decl {  $1->push_back($2) ; $$ = $1 ; YY_RESULT_ListDecl_= $$; }
 ;
 QCon : QCon _SYMB_7 Name {  $$ = new QualCon($1, $3); YY_RESULT_QCon_= $$; } 
   | Name {  $$ = new QualConN($1); YY_RESULT_QCon_= $$; }

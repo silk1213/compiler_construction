@@ -23,8 +23,7 @@ transDefinition :: Definition -> Result
 transDefinition x = case x of
   FunctionDefIn type' id argumentlist body  -> failure x
   FunctionDef type' id argumentlist body  -> failure x
-  FuctionDeclInline type' id argumentlist  -> failure x
-  FunctionDecl type' id argumentlist  -> failure x
+  Function type' id argumentlist  -> failure x
   GlobVar decl  -> failure x
   GlobStruct struct  -> failure x
   GlobTypeDef typedef  -> failure x
