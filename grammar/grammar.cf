@@ -106,26 +106,14 @@ coercions Exp 16 ;
 separator Exp "," ;
 
 -- TEMPLATE INSTANTIATIONS
-TemplateInst . TempInst ::= Id "<" TypeList ">" ;
-TypeListDef . TypeList ::= Type "," TypeList ;
-TypeList1 . TypeList ::= Type ;
+TemplateInst . TempInst ::= Id "<" [Type] ">" ;
 separator nonempty Type "," ;
 
 -- TYPES
---Pointer . Type ::= BType "*" ;
-Reference . Type ::= BType "&" ;
-BaseType . Type ::= BType ;
-TQCon . BType ::= QCon ;
-TInt . BType ::= "int" ;
-TVoid . BType ::= "void" ;
-TBool . BType ::= "bool" ;
-TDouble . BType ::= "double" ;
+rules Type ::= Type "&" | QCon | "int" | "void" | "bool" | "double" ;
 
 -- LITERALS
-LStringList . Literal ::= StringList ;
-LInt . Literal ::= Integer ;
-LDouble . Literal ::= Double ;
-LChar . Literal ::= Char ;
+rules Literal ::= StringList | Integer | Double | Char ;
 LStringListDef . StringList ::= StringList String ;
 LString . StringList ::= String ;
 
