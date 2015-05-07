@@ -21,7 +21,7 @@ terminator Definition "" ;
 -- ARGUMENTLISTS
 ArgumentListDef . ArgumentList ::= "(" [Argument] ")" ;
 separator Argument "," ;
-terminator Argument "" ;
+--terminator Argument "" ;
 ArgumentConstDecl . Argument ::= "const" Type Exp ;
 ArgumentDecl . Argument ::= Type Exp ;
 ArgumentConsttype . Argument ::= "const" Type;
@@ -64,7 +64,7 @@ Declaration . Decl ::= Type Var ";" ;
 VariableInitialization . Var ::= Id "=" Exp ;
 VariableName . Var ::= Id ;
 separator nonempty Var "," ;
-terminator Var "" ;
+--terminator Var "" ;
 terminator Decl "" ;
 --Variable . Var ::= Exp ;
 
@@ -77,11 +77,11 @@ IdName . Name ::= Id ;
 TempInstName . Name ::= TempInst ;
 
 -- EXPRESSIONS
-EIdent . Exp16 ::= Id ;
+--EIdent . Exp16 ::= Id ;
 ELiteral . Exp16 ::= Literal ;
-EBracket . Exp16 ::= "(" Exp ")" ;
+--EBracket . Exp16 ::= "(" Exp ")" ;
 EIndex . Exp15 ::= Exp15 "[" Exp "]" ;
-EQCon . Exp15 ::= QCon;
+EQCon . Exp15 ::= QCon ;
 EFunCall . Exp15 ::= Exp15 "(" [Exp] ")" ;
 EStrucProj . Exp14 ::= Exp15 "." Exp15 ; 
 EStrucPro . Exp14 ::= Exp15 "->" Exp15 ;
@@ -115,17 +115,17 @@ ECond . Exp2 ::= Exp2 "?" Exp3 ":" Exp3 ;
 EEx . Exp1 ::= "throw" Exp2 ;
 coercions Exp 16 ;
 separator Exp "," ;
-terminator Exp "" ;
+--terminator Exp "" ;
 
 -- TEMPLATE INSTANTIATIONS
 TemplateInst . TempInst ::= Id "<" TypeList ">" ;
 TypeListDef . TypeList ::= Type "," TypeList ;
 TypeList1 . TypeList ::= Type ;
 separator nonempty Type "," ;
-terminator Type "" ;
+--terminator Type "" ;
 
 -- TYPES
-Pointer . Type ::= BType "*" ;
+--Pointer . Type ::= BType "*" ;
 Reference . Type ::= BType "&" ;
 BaseType . Type ::= BType ;
 TQCon . BType ::= QCon ;
@@ -141,7 +141,7 @@ LDouble . Literal ::= Double ;
 LChar . Literal ::= Char ;
 LStringListDef . StringList ::= StringList String ;
 LString . StringList ::= String ;
-Identif . Id ::= Ident ;
+--Identif . Id ::= Ident ;
 
 -- TOKENS
---token Id (letter | (letter | digit | '_' )*) ;
+token Id (letter (letter | digit | '_' )*) ;
