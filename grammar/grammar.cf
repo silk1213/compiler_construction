@@ -28,7 +28,6 @@ ArgumentType . Argument ::= Type ;
 
 -- BODY 
 FuntionBody . Body ::= "{" [Stm] "}" ;
-EmptyBody . Body ::= "{" ";" "}" ;
 
 -- STATEMENTS
 StmDecl . Stm ::= Decl ;
