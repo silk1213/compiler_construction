@@ -141,7 +141,7 @@ LDouble . Literal ::= Double ;
 LChar . Literal ::= Char ;
 LStringListDef . StringList ::= StringList String ;
 LString . StringList ::= String ;
-Iden . Id ::= CId ;
+Identif . Id ::= Ident ;
 
 -- TOKENS
-token CId (letter | (letter | digit | '_' )*) ;
+--token Id (letter | (letter | digit | '_' )*) ;
