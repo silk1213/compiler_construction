@@ -21,13 +21,10 @@ terminator Definition "" ;
 -- ARGUMENTLISTS
 ArgumentListDef . ArgumentList ::= "(" [Argument] ")" ;
 separator Argument "," ;
---terminator Argument "" ;
 ArgumentConstDecl . Argument ::= "const" Type Exp ;
 ArgumentDecl . Argument ::= Type Exp ;
 ArgumentConsttype . Argument ::= "const" Type;
 ArgumentType . Argument ::= Type ;
---ArgInitialization . ArgId ::= Id "=" Exp ;
---ArgName . ArgId ::= Id ;
 
 -- BODY 
 FuntionBody . Body ::= "{" [Stm] "}" ;
@@ -43,7 +40,6 @@ StmFor . Stm ::= "for" "(" Decl Exp ";" Exp ")" Stm ;
 StmIfElse . Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
 StmIf . Stm ::= "if" "(" Exp ")" Stm ;
 StmBlock . Stm ::= "{" [Stm] "}" ;
-StmEmptyBlock . Stm ::= "{" "}" ;
 StmTypeDef . Stm ::= TypeDef ;
 StmeStruct . Stm ::= Struct ";" ;
 StmExpression . Stm ::= Exp ";" ;
@@ -54,7 +50,6 @@ StructDef . Struct ::= "struct" Id "{" [Decl] "}" ;
 
 -- TYPEDEF
 TypeDefForm . TypeDef ::= "typedef" Type Id ";" ;
---TypeDefForm2 . TypeDef ::= "typedef" Type ";" ;
 
 -- DECLARATIONS
 ConstMulDecl . Decl ::= "const" Type Var "," [Var] ";" ;
@@ -64,22 +59,16 @@ Declaration . Decl ::= Type Var ";" ;
 VariableInitialization . Var ::= Id "=" Exp ;
 VariableName . Var ::= Id ;
 separator nonempty Var "," ;
---terminator Var "" ;
 terminator Decl "" ;
---Variable . Var ::= Exp ;
 
 -- QUALIFIED CONSTANTS
 QualCon . QCon ::= QCon "::" Name ;
 QualConN . QCon ::= Name ;
---separator nonempty Name "::" ;
---terminator Name "" ;
 IdName . Name ::= Id ;
 TempInstName . Name ::= TempInst ;
 
 -- EXPRESSIONS
---EIdent . Exp16 ::= Id ;
 ELiteral . Exp16 ::= Literal ;
---EBracket . Exp16 ::= "(" Exp ")" ;
 EIndex . Exp15 ::= Exp15 "[" Exp "]" ;
 EQCon . Exp15 ::= QCon ;
 EFunCall . Exp15 ::= Exp15 "(" [Exp] ")" ;
@@ -115,14 +104,12 @@ ECond . Exp2 ::= Exp2 "?" Exp3 ":" Exp3 ;
 EEx . Exp1 ::= "throw" Exp2 ;
 coercions Exp 16 ;
 separator Exp "," ;
---terminator Exp "" ;
 
 -- TEMPLATE INSTANTIATIONS
 TemplateInst . TempInst ::= Id "<" TypeList ">" ;
 TypeListDef . TypeList ::= Type "," TypeList ;
 TypeList1 . TypeList ::= Type ;
 separator nonempty Type "," ;
---terminator Type "" ;
 
 -- TYPES
 --Pointer . Type ::= BType "*" ;
@@ -141,7 +128,6 @@ LDouble . Literal ::= Double ;
 LChar . Literal ::= Char ;
 LStringListDef . StringList ::= StringList String ;
 LString . StringList ::= String ;
---Identif . Id ::= Ident ;
 
 -- TOKENS
 token Id (letter (letter | digit | '_' )*) ;
