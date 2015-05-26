@@ -3,11 +3,14 @@
 /* You might want to change the above name. */
 
 #include "Absyn.H"
+#include "TypeChecker.H"
 
 
 class Skeleton : public Visitor
 {
 public:
+	Skeleton();
+	~Skeleton();
   void visitProgram(Program* p);
   void visitDef(Def* p);
   void visitArg(Arg* p);
@@ -67,6 +70,9 @@ public:
   void visitDouble(Double x);
   void visitString(String x);
   void visitIdent(Ident x);
+
+private:
+	TypeChecker* typechecker_;
 
 };
 

@@ -5,8 +5,15 @@
    algorithms to use context information differently. */
 
 #include "Skeleton.H"
-#include "TypeChecker.H"
 #include <stdio.h>
+
+Skeleton::Skeleton() {
+	typechecker_ = new TypeChecker();
+}
+
+Skeleton::~Skeleton() {
+	delete typechecker_;
+}
 
 void Skeleton::visitProgram(Program* t) {} //abstract class
 void Skeleton::visitDef(Def* t) {} //abstract class
@@ -63,6 +70,9 @@ void Skeleton::visitSDecls(SDecls *sdecls)
   sdecls->type_->accept(this);
   sdecls->listid_->accept(this);
 
+  for(ListId::iterator i = sdecls->listid_->begin(); i != sdecls->listid_->end(); i++) {
+  	typechecker_->updateVar(*i,sdecls->type_);
+  }
 }
 
 void Skeleton::visitSInit(SInit *sinit)

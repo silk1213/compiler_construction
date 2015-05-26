@@ -1,7 +1,496 @@
 #include "TypeChecker.H"
+#include <stdio.h>
+#include <iostream>
 
-TypeChecker::~TypeChecker() {}
+TypeChecker::TypeChecker() {
+	env_ = new Env();
+}
+
+TypeChecker::~TypeChecker() {
+	delete env_;
+}
+
 Type* TypeChecker::typecheck (Visitable* v) {
 	v->accept (this);
 	return ty_;
+}
+
+void TypeChecker::visitProgram(Program* t) {} //abstract class
+void TypeChecker::visitDef(Def* t) {} //abstract class
+void TypeChecker::visitArg(Arg* t) {} //abstract class
+void TypeChecker::visitStm(Stm* t) {} //abstract class
+void TypeChecker::visitExp(Exp* t) {} //abstract class
+void TypeChecker::visitType(Type* t) {} //abstract class
+
+void TypeChecker::visitPDefs(PDefs *pdefs)
+{
+  /* Code For PDefs Goes Here */
+  printf("visitPDefs\n");
+
+  pdefs->listdef_->accept(this);
+
+}
+
+void TypeChecker::visitDFun(DFun *dfun)
+{
+  /* Code For DFun Goes Here */
+  printf("visitDFun\n");
+
+  dfun->type_->accept(this);
+  visitId(dfun->id_);
+  dfun->listarg_->accept(this);
+  dfun->liststm_->accept(this);
+
+}
+
+void TypeChecker::visitADecl(ADecl *adecl)
+{
+  /* Code For ADecl Goes Here */
+  printf("visitADecl\n");
+
+  adecl->type_->accept(this);
+  visitId(adecl->id_);
+
+}
+
+void TypeChecker::visitSExp(SExp *sexp)
+{
+  /* Code For SExp Goes Here */
+  printf("visitSExp\n");
+
+  sexp->exp_->accept(this);
+
+}
+
+void TypeChecker::visitSDecls(SDecls *sdecls)
+{
+  /* Code For SDecls Goes Here */
+  printf("visitSDecls\n");
+
+  sdecls->type_->accept(this);
+  sdecls->listid_->accept(this);
+
+  for(ListId::iterator i = sdecls->listid_->begin(); i != sdecls->listid_->end(); i++) {
+  	env_->updateVar(*i,sdecls->type_);
+	
+  }
+}
+
+void TypeChecker::visitSInit(SInit *sinit)
+{
+  /* Code For SInit Goes Here */
+  printf("visitSInit\n");
+
+  sinit->type_->accept(this);
+  visitId(sinit->id_);
+  sinit->exp_->accept(this);
+
+}
+
+void TypeChecker::visitSReturn(SReturn *sreturn)
+{
+  /* Code For SReturn Goes Here */
+  printf("visitSReturn\n");
+
+  sreturn->exp_->accept(this);
+
+}
+
+void TypeChecker::visitSReturnVoid(SReturnVoid *sreturnvoid)
+{
+  /* Code For SReturnVoid Goes Here */
+  printf("visitSReturnVoid\n");
+
+
+}
+
+void TypeChecker::visitSWhile(SWhile *swhile)
+{
+  /* Code For SWhile Goes Here */
+  printf("visitSWhile\n");
+
+  swhile->exp_->accept(this);
+  swhile->stm_->accept(this);
+
+}
+
+void TypeChecker::visitSBlock(SBlock *sblock)
+{
+  /* Code For SBlock Goes Here */
+  printf("visitSBlock\n");
+
+  sblock->liststm_->accept(this);
+
+}
+
+void TypeChecker::visitSIfElse(SIfElse *sifelse)
+{
+  /* Code For SIfElse Goes Here */
+  printf("visitSIfElse\n");
+
+  sifelse->exp_->accept(this);
+  sifelse->stm_1->accept(this);
+  sifelse->stm_2->accept(this);
+
+}
+
+void TypeChecker::visitETrue(ETrue *etrue)
+{
+  /* Code For ETrue Goes Here */
+  printf("visitETrue\n");
+
+
+}
+
+void TypeChecker::visitEFalse(EFalse *efalse)
+{
+  /* Code For EFalse Goes Here */
+  printf("visitEFalse\n");
+
+
+}
+
+void TypeChecker::visitEInt(EInt *eint)
+{
+  /* Code For EInt Goes Here */
+  printf("visitEInt\n");
+
+  visitInteger(eint->integer_);
+
+}
+
+void TypeChecker::visitEDouble(EDouble *edouble)
+{
+  /* Code For EDouble Goes Here */
+  printf("visitEDouble\n");
+
+  visitDouble(edouble->double_);
+
+}
+
+void TypeChecker::visitEString(EString *estring)
+{
+  /* Code For EString Goes Here */
+  printf("visitEString\n");
+
+  visitString(estring->string_);
+
+}
+
+void TypeChecker::visitEId(EId *eid)
+{
+  /* Code For EId Goes Here */
+  printf("visitEId\n");
+
+  visitId(eid->id_);
+
+}
+
+void TypeChecker::visitEApp(EApp *eapp)
+{
+  /* Code For EApp Goes Here */
+  printf("visitEApp\n");
+
+  visitId(eapp->id_);
+  eapp->listexp_->accept(this);
+
+}
+
+void TypeChecker::visitEPIncr(EPIncr *epincr)
+{
+  /* Code For EPIncr Goes Here */
+  printf("visitEPIncr\n");
+
+  epincr->exp_->accept(this);
+
+}
+
+void TypeChecker::visitEPDecr(EPDecr *epdecr)
+{
+  /* Code For EPDecr Goes Here */
+  printf("visitEPDecr\n");
+
+  epdecr->exp_->accept(this);
+
+}
+
+void TypeChecker::visitEIncr(EIncr *eincr)
+{
+  /* Code For EIncr Goes Here */
+  printf("visitEIncr\n");
+
+  eincr->exp_->accept(this);
+
+}
+
+void TypeChecker::visitEDecr(EDecr *edecr)
+{
+  /* Code For EDecr Goes Here */
+  printf("visitEDecr\n");
+
+  edecr->exp_->accept(this);
+
+}
+
+void TypeChecker::visitETimes(ETimes *etimes)
+{
+  /* Code For ETimes Goes Here */
+  printf("visitETimes\n");
+
+  etimes->exp_1->accept(this);
+  etimes->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitEDiv(EDiv *ediv)
+{
+  /* Code For EDiv Goes Here */
+  printf("visitEDiv\n");
+
+  ediv->exp_1->accept(this);
+  ediv->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitEPlus(EPlus *eplus)
+{
+  /* Code For EPlus Goes Here */
+  printf("visitEPlus\n");
+
+  eplus->exp_1->accept(this);
+  eplus->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitEMinus(EMinus *eminus)
+{
+  /* Code For EMinus Goes Here */
+  printf("visitEMinus\n");
+
+  eminus->exp_1->accept(this);
+  eminus->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitELt(ELt *elt)
+{
+  /* Code For ELt Goes Here */
+  printf("visitELt\n");
+
+  elt->exp_1->accept(this);
+  elt->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitEGt(EGt *egt)
+{
+  /* Code For EGt Goes Here */
+  printf("visitEGt\n");
+
+  egt->exp_1->accept(this);
+  egt->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitELtEq(ELtEq *elteq)
+{
+  /* Code For ELtEq Goes Here */
+  printf("visitELtEq\n");
+
+  elteq->exp_1->accept(this);
+  elteq->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitEGtEq(EGtEq *egteq)
+{
+  /* Code For EGtEq Goes Here */
+  printf("visitEGtEq\n");
+
+  egteq->exp_1->accept(this);
+  egteq->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitEEq(EEq *eeq)
+{
+  /* Code For EEq Goes Here */
+  printf("visitEEq\n");
+
+  eeq->exp_1->accept(this);
+  eeq->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitENEq(ENEq *eneq)
+{
+  /* Code For ENEq Goes Here */
+  printf("visitENEq\n");
+
+  eneq->exp_1->accept(this);
+  eneq->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitEAnd(EAnd *eand)
+{
+  /* Code For EAnd Goes Here */
+  printf("visitEAnd\n");
+
+  eand->exp_1->accept(this);
+  eand->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitEOr(EOr *eor)
+{
+  /* Code For EOr Goes Here */
+  printf("visitEOr\n");
+
+  eor->exp_1->accept(this);
+  eor->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitEAss(EAss *eass)
+{
+  /* Code For EAss Goes Here */
+  printf("visitEAss\n");
+
+  eass->exp_1->accept(this);
+  eass->exp_2->accept(this);
+
+}
+
+void TypeChecker::visitETyped(ETyped *etyped)
+{
+  /* Code For ETyped Goes Here */
+  printf("visitETyped\n");
+
+  etyped->exp_->accept(this);
+  etyped->type_->accept(this);
+
+}
+
+void TypeChecker::visitType_bool(Type_bool *type_bool)
+{
+  /* Code For Type_bool Goes Here */
+  printf("visitType_bool\n");
+
+
+}
+
+void TypeChecker::visitType_int(Type_int *type_int)
+{
+  /* Code For Type_int Goes Here */
+  printf("visitType_int\n");
+
+
+}
+
+void TypeChecker::visitType_double(Type_double *type_double)
+{
+  /* Code For Type_double Goes Here */
+  printf("visitType_double\n");
+
+
+}
+
+void TypeChecker::visitType_void(Type_void *type_void)
+{
+  /* Code For Type_void Goes Here */
+  printf("visitType_void\n");
+
+
+}
+
+void TypeChecker::visitType_string(Type_string *type_string)
+{
+  /* Code For Type_string Goes Here */
+  printf("visitType_string\n");
+
+
+}
+
+
+void TypeChecker::visitListDef(ListDef* listdef)
+{
+  printf("visitListDef\n");
+  for (ListDef::iterator i = listdef->begin() ; i != listdef->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
+void TypeChecker::visitListArg(ListArg* listarg)
+{
+  printf("visitListArg\n");
+  for (ListArg::iterator i = listarg->begin() ; i != listarg->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
+void TypeChecker::visitListStm(ListStm* liststm)
+{
+  printf("visitListStm\n");
+  for (ListStm::iterator i = liststm->begin() ; i != liststm->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
+void TypeChecker::visitListExp(ListExp* listexp)
+{
+  printf("visitListExp\n");
+  for (ListExp::iterator i = listexp->begin() ; i != listexp->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
+void TypeChecker::visitListId(ListId* listid)
+{
+  printf("visitListId\n");
+  for (ListId::iterator i = listid->begin() ; i != listid->end() ; ++i)
+  {
+    visitId(*i) ;
+  }
+}
+
+
+void TypeChecker::visitId(Id x)
+{
+  /* Code for Id Goes Here */
+  printf("visitId\n");
+}
+
+void TypeChecker::visitInteger(Integer x)
+{
+  /* Code for Integer Goes Here */
+  printf("visitIneteger\n");
+}
+
+void TypeChecker::visitChar(Char x)
+{
+  /* Code for Char Goes Here */
+  printf("visitChar\n");
+}
+
+void TypeChecker::visitDouble(Double x)
+{
+  /* Code for Double Goes Here */
+  printf("visitDouble\n");
+}
+
+void TypeChecker::visitString(String x)
+{
+  /* Code for String Goes Here */
+  printf("visitString\n");
+}
+
+void TypeChecker::visitIdent(Ident x)
+{
+  /* Code for Ident Goes Here */
+  printf("visitIdent\n");
 }

@@ -11,7 +11,7 @@ clean:
 distclean:
 	 rm -f *.o Absyn.C Absyn.H Test.C Parser.C Parser.H Lexer.C Skeleton.C Skeleton.H Printer.C Printer.H CPP.l CPP.y CPP.tex CPP.dvi CPP.aux CPP.log CPP.ps TestCPP Makefile
 
-TestCPP: Absyn.o Lexer.o Parser.o Printer.o Skeleton.o Test.o TypeChecker.o
+TestCPP: Absyn.o Lexer.o Parser.o Printer.o Test.o TypeChecker.o Env.o
 	@echo "Linking TestCPP..."
 	${CC} ${CCFLAGS} *.o -o TestCPP
 
@@ -33,8 +33,8 @@ Parser.o: Parser.C Absyn.H
 Printer.o: Printer.C Printer.H Absyn.H
 	${CC} ${CCFLAGS} -c Printer.C
 
-Skeleton.o: Skeleton.C Skeleton.H Absyn.H TypeChecker.H
-	${CC} ${CCFLAGS} -c Skeleton.C
+Env.o: Env.C Absyn.H
+	${CC} ${CCFLAGS} -c Env.C
 
 TypeChecker.o: TypeChecker.H TypeChecker.C Env.C
 	${CC} ${CCFLAGS} -c TypeChecker.C

@@ -37,9 +37,9 @@ int main(int argc, char ** argv)
     printf("%s\n\n", p->print(parse_tree));
     
     printf("TypeChecker:\n");
-    Skeleton* sk = new Skeleton();
-    parse_tree->accept(sk);
-    delete sk;
+    TypeChecker* tc = new TypeChecker();
+    parse_tree->accept(tc);
+    delete tc;
     return 0;
   }
   return 1;

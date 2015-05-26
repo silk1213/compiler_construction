@@ -1,5 +1,6 @@
 int factr (int n)
     {
+	  int i;
       if (n<2)
         return 1 ;
       else
