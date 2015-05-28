@@ -105,6 +105,11 @@ DFun *DFun::clone() const
 
 
 /********************   ADecl    ********************/
+Type* ADecl::getType()
+{
+  return type_;
+}
+
 ADecl::ADecl(Type *p1, Id p2)
 {
   type_ = p1;

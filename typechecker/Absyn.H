@@ -170,6 +170,7 @@ public:
 class Arg : public Visitable
 {
 public:
+  virtual Type* getType() = 0;
   virtual Arg *clone() const = 0;
 
 };
@@ -236,6 +237,7 @@ public:
   Type *type_;
   Id id_;
 
+  Type* getType();
   ADecl(const ADecl &);
   ADecl &operator=(const ADecl &);
   ADecl(Type *p1, Id p2);

@@ -41,6 +41,7 @@ void TypeChecker::visitDFun(DFun *dfun)
   dfun->listarg_->accept(this);
   dfun->liststm_->accept(this);
 
+  env_->updateFun(dfun->id_, dfun->listarg_, dfun->type_);
 }
 
 void TypeChecker::visitADecl(ADecl *adecl)
