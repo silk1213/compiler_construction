@@ -64,7 +64,7 @@ class Env {
 				Type* outputType = iterator->second.second;
 				ListArg::iterator it;
 				for (it = inputTypes->begin(); it != inputTypes->end(); ++it) {
-					std::cout << *it->getType() << std::endl;				
+					std::cout << "Id:" << (*it)->getId() << "\t Type:" << (*it)->getType()->getType() << std::endl;				
 				}
 				std::cout<<"Output Type:"<< outputType->getType() << std::endl;	
 				//iterator->second->printType();

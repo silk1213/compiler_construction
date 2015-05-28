@@ -110,6 +110,11 @@ Type* ADecl::getType()
   return type_;
 }
 
+Id ADecl::getId()
+{
+  return id_;
+}
+
 ADecl::ADecl(Type *p1, Id p2)
 {
   type_ = p1;
