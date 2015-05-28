@@ -5,17 +5,27 @@
 #include <utility>
 #include <list>
 
+typedef std::map<Id,Type*> variableTypeMap;
+typedef std::map<Id,std::pair<ListArg*,Type*> > functionTypeMap;
+
 class Env {
-	public:
-		typedef std::map<Id,Type*> variableTypeMap;
-		typedef std::map<Id,std::pair<ListArg*,Type*> > functionTypeMap;
-
-		variableTypeMap variable_env;
+	private:
+		std::list<variableTypeMap> list_variable_env;
 		functionTypeMap function_env;
+		variableTypeMap varMap;
 
+	public:
+		void addEnv() {
+			list_variable_env.push_back();		
+		}
+
+		void deleteEnv() {
+			list_variable_env.pop_back();
+		}
+		
 		void updateVar(Id id ,Type* type) {
-			variable_env.insert (std::pair<Id,Type*>(id,type));
-			printVariableMap(variable_env);
+			list_variable_env.back().insert (std::pair<Id,Type*>(id,type));
+			printVariableMap(list_variable_env);
 		}
 
 		void updateFun(Id id ,ListArg* inputList, Type* output) {
@@ -24,9 +34,13 @@ class Env {
 		}
 
 		Type* lookupVar(Id id) {
-			std::map<Id,Type* >::iterator it = variable_env.find(id);
-			if (it != variable_env.end()) {
-				return it->second;
+			typedef std::list<variableTypeMap>::iterator it_variable;
+			for(it_variable iterator = list_variable_env.end(); iterator != list_variable_env.begin(); iterator--){
+				std::map<Id,Type* >::iterator it = *iterator.find(id);
+
+				if (it != *iterator.end()) {
+					return it->second;
+				}
 			}
 			// ... else error handling
 		}
