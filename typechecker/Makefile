@@ -2,18 +2,18 @@ CC = g++
 CCFLAGS = -g
 FLEX = flex
 BISON = bison
-all: TestCPP
+all: lab2
 
 clean:
 	rm -f *.o CPP.dvi CPP.aux CPP.log 
-	rm -f CPP.pdf TestCPP
+	rm -f CPP.pdf lab2
 
 distclean:
-	 rm -f *.o Absyn.C Absyn.H Test.C Parser.C Parser.H Lexer.C Skeleton.C Skeleton.H Printer.C Printer.H CPP.l CPP.y CPP.tex CPP.dvi CPP.aux CPP.log CPP.ps TestCPP Makefile
+	 rm -f *.o Absyn.C Absyn.H Test.C Parser.C Parser.H Lexer.C Skeleton.C Skeleton.H Printer.C Printer.H CPP.l CPP.y CPP.tex CPP.dvi CPP.aux CPP.log CPP.ps lab2 Makefile
 
-TestCPP: Absyn.o Lexer.o Parser.o Printer.o Test.o TypeChecker.o Env.o
-	@echo "Linking TestCPP..."
-	${CC} ${CCFLAGS} *.o -o TestCPP
+lab2: Absyn.o Lexer.o Parser.o Printer.o Test.o TypeChecker.o Env.o
+	@echo "Linking lab2..."
+	${CC} ${CCFLAGS} *.o -o lab2
 
 Absyn.o: Absyn.C Absyn.H
 	${CC} ${CCFLAGS} -c Absyn.C
