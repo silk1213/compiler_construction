@@ -193,7 +193,7 @@ class Type : public Visitable
 public:
   virtual void printType() = 0;
   virtual Type *clone() const = 0;
-  virtual std::string getType() = 0;
+  virtual string getType() = 0;
 
 };
 

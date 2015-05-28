@@ -9,9 +9,6 @@ int factr (int n)
 
     int main ()
     {
-      double a;
-	double b;
-	int x, u;
       int i = factr(7) ;
       return 0 ;
     }

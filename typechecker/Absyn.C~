@@ -1907,7 +1907,7 @@ void Type_string::printType() {
 
 std::string Type_string::getType() {
   return "string";
-}
+
 
 
 
