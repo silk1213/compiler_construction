@@ -8,42 +8,119 @@
 typedef std::map<Id,Type*> variableTypeMap;
 typedef std::map<Id,std::pair<ListArg*,Type*> > functionTypeMap;
 
+class LinkedVariableTypeMap {
+	public: 
+		//Map für Variabeln
+		variableTypeMap* env_;
+
+		//Zeiger auf nächste Map
+		LinkedVariableTypeMap* next;
+
+		//Zeiger auf vorherige Map
+		LinkedVariableTypeMap* prev;
+
+		//Konstruktor mit anhängen an bestehende Liste
+		LinkedVariableTypeMap(LinkedVariableTypeMap* list) {
+			env_ = new variableTypeMap();
+			next = list;
+			prev = NULL;
+		}
+
+		//Konstruktor
+		LinkedVariableTypeMap() {
+			env_ = new variableTypeMap();
+			next = NULL;
+			prev = NULL;
+		}
+
+		//Destruktor
+		~LinkedVariableTypeMap() {
+			next = NULL;
+			prev = NULL;
+			delete(env_);
+		}
+};
+
 class Env {
 	private:
-		std::list<variableTypeMap> list_variable_env;
+		LinkedVariableTypeMap* list_variable_env;
+		int var_env_size;
 		functionTypeMap function_env;
-		variableTypeMap varMap;
+	
 
 	public:
-		void addEnv() {
-			list_variable_env.push_back();		
+		//Konstruktor (erstellt Liste mit erster Map)
+		Env() {
+			var_env_size = 0;
 		}
 
+		//Destruktor
+		~Env() {
+			for (int i = 0; i < var_env_size; i++) {
+				deleteEnv();
+			}
+		}
+
+		//fügt neue Map an erste Position der Liste hinzu
+		void addEnv() {
+			LinkedVariableTypeMap* temp = new LinkedVariableTypeMap(list_variable_env);
+			list_variable_env->prev = temp;
+			list_variable_env = temp;	
+			var_env_size++;	
+		}
+
+		//entfernt erstes Element der Liste
 		void deleteEnv() {
-			list_variable_env.pop_back();
+			LinkedVariableTypeMap* temp = list_variable_env->next;
+			delete list_variable_env;
+			temp->prev = NULL;
+			list_variable_env = temp;
+			var_env_size--;
 		}
 		
+		//fügt neue Variable in aktuelle(erste) VariabelMap
 		void updateVar(Id id ,Type* type) {
-			list_variable_env.back().insert (std::pair<Id,Type*>(id,type));
-			printVariableMap(list_variable_env);
+			list_variable_env->env_->insert (std::pair<Id,Type*>(id,type));
+			printAllVariableMaps(list_variable_env);
 		}
 
+		//fügt Funktion der FunktionMap hinzu
 		void updateFun(Id id ,ListArg* inputList, Type* output) {
 			function_env.insert (std::pair<Id,std::pair<ListArg*,Type*> >(id,std::make_pair(inputList,output)));
 			printFunctionMap(function_env);
+			addEnv();
+			ListArg::iterator it;
+				for (it = inputList->begin(); it != inputList->end(); ++it) {
+					updateVar((*it)->getId(), (*it)->getType());				
+				}
+			
 		}
 
 		Type* lookupVar(Id id) {
-			typedef std::list<variableTypeMap>::iterator it_variable;
-			for(it_variable iterator = list_variable_env.end(); iterator != list_variable_env.begin(); iterator--){
-				std::map<Id,Type* >::iterator it = *iterator.find(id);
+			LinkedVariableTypeMap* temp = list_variable_env;
+			variableTypeMap::iterator map_iter;
+			for (int i = 0; i < var_env_size; i++) {
+				map_iter = temp->env_->find(id);
+
+				if (map_iter != temp->env_->end()) {
+					return map_iter->second;
+				} else {
+					temp = temp->next;
+				}
+			}
+			return NULL;
+		}
+
+		/*Type* lookupVar(Id id) {
+			for(std::list<variableTypeMap>::iterator list_it = list_variable_env.end(); list_it != list_variable_env.begin(); list_it--){
+				variableTypeMap::iterator map_it = list_it->find(id);
 
 				if (it != *iterator.end()) {
 					return it->second;
 				}
 			}
 			// ... else error handling
-		}
+		}*/
 
 		std::pair<ListArg*,Type*> lookupFun(Id id) {
 			functionTypeMap::iterator it = function_env.find(id);
@@ -58,19 +135,26 @@ class Env {
 			return type;
 		}
 
-		void printVariableMap(variableTypeMap map){
-			typedef std::map<Id,Type*>::iterator it_variable;
-			for(it_variable iterator = map.begin(); iterator != map.end(); iterator++){
+		void printAllVariableMaps(LinkedVariableTypeMap* list) {
+			LinkedVariableTypeMap* temp = list;
+			for (int i = 0; i < var_env_size; i++) {
+				std::cout << i << ". map" << std::endl;
+				printVariableMap(temp->env_);
+				temp = temp->next;
+			}
+		}
+
+		void printVariableMap(variableTypeMap* map){
+			for(std::map<Id,Type*>::iterator iterator = map->begin(); iterator != map->end(); iterator++){
 				std::cout<<"Key:"<<iterator->first<< std::endl;
-				std::cout<<"Value:"<< iterator->second->getType() << std::endl;	
+				std::cout<<"Type:"<< iterator->second->getType() << std::endl;	
 				//iterator->second->printType();
 				std::cout << std::endl;		
 			} 		
 		}
 
 		void printFunctionMap(functionTypeMap map){
-			typedef functionTypeMap::iterator it_function;
-			for(it_function iterator = map.begin(); iterator != map.end(); iterator++){
+			for(functionTypeMap::iterator iterator = map.begin(); iterator != map.end(); iterator++){
 				std::cout<<"Key:"<<iterator->first<< std::endl;
 				std::cout<<"Input Arguments:"<< std::endl;
 

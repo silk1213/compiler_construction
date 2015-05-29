@@ -89,7 +89,7 @@ void TypeChecker::visitSInit(SInit *sinit)
   visitId(sinit->id_);
   sinit->exp_->accept(this);
 
-  env_->updateVar(sinit->id_, sinit->type_);
+  env_->updateVar(sinit->id_, sinit->type);
 
 }
 
