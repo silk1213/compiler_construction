@@ -81,13 +81,13 @@ class Env {
 		//fügt neue Variable in aktuelle(erste) VariabelMap
 		void updateVar(Id id ,Type* type) {
 			list_variable_env->env_->insert (std::pair<Id,Type*>(id,type));
-			printAllVariableMaps(list_variable_env);
+			//printAllVariableMaps(list_variable_env);
 		}
 
 		//fügt Funktion der FunktionMap hinzu
 		void updateFun(Id id ,ListArg* inputList, Type* output) {
 			function_env.insert (std::pair<Id,std::pair<ListArg*,Type*> >(id,std::make_pair(inputList,output)));
-			printFunctionMap(function_env);
+			//printFunctionMap(function_env);
 			addEnv();
 			ListArg::iterator it;
 				for (it = inputList->begin(); it != inputList->end(); ++it) {
@@ -111,6 +111,16 @@ class Env {
 			return NULL;
 		}
 
+		Type* lookuplatest(Id id) {
+			variableTypeMap::iterator iter = list_variable_env->env_->find(id);
+
+			if (iter != list_variable_env->env_->end()) {
+				return iter->second;
+			}
+
+			return NULL; 
+		}
+
 		/*Type* lookupVar(Id id) {
 			for(std::list<variableTypeMap>::iterator list_it = list_variable_env.end(); list_it != list_variable_env.begin(); list_it--){
 				variableTypeMap::iterator map_it = list_it->find(id);
@@ -130,9 +140,30 @@ class Env {
 			// ... else error handling
 		}
 
+		std::pair<ListArg*,Type*> lookupFun() {
+			functionTypeMap::iterator it = --function_env.end();	
+			if (it != function_env.end()) {
+				return it->second;
+			} else { std::cout << "fehler!!!!" << std::endl;}
+			// ... else error handling
+		}
+
 		std::string lookupVariable (Id id) {
-			std::string type = lookupVar(id)->getType();
-			return type;
+			Type* type = lookupVar(id);
+			if (type == NULL) {
+				return "";
+			} else {
+				return type->getType();
+			}
+		}
+
+		std::string lookuplatestVar (Id id) {
+			Type* type = lookuplatest(id);
+			if (type == NULL) {
+				return "";
+			} else {
+				return type->getType();
+			}
 		}
 
 		void printAllVariableMaps(LinkedVariableTypeMap* list) {

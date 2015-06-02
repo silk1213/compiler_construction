@@ -187,6 +187,7 @@ class Exp : public Visitable
 {
 public:
   virtual Exp *clone() const = 0;
+	std::string type;
 
 };
 
