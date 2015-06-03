@@ -51,7 +51,8 @@ class Env {
 	public:
 		//Konstruktor (erstellt Liste mit erster Map)
 		Env() {
-			var_env_size = 0;
+			var_env_size = 1;
+			list_variable_env = new LinkedVariableTypeMap();
 		}
 
 		//Destruktor
@@ -64,9 +65,11 @@ class Env {
 		//fügt neue Map an erste Position der Liste hinzu
 		void addEnv() {
 			LinkedVariableTypeMap* temp = new LinkedVariableTypeMap(list_variable_env);
+			if (temp == NULL) { std::cout << "could not allocate" << std::endl; }
 			list_variable_env->prev = temp;
 			list_variable_env = temp;	
 			var_env_size++;	
+		//std::cout << "adding env\n" << std::endl;
 		}
 
 		//entfernt erstes Element der Liste
@@ -76,6 +79,7 @@ class Env {
 			temp->prev = NULL;
 			list_variable_env = temp;
 			var_env_size--;
+		//std::cout << "deleting env\n" << std::endl;
 		}
 		
 		//fügt neue Variable in aktuelle(erste) VariabelMap
@@ -88,11 +92,10 @@ class Env {
 		void updateFun(Id id ,ListArg* inputList, Type* output) {
 			function_env.insert (std::pair<Id,std::pair<ListArg*,Type*> >(id,std::make_pair(inputList,output)));
 			//printFunctionMap(function_env);
-			addEnv();
-			ListArg::iterator it;
+			/*ListArg::iterator it;
 				for (it = inputList->begin(); it != inputList->end(); ++it) {
 					updateVar((*it)->getId(), (*it)->getType());				
-				}
+				}*/
 			
 		}
 
@@ -185,6 +188,7 @@ class Env {
 		}
 
 		void printFunctionMap(functionTypeMap map){
+			std::cout << "Printiing..." << std::endl;
 			for(functionTypeMap::iterator iterator = map.begin(); iterator != map.end(); iterator++){
 				std::cout<<"Key:"<<iterator->first<< std::endl;
 				std::cout<<"Input Arguments:"<< std::endl;

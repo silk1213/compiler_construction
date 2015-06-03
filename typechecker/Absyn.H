@@ -163,6 +163,9 @@ public:
 class Def : public Visitable
 {
 public:
+  virtual Id getId() = 0;
+	virtual Type* getType() = 0;
+	virtual ListArg* getArg() = 0;
   virtual Def *clone() const = 0;
 
 };
@@ -224,6 +227,9 @@ public:
   ListArg *listarg_;
   ListStm *liststm_;
 
+	Id getId();
+	Type* getType();
+	ListArg* getArg();
   DFun(const DFun &);
   DFun &operator=(const DFun &);
   DFun(Type *p1, Id p2, ListArg *p3, ListStm *p4);

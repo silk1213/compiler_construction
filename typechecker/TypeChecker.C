@@ -29,10 +29,10 @@ void TypeChecker::visitPDefs(PDefs *pdefs)
   //printf("visitPDefs\n");
 
 	for(ListDef::iterator i = pdefs->listdef_->begin(); i != pdefs->listdef_->end(); i++) {
-		env_->updateFun((*i)->id_, (*i)->listarg_, (*i)->type_);
-  }
+		env_->updateFun((*i)->getId(), (*i)->getArg(), (*i)->getType());
+  	}
 
-  pdefs->listdef_->accept(this);
+  	pdefs->listdef_->accept(this);
 
 	printf("OK");
 
@@ -41,17 +41,23 @@ void TypeChecker::visitPDefs(PDefs *pdefs)
 void TypeChecker::visitDFun(DFun *dfun)
 {
   /* Code For DFun Goes Here */
-  //printf("visitDFun\n");
+  printf("visitDFun\n");
 
   dfun->type_->accept(this);
-  visitId(dfun->id_);
-  dfun->listarg_->accept(this);
 
-  env_->updateFun(dfun->id_, dfun->listarg_, dfun->type_);
+  visitId(dfun->id_);
+
+	latestFunc = dfun->id_;
+  dfun->listarg_->accept(this);
+  env_->addEnv();
+	ListArg::iterator it;
+				for (it = dfun->listarg_->begin(); it != dfun->listarg_->end(); ++it) {
+					env_->updateVar((*it)->getId(), (*it)->getType());				
+				}
 
   dfun->liststm_->accept(this);
-
   env_->deleteEnv();
+	printf("finished funct\n");
 }
 
 void TypeChecker::visitADecl(ADecl *adecl)
@@ -120,7 +126,7 @@ void TypeChecker::visitSReturn(SReturn *sreturn)
   //printf("visitSReturn\n");
 
   sreturn->exp_->accept(this);
-  if(env_->lookupFun().second->getType() != sreturn->exp_->type) {
+  if(env_->lookupFun(latestFunc).second->getType() != sreturn->exp_->type) {
 		printf("TYPE ERROR");
 		exit(1);
 	}
@@ -651,7 +657,7 @@ void TypeChecker::visitETyped(ETyped *etyped)
 void TypeChecker::visitType_bool(Type_bool *type_bool)
 {
   /* Code For Type_bool Goes Here */
-  //printf("visitType_bool\n");
+  printf("visitType_bool\n");
 
 
 }
@@ -694,8 +700,11 @@ void TypeChecker::visitListDef(ListDef* listdef)
   //printf("visitListDef\n");
   for (ListDef::iterator i = listdef->begin() ; i != listdef->end() ; ++i)
   {
+	printf("1\n");
     (*i)->accept(this);
+	printf("2\n");
   }
+printf("nanana\n");
 }
 
 void TypeChecker::visitListArg(ListArg* listarg)

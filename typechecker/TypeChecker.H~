@@ -3,7 +3,7 @@
 class TypeChecker : public Visitor
 {
 	public :
-		Id latestFunc;
+		Id temp;
 		  TypeChecker();
 		  ~TypeChecker();
 		  Type* typecheck(Visitable* v);

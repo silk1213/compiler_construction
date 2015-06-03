@@ -163,6 +163,9 @@ public:
 class Def : public Visitable
 {
 public:
+  virtual Id getId() = 0;
+	virtual Type* getType() = 0;
+	virtual ListArg* getArgs() = 0;
   virtual Def *clone() const = 0;
 
 };
@@ -170,6 +173,8 @@ public:
 class Arg : public Visitable
 {
 public:
+  virtual Type* getType() = 0;
+  virtual Id getId() = 0;
   virtual Arg *clone() const = 0;
 
 };
@@ -185,6 +190,7 @@ class Exp : public Visitable
 {
 public:
   virtual Exp *clone() const = 0;
+	std::string type;
 
 };
 
@@ -193,7 +199,7 @@ class Type : public Visitable
 public:
   virtual void printType() = 0;
   virtual Type *clone() const = 0;
-  virtual string getType() = 0;
+  virtual std::string getType() = 0;
 
 };
 
@@ -221,6 +227,9 @@ public:
   ListArg *listarg_;
   ListStm *liststm_;
 
+	Id getId();
+	Type* getType();
+	ListArg* getArgs();
   DFun(const DFun &);
   DFun &operator=(const DFun &);
   DFun(Type *p1, Id p2, ListArg *p3, ListStm *p4);
@@ -236,6 +245,8 @@ public:
   Type *type_;
   Id id_;
 
+  Type* getType();
+  Id getId();
   ADecl(const ADecl &);
   ADecl &operator=(const ADecl &);
   ADecl(Type *p1, Id p2);

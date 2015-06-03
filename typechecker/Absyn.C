@@ -59,6 +59,18 @@ DFun::DFun(Type *p1, Id p2, ListArg *p3, ListStm *p4)
 
 }
 
+Type* DFun::getType() {
+	return type_;
+}
+
+Id DFun::getId() {
+	return id_;
+}
+
+ListArg* DFun::getArg() {
+	return listarg_;
+}
+
 DFun::DFun(const DFun & other)
 {
   type_ = other.type_->clone();
