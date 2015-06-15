@@ -8,7 +8,8 @@ class Interpreter : public Visitor
 		  Interpreter();
 		  ~Interpreter();
 		  void emit (bool b, std::string str);
-		  std::string newTemporary ();
+          std::string newTemporary ();
+          std::string getTemporary ();
 		  Type* typecheck(Visitable* v);
 
 		  void visitProgram(Program* p);

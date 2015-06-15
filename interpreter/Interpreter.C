@@ -22,6 +22,18 @@ void Interpreter::emit(bool b, std::string str) {
 	}
 }
 
+std::string Interpreter::getLLVMType(std::string type) {
+    if (type == "int") {
+        return "i32";
+    } else if (type == "double") {
+        return type;
+    } else if (type == "bool") {
+        return "i1";
+    } else {
+        return "";
+    }
+}
+
 std::string Interpreter::newTemporary () {
 	std::string temporary;
 	std::ostringstream convert;
@@ -30,6 +42,16 @@ std::string Interpreter::newTemporary () {
 	tmpcounter++;
 	return temporary;
 }
+
+std::string Interpreter::getTemporary () {
+    std::string temporary;
+    std::ostringstream convert;
+    convert << tmpcounter;
+    temporary = convert.str();
+    return temporary;
+}
+
+
 
 Type* Interpreter::typecheck (Visitable* v) {
 	v->accept (this);
@@ -178,9 +200,12 @@ void Interpreter::visitSWhile(SWhile *swhile)
 	std::string whilelabel = "label" + newTemporary();
 	std::string truelabel = "label" + newTemporary();
 	std::string falselabel = "label" + newTemporary();
-	emit (1, whilelabel + ":");
-	emit (0, "br i1 EXP");
-  	swhile->exp_->accept(this);
+    emit (1, whilelabel + ":");
+
+    swhile->exp_->accept(this);
+
+    emit (0, "br i1 %"+getTemporary());
+
 	std::string output_while = ", label %" + truelabel + ", label %" + falselabel;
 	emit (1, output_while);
 	emit (1, truelabel + ":");
@@ -313,17 +338,23 @@ void Interpreter::visitEApp(EApp *eapp)
 	ListArg::iterator it;
 	ListExp::iterator it_exp;
 
-	if (eapp->listexp_->size() != inputTypes->size()) {
-		printf("TYPE ERROR");
-		exit(1);
-	}
+    std::string call = "call " + outputType->getLLVMType() + " @" + eapp->id_ + "(";
+    int i = 0;
+    for (it_exp = eapp->listexp_->begin(), it = inputTypes->begin() ; it_exp != eapp->listexp_->end(); ++it_exp, ++it) {
+        it_exp->accept(this);
 
-	for (it = inputTypes->begin(), it_exp = eapp->listexp_->begin(); it != inputTypes->end(); ++it, ++it_exp) {
-		if ((*it)->getType()->getType() != (*it_exp)->type) {
-			printf("TYPE ERROR");
-			exit(1);
-		}
+        std::string tmp = "%" + getTemporary();
+        call += (*it)->getLLVMType() + tmp;
+        if ((it+1) != dfun->listarg_->end()) {
+            call += ", ";
+        }
+
+
+        //emit(1, tmp + " = load " + (*it)->getLLVMType() + "* " + lookupVarIp((*it)->Id))
+
 	}
+    call += ")";
+    emit(1, call);
 	
 	eapp->type = outputType->getType();
 }
@@ -401,25 +432,16 @@ void Interpreter::visitETimes(ETimes *etimes)
   /* Code For ETimes Goes Here */
   //printf("visitETimes\n");
 
+    std::string exp1, exp2;
+
   etimes->exp_1->accept(this);
+  exp1 = "%" + getTemporary();
   etimes->exp_2->accept(this);
+  exp2 = "%" + getTemporary();
 
-	if (etimes->exp_1->type == "string" || etimes->exp_1->type == "bool" || etimes->exp_2->type == "string" || etimes->exp_2->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	} else if (etimes->exp_1->type == "int" && etimes->exp_2->type == "int"){
-		etimes->type = "int";
-	} else if (etimes->exp_1->type == "double" && etimes->exp_2->type == "double"){
-		etimes->type = "double";
-	//} else if (etimes->exp_1->type == "int" && etimes->exp_2->type == "double"){
-	//	etimes->type = "double";
-	//} else if (etimes->exp_1->type == "double" && etimes->exp_2->type == "int") {
-	//	etimes->type = "double";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
+  std::string output = "%" + newTemporary() + " mul nsw " + getLLVMType(etimes->exp_1->type) + exp1 + ", " + exp2;
 
+  emit(1, output);
 }
 
 void Interpreter::visitEDiv(EDiv *ediv)
@@ -427,22 +449,16 @@ void Interpreter::visitEDiv(EDiv *ediv)
   /* Code For EDiv Goes Here */
   //printf("visitEDiv\n");
 
-  ediv->exp_1->accept(this);
-  ediv->exp_2->accept(this);
+    std::string exp1, exp2;
 
-	if (ediv->exp_1->type == "string" || ediv->exp_1->type == "bool" || ediv->exp_2->type == "string" || ediv->exp_2->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	} else if (ediv->exp_1->type == "int" && ediv->exp_2->type == "int"){
-		ediv->type = "int";
-	} else if (ediv->exp_1->type == "double" && ediv->exp_2->type == "double"){
-		ediv->type = "double";
-	} else if ((ediv->exp_1->type == "int" && ediv->exp_2->type == "double") || (ediv->exp_1->type == "double" && ediv->exp_2->type == "int")){
-		ediv->type = "double";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
+  ediv->exp_1->accept(this);
+  exp1 = "%" + getTemporary();
+  ediv->exp_2->accept(this);
+  exp2 = "%" + getTemporary();
+
+  std::string output = "%" + newTemporary() + " = div nsw " + getLLVMType(ediv->exp_1->type) + exp1 + ", " + exp2;
+
+  emit(1, output);
 
 }
 
@@ -450,30 +466,16 @@ void Interpreter::visitEPlus(EPlus *eplus)
 {
   /* Code For EPlus Goes Here */
   //printf("visitEPlus\n");
+std::string exp1, exp2;
 
   eplus->exp_1->accept(this);
+  exp1 = "%" + getTemporary();
   eplus->exp_2->accept(this);
+  exp2 = "%" + getTemporary();
 
-	if (eplus->exp_1->type == "bool" || eplus->exp_2->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	} else if (eplus->exp_1->type == "int" && eplus->exp_2->type == "int"){
-		eplus->type = "int";
-	} else if (eplus->exp_1->type == "double" && eplus->exp_2->type == "double"){
-		eplus->type = "double";
-	} else if (eplus->exp_1->type == "string" && eplus->exp_2->type == "string"){
-		eplus->type = "string";
-	} else if ((eplus->exp_1->type == "int" && eplus->exp_2->type == "double") || (eplus->exp_1->type == "double" && eplus->exp_2->type == "int")){
-		eplus->type = "double";
-	} else if ((eplus->exp_1->type == "string" && eplus->exp_2->type == "double") || (eplus->exp_1->type == "double" && eplus->exp_2->type == "string")){
-		eplus->type = "string";
-	} else if ((eplus->exp_1->type == "int" && eplus->exp_2->type == "string") || (eplus->exp_1->type == "string" && eplus->exp_2->type == "int")){
-		eplus->type = "string";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
+  std::string output = "%" + newTemporary() + " = add nsw " + getLLVMType(eplus->exp_1->type) + exp1 + ", " + exp2;
 
+  emit(1, output);
 }
 
 void Interpreter::visitEMinus(EMinus *eminus)
@@ -481,22 +483,16 @@ void Interpreter::visitEMinus(EMinus *eminus)
   /* Code For EMinus Goes Here */
   //printf("visitEMinus\n");
 
-  eminus->exp_1->accept(this);
-  eminus->exp_2->accept(this);
+    std::string exp1, exp2;
 
-	if (eminus->exp_1->type == "string" || eminus->exp_1->type == "bool" || eminus->exp_2->type == "string" || eminus->exp_2->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	} else if (eminus->exp_1->type == "int" && eminus->exp_2->type == "int"){
-		eminus->type = "int";
-	} else if (eminus->exp_1->type == "double" && eminus->exp_2->type == "double"){
-		eminus->type = "double";
-	} else if ((eminus->exp_1->type == "int" && eminus->exp_2->type == "double") || (eminus->exp_1->type == "double" && eminus->exp_2->type == "int")){
-		eminus->type = "double";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
+  eminus->exp_1->accept(this);
+  exp1 = "%" + getTemporary();
+  eminus->exp_2->accept(this);
+  exp2 = "%" + getTemporary();
+
+
+  std::string output = "%" + newTemporary() + " = sub nsw " + getLLVMType(eminus->exp_1->type) + exp1 + ", " + exp2;
+  emit(1, output);
 
 }
 
@@ -504,21 +500,17 @@ void Interpreter::visitELt(ELt *elt)
 {
   /* Code For ELt Goes Here */
   //printf("visitELt\n");
+    std::string exp1, exp2;
 
   elt->exp_1->accept(this);
+  exp1 = "%" + getTemporary();
   elt->exp_2->accept(this);
+  exp2 = "%" + getTemporary();
 
-	if (elt->exp_1->type == "string" || elt->exp_1->type == "bool" || elt->exp_2->type == "string" || elt->exp_2->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	} else if (elt->exp_1->type == "int" && elt->exp_2->type == "int"){
-		elt->type = "bool";
-	} else if (elt->exp_1->type == "double" && elt->exp_2->type == "double"){
-		elt->type = "bool";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
+  std::string output = "%" + newTemporary() + " = icmp slt" + getLLVMType(elt->exp_1->type) + exp1 + ", " + exp2;
+  emit(1, output);
+
+
 
 }
 
@@ -526,21 +518,15 @@ void Interpreter::visitEGt(EGt *egt)
 {
   /* Code For EGt Goes Here */
   //printf("visitEGt\n");
+    std::string exp1, exp2;
 
   egt->exp_1->accept(this);
+  exp1 = "%" + getTemporary();
   egt->exp_2->accept(this);
+  exp2 = "%" + getTemporary();
 
-	if (egt->exp_1->type == "string" || egt->exp_1->type == "bool" || egt->exp_2->type == "string" || egt->exp_2->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	} else if (egt->exp_1->type == "int" && egt->exp_2->type == "int"){
-		egt->type = "bool";
-	} else if (egt->exp_1->type == "double" && egt->exp_2->type == "double"){
-		egt->type = "bool";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
+  std::string output = "%" + newTemporary() + " = icmp sgt" + getLLVMType(egt->exp_1->type) + exp1 + ", " + exp2;
+  emit(1, output);
 
 }
 
@@ -548,21 +534,15 @@ void Interpreter::visitELtEq(ELtEq *elteq)
 {
   /* Code For ELtEq Goes Here */
   //printf("visitELtEq\n");
+    std::string exp1, exp2;
 
   elteq->exp_1->accept(this);
+  exp1 = "%" + getTemporary();
   elteq->exp_2->accept(this);
+  exp2 = "%" + getTemporary();
 
-	if (elteq->exp_1->type == "string" || elteq->exp_1->type == "bool" || elteq->exp_2->type == "string" || elteq->exp_2->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	} else if (elteq->exp_1->type == "int" && elteq->exp_2->type == "int"){
-		elteq->type = "bool";
-	} else if (elteq->exp_1->type == "double" && elteq->exp_2->type == "double"){
-		elteq->type = "bool";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
+  std::string output = "%" + newTemporary() + " = icmp sle" + getLLVMType(elteq->exp_1->type) + exp1 + ", " + exp2;
+  emit(1, output);
 
 }
 
@@ -570,21 +550,16 @@ void Interpreter::visitEGtEq(EGtEq *egteq)
 {
   /* Code For EGtEq Goes Here */
   //printf("visitEGtEq\n");
+    std::string exp1, exp2;
 
   egteq->exp_1->accept(this);
+  exp1 = "%" + getTemporary();
   egteq->exp_2->accept(this);
+  exp2 = "%" + getTemporary();
 
-	if (egteq->exp_1->type == "string" || egteq->exp_1->type == "bool" || egteq->exp_2->type == "string" || egteq->exp_2->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	} else if (egteq->exp_1->type == "int" && egteq->exp_2->type == "int"){
-		egteq->type = "bool";
-	} else if (egteq->exp_1->type == "double" && egteq->exp_2->type == "double"){
-		egteq->type = "bool";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
+  std::string output = "%" + newTemporary() + " = icmp sge" + getLLVMType(egteq->exp_1->type) + exp1 + ", " + exp2;
+  emit(1, output);
+
 
 }
 
@@ -592,22 +567,16 @@ void Interpreter::visitEEq(EEq *eeq)
 {
   /* Code For EEq Goes Here */
   //printf("visitEEq\n");
+    std::string exp1, exp2;
 
   eeq->exp_1->accept(this);
+  exp1 = "%" + getTemporary();
   eeq->exp_2->accept(this);
+  exp2 = "%" + getTemporary();
 
-	if (eeq->exp_1->type == "int" && eeq->exp_2->type == "int"){
-		eeq->type = "bool";
-	} else if (eeq->exp_1->type == "double" && eeq->exp_2->type == "double"){
-		eeq->type = "bool";
-	} else if (eeq->exp_1->type == "string" && eeq->exp_2->type == "string"){
-		eeq->type = "bool";
-	} else if (eeq->exp_1->type == "bool" && eeq->exp_2->type == "bool"){
-		eeq->type = "bool";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
+  std::string output = "%" + newTemporary() + " = icmp eq" + getLLVMType(eeq->exp_1->type) + exp1 + ", " + exp2;
+  emit(1, output);
+
 
 }
 
@@ -616,20 +585,18 @@ void Interpreter::visitENEq(ENEq *eneq)
   /* Code For ENEq Goes Here */
   //printf("visitENEq\n");
 
+    std::string exp1, exp2;
+
   eneq->exp_1->accept(this);
+
+  exp1 = "%" + getTemporary();
   eneq->exp_2->accept(this);
 
-	if (eneq->exp_1->type == "int" && eneq->exp_2->type == "int"){
-		eneq->type = "bool";
-	} else if (eneq->exp_1->type == "double" && eneq->exp_2->type == "double"){
-		eneq->type = "bool";
-	} else if (eneq->exp_1->type == "string" && eneq->exp_2->type == "string"){
-		eneq->type = "bool";
-	} else if (eneq->exp_1->type == "bool" && eneq->exp_2->type == "bool"){
-		eneq->type = "bool";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
+  exp2 = "%" + getTemporary();
+
+  std::string output = "%" + newTemporary() + " = icmp ne" + getLLVMType(eneq->exp_1->type) + exp1 + ", " + exp2;
+  emit(1, output);
+
 	}
 
 }
@@ -639,16 +606,33 @@ void Interpreter::visitEAnd(EAnd *eand)
   /* Code For EAnd Goes Here */
   //printf("visitEAnd\n");
 
-  eand->exp_1->accept(this);
-  eand->exp_2->accept(this);
+std::string exp1, exp2;
 
-	if (eand->exp_1->type == "bool" && eand->exp_2->type == "bool"){
-		eand->type = "bool";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
 
+
+
+
+
+    /* Code For SIfElse Goes Here */
+    //printf("visitSIfElse\n");
+    std::string andlabel = "label" + newTemporary();
+    std::string truelabel = "label" + newTemporary();
+    std::string nextlabel = "label" + newTemporary();
+
+    emit (1, andlabel + ":");
+    eand->exp_1->accept(this);
+
+    exp1 = "%" + getTemporary();
+    emit (1, "br i1 " + exp1 + ", label %" + truelabel + ", label %" + nextlabel);
+
+    emit (1, truelabel + ":");
+    eand->exp_2->accept(this);
+    exp2 = "%" + getTemporary();
+    emit (1, "br i1 " + exp2 + ", label %" + nextlabel + ", label %" + nextlabel);
+
+    emit (1, "br label %" + nextlabel);
+
+    emit (1, nextlabel + ":");
 }
 
 void Interpreter::visitEOr(EOr *eor)
@@ -656,15 +640,25 @@ void Interpreter::visitEOr(EOr *eor)
   /* Code For EOr Goes Here */
   //printf("visitEOr\n");
 
-  eor->exp_1->accept(this);
-  eor->exp_2->accept(this);
 
-	if (eor->exp_1->type == "bool" && eor->exp_2->type == "bool"){
-		eor->type = "bool";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
+  std::string andlabel = "label" + newTemporary();
+  std::string truelabel = "label" + newTemporary();
+  std::string nextlabel = "label" + newTemporary();
+
+  emit (1, andlabel + ":");
+  eor->exp_1->accept(this);
+
+  exp1 = "%" + getTemporary();
+  emit (1, "br i1 " + exp1 + ", label %" + nextlabel + ", label %" + falselabel);
+
+  emit (1, falselabel + ":");
+  eor->exp_2->accept(this);
+  exp2 = "%" + getTemporary();
+  emit (1, "br i1 " + exp2 + ", label %" + nextlabel + ", label %" + nextlabel);
+
+  emit (1, "br label %" + nextlabel);
+
+  emit (1, nextlabel + ":");
 
 }
 
@@ -672,23 +666,14 @@ void Interpreter::visitEAss(EAss *eass)
 {
   /* Code For EAss Goes Here */
   //printf("visitEAss\n");
+std::string exp2;
 
-  eass->exp_1->accept(this);
   eass->exp_2->accept(this);
+  exp2 = "%" + getTemporary();
 
-	if (eass->exp_1->type == "int" && eass->exp_2->type == "int"){
-		eass->type = "int";
-	} else if (eass->exp_1->type == "double" && eass->exp_2->type == "double"){
-		eass->type = "double";
-	} else if (eass->exp_1->type == "string" && eass->exp_2->type == "string"){
-		eass->type = "string";
-	} else if (eass->exp_1->type == "bool" && eass->exp_2->type == "bool"){
-		eass->type = "bool";
-	} else {
-		printf("TYPE ERROR");
-		exit(1);
-	}
-
+  emit(0, "store" + getLLVMType(eass->exp_2->type) + exp2 + "," getLLVMType(eass->exp_1->type) + "* ");
+  eass->exp_1->accept(this);
+  emit(1," ");
 }
 
 void Interpreter::visitETyped(ETyped *etyped)
