@@ -2,24 +2,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sstream>
+#include <iostream>
 
 Interpreter::Interpreter() {
 	env_ = new Env();
 	tmpcounter = 0;
 	multivarcounter = 0;
+
+	if (remove("output.ll")) {
+		std::cout << "Failed to delete File"<< std::endl;
+	} else {
+		std::cout << "File successfully deleted"<< std::endl;
+	}
 }
 
 Interpreter::~Interpreter() {
 	delete env_;
+	
 }
 
 //b = 1: endline, b = 0: same line
 void Interpreter::emit(bool b, std::string str) {
+	out.open ("output.ll", std::ios::app);
 	if (b) {
+		out << str + "\n";
 		std::cout << str << std::endl;
 	} else {
+		out << str;
 		std::cout << str;
 	}
+	out.close();
 }
 
 std::string Interpreter::getLLVMType(std::string type) {
@@ -182,8 +194,10 @@ void Interpreter::visitSInit(SInit *sinit)
 void Interpreter::visitSReturn(SReturn *sreturn)
 {
   	/* Code For SReturn Goes Here */
-	sreturn->exp_->accept(this);
-	emit (1, "ret " + getTemporary());
+
+  	sreturn->exp_->accept(this);
+	std::string exp = "%"+getTemporary();
+	emit (1, "ret "+ exp + " ");
 }
 
 void Interpreter::visitSReturnVoid(SReturnVoid *sreturnvoid)
@@ -234,7 +248,7 @@ void Interpreter::visitSIfElse(SIfElse *sifelse)
 	std::string nextlabel = "label" + newTemporary();
 
 	emit (1, iflabel + ":");
-	emit (0, "br i1 EXP");
+	emit (0, "br i1 ");
   	sifelse->exp_->accept(this);
 	emit (1, ", label %" + truelabel + ", label %" + falselabel);
 
@@ -374,60 +388,60 @@ void Interpreter::visitEApp(EApp *eapp)
 	eapp->type = outputType->getType();
 }
 
-void Interpreter::visitEPIncr(EPIncr *epincr)
+void Interpreter::visitEPIncr(EPIncr *eincr)
 {
-  	/* Code For EPIncr Goes Here */
-  	//printf("visitEPIncr\n");
+  	/* Code For EIncr Goes Here */
+  	//printf("visitEIncr\n");	
+	eincr->type = eincr->exp_->type;
 
-  	epincr->exp_->accept(this);
+	std::string exp1;
 
-	if (epincr->exp_->type == "string" || epincr->exp_->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	}
-	else {
-		epincr->type = epincr->exp_->type;
-	}
+  	eincr->exp_->accept(this);
+  	exp1 = "%" + getTemporary();
 
+  	std::string output = "%" + newTemporary() + " = add nsw " + getLLVMType(eincr->exp_->type) + exp1 + ", 1";
+
+  	emit(1, output);
+	
+	std::string output1 = "store i32 %" + getTemporary() + ", i32* %" + newTemporary() + ", allign 4";
+	emit(1, output);
 }
 
-void Interpreter::visitEPDecr(EPDecr *epdecr)
+void Interpreter::visitEPDecr(EPDecr *edecr)
 {
-  /* Code For EPDecr Goes Here */
-  //printf("visitEPDecr\n");
+  // Code For EDecr Goes Here 
+  // printf("visitEDecr\n");
 
-  epdecr->exp_->accept(this);
+	edecr->type = edecr->exp_->type;
 
-	if (epdecr->exp_->type == "string" || epdecr->exp_->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	}
-	else {
-		epdecr->type = epdecr->exp_->type;
-	}
+	std::string exp1;
+
+  	edecr->exp_->accept(this);
+  	exp1 = "%" + getTemporary();
+
+  	std::string output = "%" + newTemporary() + " = sub nsw " + getLLVMType(edecr->exp_->type) + exp1 + ", 1";
+
+  	emit(1, output);
+	
+	std::string output1 = "store i32 %" + getTemporary() + ", i32* %" + newTemporary() + ", allign 4";
+	emit(1, output);
 
 }
 
 void Interpreter::visitEIncr(EIncr *eincr)
 {
-  /* Code For EIncr Goes Here */
-  //printf("visitEIncr\n");
-/*
-	if (eincr->exp_->type == "string" || eincr->exp_->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	}
-	else {*/
+  	/* Code For EIncr Goes Here */
+  	//printf("visitEIncr\n");	
 	eincr->type = eincr->exp_->type;
 
 	std::string exp1;
 
-  eincr->exp_->accept(this);
-  exp1 = "%" + getTemporary();
+  	eincr->exp_->accept(this);
+  	exp1 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " = add nsw " + getLLVMType(eincr->exp_->type) + exp1 + ", 1";
+  	std::string output = "%" + newTemporary() + " = add nsw " + getLLVMType(eincr->exp_->type) + exp1 + ", 1";
 
-  emit(1, output);
+  	emit(1, output);
 	
 	std::string output1 = "store i32 %" + getTemporary() + ", i32* %" + newTemporary() + ", allign 4";
 	emit(1, output);
@@ -435,29 +449,19 @@ void Interpreter::visitEIncr(EIncr *eincr)
 
 void Interpreter::visitEDecr(EDecr *edecr)
 {
-  /* Code For EDecr Goes Here 
-  //printf("visitEDecr\n");
-
-  edecr->exp_->accept(this);
-
-	if (edecr->exp_->type == "string" || edecr->exp_->type == "bool") {
-		printf("TYPE ERROR");
-		exit(1);
-	}
-	else {
-		edecr->type = edecr->exp_->type;
-	}*/
+  // Code For EDecr Goes Here 
+  // printf("visitEDecr\n");
 
 	edecr->type = edecr->exp_->type;
 
 	std::string exp1;
 
-  edecr->exp_->accept(this);
-  exp1 = "%" + getTemporary();
+  	edecr->exp_->accept(this);
+  	exp1 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " = add nsw " + getLLVMType(edecr->exp_->type) + exp1 + ", 1";
+  	std::string output = "%" + newTemporary() + " = sub nsw " + getLLVMType(edecr->exp_->type) + exp1 + ", 1";
 
-  emit(1, output);
+  	emit(1, output);
 	
 	std::string output1 = "store i32 %" + getTemporary() + ", i32* %" + newTemporary() + ", allign 4";
 	emit(1, output);
@@ -528,7 +532,7 @@ void Interpreter::visitEMinus(EMinus *eminus)
   exp2 = "%" + getTemporary();
 
 
-  std::string output = "%" + newTemporary() + " = sub nsw " + getLLVMType(eminus->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " = sub nsw " + getLLVMType(eminus->exp_1->type) + " "+ exp1 + ", " + exp2;
   emit(1, output);
 
 }
@@ -611,7 +615,7 @@ void Interpreter::visitEEq(EEq *eeq)
   eeq->exp_2->accept(this);
   exp2 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " = icmp eq" + getLLVMType(eeq->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " = icmp eq " + getLLVMType(eeq->exp_1->type)  + " " + exp1 + ", " + exp2;
   emit(1, output);
 
 
@@ -633,9 +637,6 @@ void Interpreter::visitENEq(ENEq *eneq)
 
   std::string output = "%" + newTemporary() + " = icmp ne" + getLLVMType(eneq->exp_1->type) + " " + exp1 + ", " + exp2;
   emit(1, output);
-
-	
-
 }
 
 void Interpreter::visitEAnd(EAnd *eand)
@@ -645,13 +646,6 @@ void Interpreter::visitEAnd(EAnd *eand)
 
 std::string exp1, exp2;
 
-
-
-
-
-
-    /* Code For SIfElse Goes Here */
-    //printf("visitSIfElse\n");
     std::string andlabel = "label" + newTemporary();
     std::string truelabel = "label" + newTemporary();
     std::string nextlabel = "label" + newTemporary();
@@ -677,20 +671,20 @@ void Interpreter::visitEOr(EOr *eor)
   /* Code For EOr Goes Here */
   //printf("visitEOr\n");
 
-  std::string exp1 , exp2;
+
   std::string andlabel = "label" + newTemporary();
   std::string falselabel = "label" + newTemporary();
   std::string nextlabel = "label" + newTemporary();
+  std::string exp1, exp2;
 
   emit (1, andlabel + ":");
   eor->exp_1->accept(this);
-  exp1 = getTemporary();
+
   exp1 = "%" + getTemporary();
   emit (1, "br i1 " + exp1 + ", label %" + nextlabel + ", label %" + falselabel);
 
   emit (1, falselabel + ":");
   eor->exp_2->accept(this);
-  exp2 = getTemporary();
   exp2 = "%" + getTemporary();
   emit (1, "br i1 " + exp2 + ", label %" + nextlabel + ", label %" + nextlabel);
 
@@ -709,9 +703,9 @@ std::string exp2;
   eass->exp_2->accept(this);
   exp2 = "%" + getTemporary();
 
-  emit(0, "store" + getLLVMType(eass->exp_2->type) + exp2 + "," + getLLVMType(eass->exp_1->type) + "* ");
+  emit(0, "store " + getLLVMType(eass->exp_2->type) + " " + exp2 + ", " + getLLVMType(eass->exp_1->type) + "* ");
   eass->exp_1->accept(this);
-  emit(1," ");
+  emit(1,", align 4");
 }
 
 void Interpreter::visitETyped(ETyped *etyped)

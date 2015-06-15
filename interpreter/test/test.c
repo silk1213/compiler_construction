@@ -11,8 +11,12 @@ int square (int a) {
 }
 
 void test(int a, int b) {
-	a++;
+	int c = a;
+	int x = 1;
 	
+	while (x == c || c<x) {
+		
+	}
 	return ;
 }
 

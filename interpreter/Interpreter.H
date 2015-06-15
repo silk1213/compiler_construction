@@ -1,5 +1,6 @@
 #include "Env.H"
 #include <iostream>
+#include <fstream>
 
 class Interpreter : public Visitor
 {
@@ -8,9 +9,9 @@ class Interpreter : public Visitor
 		  Interpreter();
 		  ~Interpreter();
 		  void emit (bool b, std::string str);
-		std::string getLLVMType(std::string type);
           std::string newTemporary ();
           std::string getTemporary ();
+		  std::string getLLVMType(std::string type);
 		  Type* typecheck(Visitable* v);
 
 		  void visitProgram(Program* p);
@@ -77,4 +78,5 @@ class Interpreter : public Visitor
 		Env* env_ ;
 		int tmpcounter;
 		int multivarcounter;
+		std::ofstream out;
 } ;
