@@ -52,9 +52,8 @@
 		}
 		
 		//fügt neue Variable in aktuelle(erste) VariabelMap
-		void Env::updateVar(Id id ,Type* type) {
-			list_variable_env->env_->insert (std::pair<Id,Type*>(id,type));
-			//printAllVariableMaps(list_variable_env);
+		void Env::updateVar(Id id ,Type* type, int blockcounter) {
+			list_variable_env->env_->insert (std::pair<Id,std::pair<Type*,int> >(id,std::make_pair(type,blockcounter)));
 		}
 
 		//fügt Funktion der FunktionMap hinzu
@@ -70,7 +69,7 @@
 				map_iter = temp->env_->find(id);
 
 				if (map_iter != temp->env_->end()) {
-					return map_iter->second;
+					return map_iter->second.first;
 				} else {
 					temp = temp->next;
 				}
@@ -78,11 +77,25 @@
 			return NULL;
 		}
 
+		std::pair<Type*,int> Env::lookupVarIp(Id id) {
+			LinkedVariableTypeMap* temp = list_variable_env;
+			variableTypeMap::iterator map_iter;
+			for (int i = 0; i < var_env_size; i++) {
+				map_iter = temp->env_->find(id);
+
+				if (map_iter != temp->env_->end()) {
+					return map_iter->second;
+				} else {
+					temp = temp->next;
+				}
+			}
+		}
+
 		Type* Env::lookuplatest(Id id) {
 			variableTypeMap::iterator iter = list_variable_env->env_->find(id);
 
 			if (iter != list_variable_env->env_->end()) {
-				return iter->second;
+				return iter->second.first;
 			}
 
 			return NULL; 
@@ -129,7 +142,7 @@
 			}
 		}
 
-		void Env::printAllVariableMaps(LinkedVariableTypeMap* list) {
+		/*void Env::printAllVariableMaps(LinkedVariableTypeMap* list) {
 			LinkedVariableTypeMap* temp = list;
 			for (int i = 0; i < var_env_size; i++) {
 				std::cout << i << ". map" << std::endl;
@@ -142,7 +155,6 @@
 			for(std::map<Id,Type*>::iterator iterator = map->begin(); iterator != map->end(); iterator++){
 				std::cout<<"Key:"<<iterator->first<< std::endl;
 				std::cout<<"Type:"<< iterator->second->getType() << std::endl;	
-				//iterator->second->printType();
 				std::cout << std::endl;		
 			} 		
 		}
@@ -163,4 +175,4 @@
 				//iterator->second->printType();
 				std::cout << std::endl;		
 			} 		
-		}
+		}*/

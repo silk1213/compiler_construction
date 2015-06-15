@@ -6,6 +6,7 @@
 Interpreter::Interpreter() {
 	env_ = new Env();
 	tmpcounter = 0;
+	multivarcounter = 0;
 }
 
 Interpreter::~Interpreter() {
@@ -103,8 +104,22 @@ void Interpreter::visitSDecls(SDecls *sdecls)
   	sdecls->listid_->accept(this);
 
 	std::string type = sdecls->type_->getLLVMType();
-
+	Type* t;
+	
   	for(ListId::iterator i = sdecls->listid_->begin(); i != sdecls->listid_->end(); i++) {
+		t = env_->lookupVar(*i);
+		if (t != NULL) {
+			multivarcounter++;
+			env_->updateVar((*i), sdecls->type_, multivarcounter);
+			std::string tmp;
+			std::ostringstream convert;
+			convert << multivarcounter;
+			tmp = convert.str();
+			emit (1, "%" + (*i) + tmp + " = alloca " + type + ", align 4");
+		} else {
+			env_->updateVar((*i), sdecls->type_);
+			emit (1, "%" + (*i) + " = alloca " + type + ", align 4");
+		}
 	}
 }
 
@@ -115,13 +130,29 @@ void Interpreter::visitSInit(SInit *sinit)
   	sinit->type_->accept(this);
   	visitId(sinit->id_);
 
-  	
+	Type* t;
+	t = env_->lookupVar(sinit->id_);
 
-	std::string output_decl = "%" + sinit->id_ + " = alloca " + sinit->type_->getLLVMType() + ", align 4";
-	emit (1, output_decl);
-	emit (0, "store ");
-	sinit->exp_->accept(this);
-	emit (1, ", " + sinit->type_->getLLVMType() + "* %" + sinit->id_ + ", align 4");
+  	if (t != NULL) {
+			multivarcounter++;
+			env_->updateVar(sinit->id_, sinit->type_, multivarcounter);
+			std::string tmp;
+			std::ostringstream convert;
+			convert << multivarcounter;
+			tmp = convert.str();
+			emit (1, "%" + sinit->id_ + tmp + " = alloca " + sinit->type_->getLLVMType() + ", align 4");
+			emit (0, "store ");
+			sinit->exp_->accept(this);
+			emit (1, ", " + sinit->type_->getLLVMType() + "* %" + sinit->id_ + tmp + ", align 4");
+		} else {
+			env_->updateVar(sinit->id_, sinit->type_);
+			emit (1, "%" + sinit->id_ + " = alloca " + sinit->type_->getLLVMType() + ", align 4");
+			emit (0, "store ");
+			sinit->exp_->accept(this);
+			emit (1, ", " + sinit->type_->getLLVMType() + "* %" + sinit->id_ + ", align 4");
+		}
+
+	
 
 	env_->updateVar(sinit->id_, sinit->type_);
 }
@@ -131,6 +162,7 @@ void Interpreter::visitSReturn(SReturn *sreturn)
   	/* Code For SReturn Goes Here */
 	emit (0, "ret ");
   	sreturn->exp_->accept(this);
+	emit (1, " ");
 }
 
 void Interpreter::visitSReturnVoid(SReturnVoid *sreturnvoid)
@@ -143,13 +175,19 @@ void Interpreter::visitSReturnVoid(SReturnVoid *sreturnvoid)
 void Interpreter::visitSWhile(SWhile *swhile)
 {
   	/* Code For SWhile Goes Here */
-	std::string whilelabel = newTemporary();
-	emit (1, "br label %" + whilelabel);
+	std::string whilelabel = "label" + newTemporary();
+	std::string truelabel = "label" + newTemporary();
+	std::string falselabel = "label" + newTemporary();
+	emit (1, whilelabel + ":");
+	emit (0, "br i1 EXP");
   	swhile->exp_->accept(this);
-	std::string output_while = "br i1 EXP, label %" + newTemporary() + ", label FALSELABEL";
+	std::string output_while = ", label %" + truelabel + ", label %" + falselabel;
 	emit (1, output_while);
+	emit (1, truelabel + ":");
   	swhile->stm_->accept(this);
 	emit (1, "br label %" + whilelabel);
+	emit (1, " ");
+	emit (1, falselabel + ":");
 }
 
 void Interpreter::visitSBlock(SBlock *sblock)
@@ -166,11 +204,25 @@ void Interpreter::visitSIfElse(SIfElse *sifelse)
 {
   	/* Code For SIfElse Goes Here */
   	//printf("visitSIfElse\n");
+	std::string iflabel = "label" + newTemporary();
+	std::string truelabel = "label" + newTemporary();
+	std::string falselabel = "label" + newTemporary();
+	std::string nextlabel = "label" + newTemporary();
 
+	emit (1, iflabel + ":");
+	emit (0, "br i1 EXP");
   	sifelse->exp_->accept(this);
+	emit (1, ", label %" + truelabel + ", label %" + falselabel);
 
+	emit (1, truelabel + ":");
   	sifelse->stm_1->accept(this);
+	emit (1, "br label %" + nextlabel);
+
+	emit (1, falselabel + ":");
   	sifelse->stm_2->accept(this);
+	emit (1, "br label %" + nextlabel);
+
+	emit (1, nextlabel + ":");
 
 }
 

@@ -7,7 +7,7 @@
 #include <utility>
 #include <list>
 
-typedef std::map<Id,Type*> variableTypeMap;
+typedef std::map<Id,std::pair<Type*,int> > variableTypeMap;
 typedef std::map<Id,std::pair<ListArg*,Type*> > functionTypeMap;
 
 class LinkedVariableTypeMap;
@@ -52,12 +52,14 @@ class Env {
 		void deleteEnv();
 		
 		//fügt neue Variable in aktuelle(erste) VariabelMap
-		void updateVar(Id id ,Type* type);
+		void updateVar(Id id ,Type* type, int blockcounter = 0);
 
 		//fügt Funktion der FunktionMap hinzu
 		void updateFun(Id id ,ListArg* inputList, Type* output);
 
 		Type* lookupVar(Id id);
+
+		std::pair<Type*,int> lookupVarIp(Id id);
 
 		Type* lookuplatest(Id id);
 

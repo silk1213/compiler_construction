@@ -74,4 +74,5 @@ class Interpreter : public Visitor
 		Type* ty_ ;
 		Env* env_ ;
 		int tmpcounter;
+		int multivarcounter;
 } ;
