@@ -58,7 +58,7 @@ std::string Interpreter::newTemporary () {
 std::string Interpreter::getTemporary () {
     std::string temporary;
     std::ostringstream convert;
-    convert << tmpcounter;
+    convert << tmpcounter-1;
     temporary = convert.str();
     return temporary;
 }
