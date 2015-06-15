@@ -8,7 +8,7 @@ class Interpreter : public Visitor
 		  Interpreter();
 		  ~Interpreter();
 		  void emit (bool b, std::string str);
-		std::string getLLVMType(std::string type);
+		std::string getLLVMTYpe(std::string type);
           std::string newTemporary ();
           std::string getTemporary ();
 		  Type* typecheck(Visitable* v);

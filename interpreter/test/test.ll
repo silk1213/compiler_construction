@@ -41,59 +41,11 @@ define i32 @square(i32 %a) #0 {
 define void @test(i32 %a, i32 %b) #0 {
   %1 = alloca i32, align 4
   %2 = alloca i32, align 4
-  %c = alloca i32, align 4
-  %x = alloca i32, align 4
   store i32 %a, i32* %1, align 4
   store i32 %b, i32* %2, align 4
   %3 = load i32* %1, align 4
-  store i32 %3, i32* %c, align 4
-  store i32 1, i32* %x, align 4
-  %4 = load i32* %c, align 4
-  %5 = load i32* %x, align 4
-  %6 = icmp sge i32 %4, %5
-  br i1 %6, label %7, label %8
-
-; <label>:7                                       ; preds = %0
-  br label %8
-
-; <label>:8                                       ; preds = %7, %0
-  %9 = load i32* %c, align 4
-  %10 = load i32* %x, align 4
-  %11 = icmp ne i32 %9, %10
-  br i1 %11, label %12, label %17
-
-; <label>:12                                      ; preds = %8
-  %13 = load i32* %c, align 4
-  %14 = load i32* %x, align 4
-  %15 = icmp slt i32 %13, %14
-  br i1 %15, label %16, label %17
-
-; <label>:16                                      ; preds = %12
-  br label %17
-
-; <label>:17                                      ; preds = %16, %12, %8
-  br label %18
-
-; <label>:18                                      ; preds = %28, %17
-  %19 = load i32* %x, align 4
-  %20 = load i32* %c, align 4
-  %21 = icmp eq i32 %19, %20
-  br i1 %21, label %26, label %22
-
-; <label>:22                                      ; preds = %18
-  %23 = load i32* %c, align 4
-  %24 = load i32* %x, align 4
-  %25 = icmp slt i32 %23, %24
-  br label %26
-
-; <label>:26                                      ; preds = %22, %18
-  %27 = phi i1 [ true, %18 ], [ %25, %22 ]
-  br i1 %27, label %28, label %29
-
-; <label>:28                                      ; preds = %26
-  br label %18
-
-; <label>:29                                      ; preds = %26
+  %4 = add nsw i32 %3, 1
+  store i32 %4, i32* %1, align 4
   ret void
 }
 

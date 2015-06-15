@@ -476,7 +476,7 @@ void Interpreter::visitETimes(ETimes *etimes)
   etimes->exp_2->accept(this);
   exp2 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " mul nsw " + getLLVMType(etimes->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " mul nsw " + getLLVMType(etimes->exp_1->type) + exp1 + ", " + exp2;
 
   emit(1, output);
 }
@@ -493,7 +493,7 @@ void Interpreter::visitEDiv(EDiv *ediv)
   ediv->exp_2->accept(this);
   exp2 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " = div nsw " + getLLVMType(ediv->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " = div nsw " + getLLVMType(ediv->exp_1->type) + exp1 + ", " + exp2;
 
   emit(1, output);
 
@@ -510,7 +510,7 @@ std::string exp1, exp2;
   eplus->exp_2->accept(this);
   exp2 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " = add nsw " + getLLVMType(eplus->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " = add nsw " + getLLVMType(eplus->exp_1->type) + exp1 + ", " + exp2;
 
   emit(1, output);
 }
@@ -528,7 +528,7 @@ void Interpreter::visitEMinus(EMinus *eminus)
   exp2 = "%" + getTemporary();
 
 
-  std::string output = "%" + newTemporary() + " = sub nsw " + getLLVMType(eminus->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " = sub nsw " + getLLVMType(eminus->exp_1->type) + exp1 + ", " + exp2;
   emit(1, output);
 
 }
@@ -544,7 +544,7 @@ void Interpreter::visitELt(ELt *elt)
   elt->exp_2->accept(this);
   exp2 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " = icmp slt" + getLLVMType(elt->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " = icmp slt" + getLLVMType(elt->exp_1->type) + exp1 + ", " + exp2;
   emit(1, output);
 
 
@@ -562,7 +562,7 @@ void Interpreter::visitEGt(EGt *egt)
   egt->exp_2->accept(this);
   exp2 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " = icmp sgt" + getLLVMType(egt->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " = icmp sgt" + getLLVMType(egt->exp_1->type) + exp1 + ", " + exp2;
   emit(1, output);
 
 }
@@ -578,7 +578,7 @@ void Interpreter::visitELtEq(ELtEq *elteq)
   elteq->exp_2->accept(this);
   exp2 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " = icmp sle" + getLLVMType(elteq->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " = icmp sle" + getLLVMType(elteq->exp_1->type) + exp1 + ", " + exp2;
   emit(1, output);
 
 }
@@ -594,7 +594,7 @@ void Interpreter::visitEGtEq(EGtEq *egteq)
   egteq->exp_2->accept(this);
   exp2 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " = icmp sge" + getLLVMType(egteq->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " = icmp sge" + getLLVMType(egteq->exp_1->type) + exp1 + ", " + exp2;
   emit(1, output);
 
 
@@ -611,7 +611,7 @@ void Interpreter::visitEEq(EEq *eeq)
   eeq->exp_2->accept(this);
   exp2 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " = icmp eq" + getLLVMType(eeq->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " = icmp eq" + getLLVMType(eeq->exp_1->type) + exp1 + ", " + exp2;
   emit(1, output);
 
 
@@ -631,7 +631,7 @@ void Interpreter::visitENEq(ENEq *eneq)
 
   exp2 = "%" + getTemporary();
 
-  std::string output = "%" + newTemporary() + " = icmp ne" + getLLVMType(eneq->exp_1->type) + " " + exp1 + ", " + exp2;
+  std::string output = "%" + newTemporary() + " = icmp ne" + getLLVMType(eneq->exp_1->type) + exp1 + ", " + exp2;
   emit(1, output);
 
 	
