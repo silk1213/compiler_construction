@@ -47,18 +47,19 @@ std::string Interpreter::getLLVMType(std::string type) {
 }
 
 std::string Interpreter::newTemporary () {
+	tmpcounter++;
 	std::string temporary;
 	std::ostringstream convert;
 	convert << tmpcounter;
 	temporary = convert.str();
-	tmpcounter++;
+	
 	return temporary;
 }
 
 std::string Interpreter::getTemporary () {
     std::string temporary;
     std::ostringstream convert;
-    convert << tmpcounter-1;
+    convert << tmpcounter;
     temporary = convert.str();
     return temporary;
 }
@@ -174,15 +175,17 @@ void Interpreter::visitSInit(SInit *sinit)
 			std::ostringstream convert;
 			convert << multivarcounter;
 			tmp = convert.str();
-			emit (1, "%" + sinit->id_ + tmp + " = alloca " + sinit->type_->getLLVMType() + ", align 4");
-			emit (0, "store ");
 			sinit->exp_->accept(this);
+			emit (1, "%" + sinit->id_ + tmp + " = alloca " + sinit->type_->getLLVMType() + ", align 4");
+			emit (0, "store " + getLLVMType(sinit->exp_->type)+ " %" + getTemporary());
+			
 			emit (1, ", " + sinit->type_->getLLVMType() + "* %" + sinit->id_ + tmp + ", align 4");
 		} else {
 			env_->updateVar(sinit->id_, sinit->type_);
-			emit (1, "%" + sinit->id_ + " = alloca " + sinit->type_->getLLVMType() + ", align 4");
-			emit (0, "store ");
 			sinit->exp_->accept(this);
+			emit (1, "%" + sinit->id_ + " = alloca " + sinit->type_->getLLVMType() + ", align 4");
+			emit (0, "store " + getLLVMType(sinit->exp_->type) + " %" + getTemporary());
+			
 			emit (1, ", " + sinit->type_->getLLVMType() + "* %" + sinit->id_ + ", align 4");
 		}
 
@@ -338,14 +341,14 @@ void Interpreter::visitEId(EId *eid)
 
 	if(var.second == 0) {
 
-		output = "%" + newTemporary() + "= load " + var.first->getLLVMType() + "* %" + eid->id_;
+		output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_;
 		
 	} else {
  		std::string temporary;
 		std::ostringstream convert;
 		convert << var.second;
 		temporary = convert.str();
-		output = "%" + newTemporary() + "= load " + var.first->getLLVMType() + "* %" + eid->id_ + temporary;
+		output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + temporary;
 
 	}
 
