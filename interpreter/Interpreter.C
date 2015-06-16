@@ -199,7 +199,7 @@ void Interpreter::visitSReturn(SReturn *sreturn)
   	/* Code For SReturn Goes Here */
 
   	sreturn->exp_->accept(this);
-	std::string exp = "%"+getTemporary();
+	std::string exp = getLLVMType(sreturn->exp_->type) + " %"+getTemporary();
 	emit (1, "ret "+ exp + " ");
 }
 
@@ -296,8 +296,10 @@ void Interpreter::visitEInt(EInt *eint)
 	std::ostringstream convert;
 	convert << eint->integer_;
 	tmp = convert.str();
-	std::string output = "i32 " + tmp;
-	emit (0, output);
+
+	std::string integer = "%" + newTemporary();
+	emit(1, integer + " = alloca i32, align 4");
+	emit(1, "store i32 " + tmp + ", i32* " + integer);
 	eint->type = "int";
 
 }
@@ -701,14 +703,16 @@ void Interpreter::visitEAss(EAss *eass)
 {
   /* Code For EAss Goes Here */
   //printf("visitEAss\n");
-std::string exp2;
+	std::string exp2;
 
-  eass->exp_2->accept(this);
-  exp2 = "%" + getTemporary();
+  	eass->exp_2->accept(this);
+  	exp2 = "%" + getTemporary();
 
-  emit(0, "store " + getLLVMType(eass->exp_2->type) + " " + exp2 + ", " + getLLVMType(eass->exp_1->type) + "* ");
-  eass->exp_1->accept(this);
-  emit(1,", align 4");
+	emit(1, "%" + exp2 + " = alloca " + getLLVMType(eass->exp_2->type) + ", align 4");
+
+  	emit(0, "store " + getLLVMType(eass->exp_2->type) + " " + exp2 + ", " + getLLVMType(eass->exp_1->type) + "* ");
+  	eass->exp_1->accept(this);
+  	emit(1,", align 4");
 }
 
 void Interpreter::visitETyped(ETyped *etyped)
