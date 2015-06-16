@@ -11,6 +11,7 @@ class Interpreter : public Visitor
 		  void emit (bool b, std::string str);
           std::string newTemporary ();
           std::string getTemporary ();
+		  std::string newLabel();
 		  std::string getLLVMType(std::string type);
 		  Type* typecheck(Visitable* v);
 
@@ -79,4 +80,5 @@ class Interpreter : public Visitor
 		int tmpcounter;
 		int multivarcounter;
 		std::ofstream out;
+		int labelcounter;
 } ;

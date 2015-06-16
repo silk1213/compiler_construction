@@ -1,25 +1,22 @@
+define i32 @test(i32 %a) #0 {
+%1 = alloca i32 , align 4
+store i32 %a, i32* %1 , align 4
+%2 = load i32* %a
+%3 = load i32* %a
+%4 = mul nsw i32 %2, %3
+%b = alloca i32, align 4
+store i32 %4, i32* %b, align 4
+%5 = load i32* %b
+ret i32 %5 
+}
 define i32 @main() #0 {
-%1 = alloca i32, align 4
-store i32 1, i32* %1
+%b = alloca i32, align 4
+store i32 2, i32* %b, align 4
+%6 = load i32* %b
+%7 = load i32* %b
+call i32 @test(i32%7)
 %a = alloca i32, align 4
-store i32 %1, i32* %a, align 4
-label2:
-br i1 %6 = load i32* %a
-%7 = alloca i32, align 4
-store i32 1, i32* %7
-%8 = icmp slti32 %6, %7
-, label %label3, label %label4
-label3:
-%9 = load i32* %a
-%10 = add nsw i32%9, 1
-%10 = add nsw i32%9, 1
-br label %label5
-label4:
-%12 = load i32* %a
-%13 = sub nsw i32%12, 1
-%13 = sub nsw i32%12, 1
-br label %label5
-label5:
-%15 = load i32* %a
-ret i32 %15 
+store i32 , i32* %a, align 4
+%8 = load i32* %a
+ret i32 %8 
 }
