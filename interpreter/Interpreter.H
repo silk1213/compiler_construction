@@ -1,6 +1,7 @@
 #include "Env.H"
 #include <iostream>
 #include <fstream>
+#include <map>
 
 class Interpreter : public Visitor
 {
@@ -81,4 +82,5 @@ class Interpreter : public Visitor
 		int multivarcounter;
 		std::ofstream out;
 		int labelcounter;
+		std::map<std::string, std::string> argmap;
 } ;

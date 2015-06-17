@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <sstream>
 #include <iostream>
+#include <utility>
+#include <iterator>
 
 Interpreter::Interpreter() {
 	env_ = new Env();
@@ -102,6 +104,8 @@ void Interpreter::visitDFun(DFun *dfun)
 {
   	/* Code For DFun Goes Here */
 
+	tmpcounter = 0;
+
 	std::string output = "define " + dfun->type_->getLLVMType() + " @" + dfun->id_ + "(";
 
   	visitId(dfun->id_);
@@ -120,11 +124,20 @@ void Interpreter::visitDFun(DFun *dfun)
 	emit (1, output);
 	for (it = dfun->listarg_->begin(); it != dfun->listarg_->end(); ++it) {
 		emit(1, "%" + newTemporary() + " = alloca " + (*it)->getType()->getLLVMType() + " , align 4");
-		emit(1, "store " + (*it)->getType()->getLLVMType() + " %" + (*it)->getId() + ", " + (*it)->getType()->getLLVMType() + "* %" + getTemporary() + " , align 4");
+		emit(1, "store " + (*it)->getType()->getLLVMType() + " %" + (*it)->getId() + ", " + (*it)->getType()->getLLVMType() + "* %" + 
+			getTemporary() + " , align 4");
+		argmap.insert(std::pair<std::string, std::string>((*it)->getId(), getTemporary()));
 	}
 	dfun->liststm_->accept(this);
-	emit (1, "}");
+	
 	env_->deleteEnv();
+	argmap.erase(argmap.begin(), argmap.end());
+	
+	if ( dfun->type_->getType() == "void" ) {
+		emit(1, "ret void");
+	}
+	
+	emit (1, "}");
 }
 
 void Interpreter::visitADecl(ADecl *adecl)
@@ -206,8 +219,8 @@ void Interpreter::visitSReturn(SReturn *sreturn)
 
 void Interpreter::visitSReturnVoid(SReturnVoid *sreturnvoid)
 {
-	std::string output = "ret void";
-	emit (1, output);
+	/*std::string output = "ret void";
+	emit (1, output);*/
 }
 
 void Interpreter::visitSWhile(SWhile *swhile)
@@ -312,8 +325,14 @@ void Interpreter::visitEId(EId *eid)
 
 	if(var.second == 0) {
 
-		output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_;
-		latestFunc = eid->id_;
+		std::map<std::string, std::string>::iterator arg = argmap.find(eid->id_);
+		if (arg == argmap.end()) {
+			output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_;
+			latestFunc = eid->id_;
+		} else {
+			output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + arg->second;
+			latestFunc = arg->second;
+		}
 		
 	} else {
  		std::string temporary;
@@ -331,27 +350,33 @@ void Interpreter::visitEId(EId *eid)
 void Interpreter::visitEApp(EApp *eapp)
 {
   visitId(eapp->id_);
-  eapp->listexp_->accept(this);
+  //eapp->listexp_->accept(this);
  
-  std::pair<ListArg*,Type*> func = env_->lookupFun (eapp->id_);
+std::pair<ListArg*,Type*> func = env_->lookupFun (eapp->id_);
 	ListArg* inputTypes = func.first;
 	Type* outputType = func.second;
 	ListArg::iterator it;
 	ListExp::iterator it_exp;
+	std::string call = "";
+	std::string tmp = "";
 
-    std::string call = "call " + outputType->getLLVMType() + " @" + eapp->id_ + "(";
+    call += "call " + outputType->getLLVMType() + " @" + eapp->id_ + "(";
     int i = 0;
     for (it_exp = eapp->listexp_->begin(), it = inputTypes->begin() ; it_exp != eapp->listexp_->end(); ++it_exp, ++it) {
         (*it_exp)->accept(this);
 
         std::string tmp = (*it_exp)->temporary;
-        call += (*it)->getType()->getLLVMType() + tmp;
+        call += (*it)->getType()->getLLVMType() + " " + tmp;
         if ((it+1) != inputTypes->end()) {
             call += ", ";
         }
 	}
     call += ")";
-    emit(1, call);
+    if ( outputType->getType() != "void" ) {
+	tmp = "%" + newTemporary() + " = ";
+	eapp->temporary = "%" + getTemporary();
+    }	
+    emit(1, tmp + call);
 	
 	eapp->type = outputType->getType();
 }
