@@ -27,6 +27,9 @@ define i32 @main() #0 {
   %1 = alloca i32, align 4
   %b = alloca i32, align 4
   %a = alloca i32, align 4
+  %f = alloca double, align 8
+  %k = alloca double, align 8
+  %c = alloca i32, align 4
   store i32 0, i32* %1
   store i32 2, i32* %b, align 4
   %2 = load i32* %b, align 4
@@ -34,8 +37,34 @@ define i32 @main() #0 {
   store i32 %3, i32* %a, align 4
   %4 = load i32* %b, align 4
   call void @test2(i32 %4)
-  %5 = load i32* %a, align 4
-  ret i32 %5
+  store double 0.000000e+00, double* %f, align 8
+  store double 0.000000e+00, double* %f, align 8
+  %5 = load double* %f, align 8
+  %6 = load i32* %b, align 4
+  %7 = sitofp i32 %6 to double
+  %8 = fadd double %5, %7
+  store double %8, double* %k, align 8
+  br label %9
+
+; <label>:9                                       ; preds = %12, %0
+  %10 = load i32* %b, align 4
+  %11 = icmp sgt i32 %10, 0
+  br i1 %11, label %12, label %18
+
+; <label>:12                                      ; preds = %9
+  %13 = load i32* %b, align 4
+  %14 = call i32 @test(i32 %13)
+  %15 = load i32* %b, align 4
+  %16 = add nsw i32 %15, -1
+  store i32 %16, i32* %b, align 4
+  store i32 %15, i32* %c, align 4
+  %17 = load i32* %c, align 4
+  store i32 %17, i32* %b, align 4
+  br label %9
+
+; <label>:18                                      ; preds = %9
+  %19 = load i32* %a, align 4
+  ret i32 %19
 }
 
 attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }

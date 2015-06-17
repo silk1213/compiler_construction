@@ -41,7 +41,7 @@ main:                                   # @main
 	movq	%rsp, %rbp
 .Ltmp6:
 	.cfi_def_cfa_register %rbp
-	subq	$16, %rsp
+	subq	$32, %rsp
 	movl	$2, -4(%rbp)
 	movl	$2, %edi
 	callq	test
@@ -50,6 +50,11 @@ main:                                   # @main
 	callq	test2
 	movq	$0, -16(%rbp)
 	movq	$0, -16(%rbp)
+	cvtsi2sdl	-4(%rbp), %xmm0
+	xorps	%xmm1, %xmm1
+	addsd	%xmm0, %xmm1
+	movsd	%xmm1, -24(%rbp)
+	movb	$1, -25(%rbp)
 	jmp	.LBB2_1
 	.align	16, 0x90
 .LBB2_2:                                # %label1
@@ -68,7 +73,13 @@ main:                                   # @main
                                         # =>This Inner Loop Header: Depth=1
 	cmpl	$0, -4(%rbp)
 	jg	.LBB2_2
-# BB#3:                                 # %label2
+	.align	16, 0x90
+.LBB2_3:                                # %label3
+                                        # =>This Inner Loop Header: Depth=1
+	movb	-25(%rbp), %al
+	testb	%al, %al
+	jne	.LBB2_3
+# BB#4:                                 # %label5
 	movl	-8(%rbp), %eax
 	movq	%rbp, %rsp
 	popq	%rbp

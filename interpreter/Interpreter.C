@@ -123,9 +123,19 @@ void Interpreter::visitDFun(DFun *dfun)
 	output = output + ") #0 {";
 	emit (1, output);
 	for (it = dfun->listarg_->begin(); it != dfun->listarg_->end(); ++it) {
-		emit(1, "%" + newTemporary() + " = alloca " + (*it)->getType()->getLLVMType() + " , align 4");
-		emit(1, "store " + (*it)->getType()->getLLVMType() + " %" + (*it)->getId() + ", " + (*it)->getType()->getLLVMType() + "* %" + 
-			getTemporary() + " , align 4");
+		emit(0, "%" + newTemporary() + " = alloca " + (*it)->getType()->getLLVMType());
+		if ((*it)->getType()->getLLVMType() == "int") {
+			emit(1, ", align 4");
+		} else if ((*it)->getType()->getLLVMType() == "double") {
+			emit(1, ", align 8");
+		}
+		emit(0, "store " + (*it)->getType()->getLLVMType() + " %" + (*it)->getId() + ", " + (*it)->getType()->getLLVMType() + "* %" + 
+			getTemporary());
+		if ((*it)->getType()->getLLVMType() == "int") {
+			emit(1, ", align 4");
+		} else if ((*it)->getType()->getLLVMType() == "double") {
+			emit(1, ", align 8");
+		}
 		argmap.insert(std::pair<std::string, std::string>((*it)->getId(), getTemporary()));
 	}
 	dfun->liststm_->accept(this);
@@ -168,10 +178,24 @@ void Interpreter::visitSDecls(SDecls *sdecls)
 			std::ostringstream convert;
 			convert << multivarcounter;
 			tmp = convert.str();
-			emit (1, "%" + (*i) + tmp + " = alloca " + type + ", align 4");
+			emit (0, "%" + (*i) + tmp + " = alloca " + type);
+			if (sdecls->type_->getType() == "int") {
+				emit(1, ", align 4");
+			} else if (sdecls->type_->getType() == "double") {
+				emit(1, ", align 8");
+			} else if (sdecls->type_->getType() == "bool") {
+				emit(1, ", align 1");
+			}
 		} else {
 			env_->updateVar((*i), sdecls->type_);
-			emit (1, "%" + (*i) + " = alloca " + type + ", align 4");
+			emit (0, "%" + (*i) + " = alloca " + type);
+			if (sdecls->type_->getType() == "int") {
+				emit(1, ", align 4");
+			} else if (sdecls->type_->getType() == "double") {
+				emit(1, ", align 8");
+			} else if (sdecls->type_->getType() == "bool") {
+				emit(1, ", align 1");
+			}
 		}
 	}
 }
@@ -192,23 +216,51 @@ void Interpreter::visitSInit(SInit *sinit)
 			convert << multivarcounter;
 			tmp = convert.str();
 			sinit->exp_->accept(this);
-			emit (1, "%" + sinit->id_ + tmp + " = alloca " + sinit->type_->getLLVMType() + ", align 4");
+			emit (0, "%" + sinit->id_ + tmp + " = alloca " + sinit->type_->getLLVMType());
+			if (sinit->type_->getType() == "int") {
+				emit(1, ", align 4");
+			} else if (sinit->type_->getType() == "double") {
+				emit(1, ", align 8");
+			} else if (sinit->type_->getType() == "bool") {
+				emit(1, ", align 1");
+			}
 			if (getLLVMType(sinit->exp_->type) == "double" && sinit->exp_->temporary == "0") {
 				emit(0, "store " + getLLVMType(sinit->exp_->type)+ " " + "0.0" );
 			} else {
 				emit (0, "store " + getLLVMType(sinit->exp_->type)+ " " + sinit->exp_->temporary);
 			}
-			emit (1, ", " + sinit->type_->getLLVMType() + "* %" + sinit->id_ + tmp + ", align 4");
+			emit (0, ", " + sinit->type_->getLLVMType() + "* %" + sinit->id_ + tmp);
+			if (sinit->type_->getType() == "int") {
+				emit(1, ", align 4");
+			} else if (sinit->type_->getType() == "double") {
+				emit(1, ", align 8");
+			} else if (sinit->type_->getType() == "bool") {
+				emit(1, ", align 1");
+			}
 		} else {
 			env_->updateVar(sinit->id_, sinit->type_);
 			sinit->exp_->accept(this);
-			emit (1, "%" + sinit->id_ + " = alloca " + sinit->type_->getLLVMType() + ", align 4");
+			emit (0, "%" + sinit->id_ + " = alloca " + sinit->type_->getLLVMType());
+			if (sinit->type_->getType() == "int") {
+				emit(1, ", align 4");
+			} else if (sinit->type_->getType() == "double") {
+				emit(1, ", align 8");
+			} else if (sinit->type_->getType() == "bool") {
+				emit(1, ", align 1");
+			}
 			if (getLLVMType(sinit->exp_->type) == "double" && sinit->exp_->temporary == "0") {
 				emit(0, "store " + getLLVMType(sinit->exp_->type)+ " " + "0.0" );
 			} else {
 				emit (0, "store " + getLLVMType(sinit->exp_->type)+ " " + sinit->exp_->temporary);
 			}
-			emit (1, ", " + sinit->type_->getLLVMType() + "* %" + sinit->id_ + ", align 4");
+			emit (0, ", " + sinit->type_->getLLVMType() + "* %" + sinit->id_);
+			if (sinit->type_->getType() == "int") {
+				emit(1, ", align 4");
+			} else if (sinit->type_->getType() == "double") {
+				emit(1, ", align 8");
+			} else if (sinit->type_->getType() == "bool") {
+				emit(1, ", align 1");
+			}
 		}
 
 	
@@ -284,11 +336,13 @@ void Interpreter::visitSIfElse(SIfElse *sifelse)
 void Interpreter::visitETrue(ETrue *etrue)
 {
 	etrue->type = "bool";
+	etrue->temporary = "1";
 }
 
 void Interpreter::visitEFalse(EFalse *efalse)
 {
 	efalse->type = "bool";
+	efalse->temporary = "0";
 }
 
 void Interpreter::visitEInt(EInt *eint)
@@ -436,7 +490,7 @@ void Interpreter::visitEIncr(EIncr *eincr)
 
   	emit(1, output);
 	
-	std::string output1 = "store i32 %" + getTemporary() + ", i32* %" + latestFunc + ", allign 4";
+	std::string output1 = "store i32 %" + getTemporary() + ", i32* %" + latestFunc + ", align 4";
 	emit(1, output1);
 	eincr->temporary = "%" + getTemporary();
 }
@@ -467,9 +521,22 @@ void Interpreter::visitETimes(ETimes *etimes)
   	exp1 = etimes->exp_1->temporary;
   	etimes->exp_2->accept(this);
   	exp2 = etimes->exp_2->temporary;
+	
+	std::string output;
 
-  	std::string output = "%" + newTemporary() + " = mul nsw " + getLLVMType(etimes->exp_1->type) + " " + exp1 + ", " + exp2;
-
+  	if (etimes->exp_1->type == "int" && etimes->exp_2->type == "int") {
+  		output = "%" + newTemporary() + " = mul nsw " + getLLVMType(etimes->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if(etimes->exp_1->type == "double" && etimes->exp_2->type == "int") {
+		emit(1, "%" + newTemporary() + " = sitofp i32 " + exp2 + " to double");
+		exp2 = "%" + getTemporary();
+		output = "%" + newTemporary() + " = fmul " + getLLVMType(etimes->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if(etimes->exp_1->type == "int" && etimes->exp_2->type == "double") {
+		emit(1, "%" + newTemporary() + " = sitofp i32 " + exp1 + " to double");
+		exp1 = "%" + getTemporary();
+		output = "%" + newTemporary() + " = fmul " + getLLVMType(etimes->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if (etimes->exp_1->type == "double" && etimes->exp_2->type == "double") {
+		output = "%" + newTemporary() + " = fmul " + getLLVMType(etimes->exp_1->type) + " " + exp1 + ", " + exp2;
+	}
   	emit(1, output);
 	etimes->temporary = "%" + getTemporary();
 }
@@ -483,7 +550,21 @@ void Interpreter::visitEDiv(EDiv *ediv)
   	ediv->exp_2->accept(this);
   	exp2 = ediv->exp_2->temporary;
 
-  	std::string output = "%" + newTemporary() + " = div nsw " + getLLVMType(ediv->exp_1->type) + " " + exp1 + ", " + exp2;
+	std::string output;
+
+  	if (ediv->exp_1->type == "int" && ediv->exp_2->type == "int") {
+  		output = "%" + newTemporary() + " = div nsw " + getLLVMType(ediv->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if(ediv->exp_1->type == "double" && ediv->exp_2->type == "int") {
+		emit(1, "%" + newTemporary() + " = sitofp i32 " + exp2 + " to double");
+		exp2 = "%" + getTemporary();
+		output = "%" + newTemporary() + " = fdiv " + getLLVMType(ediv->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if(ediv->exp_1->type == "int" && ediv->exp_2->type == "double") {
+		emit(1, "%" + newTemporary() + " = sitofp i32 " + exp1 + " to double");
+		exp1 = "%" + getTemporary();
+		output = "%" + newTemporary() + " = fdiv " + getLLVMType(ediv->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if (ediv->exp_1->type == "double" && ediv->exp_2->type == "double") {
+		output = "%" + newTemporary() + " = fdiv " + getLLVMType(ediv->exp_1->type) + " " + exp1 + ", " + exp2;
+	}
 
   	emit(1, output);
 	ediv->temporary = "%" + getTemporary();
@@ -498,8 +579,21 @@ void Interpreter::visitEPlus(EPlus *eplus)
   	eplus->exp_2->accept(this);
   	exp2 = eplus->exp_2->temporary;
 
-  	std::string output = "%" + newTemporary() + " = add nsw " + getLLVMType(eplus->exp_1->type) + " " + exp1 + ", " + exp2;
+	std::string output;		
 
+	if (eplus->exp_1->type == "int" && eplus->exp_2->type == "int") {
+  		output = "%" + newTemporary() + " = add nsw " + getLLVMType(eplus->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if(eplus->exp_1->type == "double" && eplus->exp_2->type == "int") {
+		emit(1, "%" + newTemporary() + " = sitofp i32 " + exp2 + " to double");
+		exp2 = "%" + getTemporary();
+		output = "%" + newTemporary() + " = fadd " + getLLVMType(eplus->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if(eplus->exp_1->type == "int" && eplus->exp_2->type == "double") {
+		emit(1, "%" + newTemporary() + " = sitofp i32 " + exp1 + " to double");
+		exp1 = "%" + getTemporary();
+		output = "%" + newTemporary() + " = fadd " + getLLVMType(eplus->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if (eplus->exp_1->type == "double" && eplus->exp_2->type == "double") {
+		output = "%" + newTemporary() + " = fadd " + getLLVMType(eplus->exp_1->type) + " " + exp1 + ", " + exp2;
+	}
   	emit(1, output);
 	eplus->temporary = "%" + getTemporary();
 }
@@ -513,7 +607,21 @@ void Interpreter::visitEMinus(EMinus *eminus)
 	eminus->exp_2->accept(this);
 	exp2 = eminus->exp_2->temporary;
 
-	std::string output = "%" + newTemporary() + " = sub nsw " + getLLVMType(eminus->exp_1->type) + " "+ exp1 + ", " + exp2;
+	std::string output;		
+
+	if (eminus->exp_1->type == "int" && eminus->exp_2->type == "int") {
+  		output = "%" + newTemporary() + " = sub nsw " + getLLVMType(eminus->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if(eminus->exp_1->type == "double" && eminus->exp_2->type == "int") {
+		emit(1, "%" + newTemporary() + " = sitofp i32 " + exp2 + " to double");
+		exp2 = "%" + getTemporary();
+		output = "%" + newTemporary() + " = fsub " + getLLVMType(eminus->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if(eminus->exp_1->type == "int" && eminus->exp_2->type == "double") {
+		emit(1, "%" + newTemporary() + " = sitofp i32 " + exp1 + " to double");
+		exp1 = "%" + getTemporary();
+		output = "%" + newTemporary() + " = fsub " + getLLVMType(eminus->exp_1->type) + " " + exp1 + ", " + exp2;
+	} else if (eminus->exp_1->type == "double" && eminus->exp_2->type == "double") {
+		output = "%" + newTemporary() + " = fsub " + getLLVMType(eminus->exp_1->type) + " " + exp1 + ", " + exp2;
+	}
 	emit(1, output);
 	eminus->temporary = "%" + getTemporary();
 }
@@ -666,7 +774,12 @@ void Interpreter::visitEAss(EAss *eass)
 		emit (0, "store " + getLLVMType(eass->exp_2->type)+ " " + eass->exp_2->temporary);
 	}
   	
-  	emit(1,", " + getLLVMType(eass->exp_1->type) + "* %" + latestFunc + ", align 4");
+  	emit(0,", " + getLLVMType(eass->exp_1->type) + "* %" + latestFunc);
+	if (eass->exp_1->type == "int") {
+		emit(1, ", align 4");
+	} else if (eass->exp_1->type == "double") {
+		emit(1, ", align 8");
+	}
 }
 
 void Interpreter::visitETyped(ETyped *etyped)
