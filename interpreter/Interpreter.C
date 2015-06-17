@@ -193,15 +193,21 @@ void Interpreter::visitSInit(SInit *sinit)
 			tmp = convert.str();
 			sinit->exp_->accept(this);
 			emit (1, "%" + sinit->id_ + tmp + " = alloca " + sinit->type_->getLLVMType() + ", align 4");
-			emit (0, "store " + getLLVMType(sinit->exp_->type)+ " " + sinit->exp_->temporary);
-			
+			if (getLLVMType(sinit->exp_->type) == "double" && sinit->exp_->temporary == "0") {
+				emit(0, "store " + getLLVMType(sinit->exp_->type)+ " " + "0.0" );
+			} else {
+				emit (0, "store " + getLLVMType(sinit->exp_->type)+ " " + sinit->exp_->temporary);
+			}
 			emit (1, ", " + sinit->type_->getLLVMType() + "* %" + sinit->id_ + tmp + ", align 4");
 		} else {
 			env_->updateVar(sinit->id_, sinit->type_);
 			sinit->exp_->accept(this);
 			emit (1, "%" + sinit->id_ + " = alloca " + sinit->type_->getLLVMType() + ", align 4");
-			emit (0, "store " + getLLVMType(sinit->exp_->type) + " " + sinit->exp_->temporary);
-			
+			if (getLLVMType(sinit->exp_->type) == "double" && sinit->exp_->temporary == "0") {
+				emit(0, "store " + getLLVMType(sinit->exp_->type)+ " " + "0.0" );
+			} else {
+				emit (0, "store " + getLLVMType(sinit->exp_->type)+ " " + sinit->exp_->temporary);
+			}
 			emit (1, ", " + sinit->type_->getLLVMType() + "* %" + sinit->id_ + ", align 4");
 		}
 
@@ -373,8 +379,8 @@ std::pair<ListArg*,Type*> func = env_->lookupFun (eapp->id_);
 	}
     call += ")";
     if ( outputType->getType() != "void" ) {
-	tmp = "%" + newTemporary() + " = ";
-	eapp->temporary = "%" + getTemporary();
+		tmp = "%" + newTemporary() + " = ";
+		eapp->temporary = "%" + getTemporary();
     }	
     emit(1, tmp + call);
 	
@@ -654,9 +660,13 @@ void Interpreter::visitEAss(EAss *eass)
 
 	//emit(1, "%" + exp2 + " = alloca " + getLLVMType(eass->exp_2->type) + ", align 4");
 
-  	emit(0, "store " + getLLVMType(eass->exp_2->type) + " " + exp2 + ", " + getLLVMType(eass->exp_1->type) + "* ");
+	if (getLLVMType(eass->exp_2->type) == "double" && eass->exp_2->temporary == "0") {
+		emit(0, "store " + getLLVMType(eass->exp_2->type)+ " " + "0.0" );
+	} else {
+		emit (0, "store " + getLLVMType(eass->exp_2->type)+ " " + eass->exp_2->temporary);
+	}
   	
-  	emit(1,latestFunc + ", align 4");
+  	emit(1,", " + getLLVMType(eass->exp_1->type) + "* %" + latestFunc + ", align 4");
 }
 
 void Interpreter::visitETyped(ETyped *etyped)

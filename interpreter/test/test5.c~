@@ -4,13 +4,20 @@ int test (int a) {
 }
 
 void test2 (int a) {
-return;
+
 }
 
 
-int main () {
+int main (){
 	int b = 2;
 	int a = test(b);
 	test2(b);
+	double f = 0.0;
+
+	while (b > 0) {
+		test(b);
+		int c = b--;
+		b = c;
+	}
 	return a;
 }

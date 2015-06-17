@@ -33,20 +33,48 @@ test2:                                  # @test2
 main:                                   # @main
 	.cfi_startproc
 # BB#0:
-	pushq	%rax
-.Ltmp3:
+	pushq	%rbp
+.Ltmp4:
 	.cfi_def_cfa_offset 16
-	movl	$2, 4(%rsp)
+.Ltmp5:
+	.cfi_offset %rbp, -16
+	movq	%rsp, %rbp
+.Ltmp6:
+	.cfi_def_cfa_register %rbp
+	subq	$16, %rsp
+	movl	$2, -4(%rbp)
 	movl	$2, %edi
 	callq	test
-	movl	%eax, (%rsp)
-	movl	4(%rsp), %edi
+	movl	%eax, -8(%rbp)
+	movl	-4(%rbp), %edi
 	callq	test2
-	movl	(%rsp), %eax
-	popq	%rdx
+	movq	$0, -16(%rbp)
+	movq	$0, -16(%rbp)
+	jmp	.LBB2_1
+	.align	16, 0x90
+.LBB2_2:                                # %label1
+                                        #   in Loop: Header=BB2_1 Depth=1
+	movl	-4(%rbp), %edi
+	callq	test
+	movl	-4(%rbp), %eax
+	decl	%eax
+	movl	%eax, -4(%rbp)
+	movq	%rsp, %rcx
+	leaq	-16(%rcx), %rdx
+	movq	%rdx, %rsp
+	movl	%eax, -16(%rcx)
+	movl	%eax, -16(%rcx)
+.LBB2_1:                                # %label0
+                                        # =>This Inner Loop Header: Depth=1
+	cmpl	$0, -4(%rbp)
+	jg	.LBB2_2
+# BB#3:                                 # %label2
+	movl	-8(%rbp), %eax
+	movq	%rbp, %rsp
+	popq	%rbp
 	ret
-.Ltmp4:
-	.size	main, .Ltmp4-main
+.Ltmp7:
+	.size	main, .Ltmp7-main
 	.cfi_endproc
 
 
