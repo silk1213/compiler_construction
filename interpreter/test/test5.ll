@@ -46,25 +46,27 @@ define i32 @main() #0 {
   store double %8, double* %k, align 8
   br label %9
 
-; <label>:9                                       ; preds = %12, %0
+; <label>:9                                       ; preds = %14, %0
   %10 = load i32* %b, align 4
-  %11 = icmp sgt i32 %10, 0
-  br i1 %11, label %12, label %18
+  %11 = sitofp i32 %10 to double
+  %12 = load double* %f, align 8
+  %13 = fcmp ogt double %11, %12
+  br i1 %13, label %14, label %20
 
-; <label>:12                                      ; preds = %9
-  %13 = load i32* %b, align 4
-  %14 = call i32 @test(i32 %13)
+; <label>:14                                      ; preds = %9
   %15 = load i32* %b, align 4
-  %16 = add nsw i32 %15, -1
-  store i32 %16, i32* %b, align 4
-  store i32 %15, i32* %c, align 4
-  %17 = load i32* %c, align 4
-  store i32 %17, i32* %b, align 4
+  %16 = call i32 @test(i32 %15)
+  %17 = load i32* %b, align 4
+  %18 = add nsw i32 %17, -1
+  store i32 %18, i32* %b, align 4
+  store i32 %17, i32* %c, align 4
+  %19 = load i32* %c, align 4
+  store i32 %19, i32* %b, align 4
   br label %9
 
-; <label>:18                                      ; preds = %9
-  %19 = load i32* %a, align 4
-  ret i32 %19
+; <label>:20                                      ; preds = %9
+  %21 = load i32* %a, align 4
+  ret i32 %21
 }
 
 attributes #0 = { nounwind uwtable "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "stack-protector-buffer-size"="8" "unsafe-fp-math"="false" "use-soft-float"="false" }

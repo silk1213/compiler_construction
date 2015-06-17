@@ -183,7 +183,7 @@ void Interpreter::visitSDecls(SDecls *sdecls)
 				emit(1, ", align 4");
 			} else if (sdecls->type_->getType() == "double") {
 				emit(1, ", align 8");
-			} else if (sdelcs->type_->getType() == "bool") {
+			} else if (sdecls->type_->getType() == "bool") {
 				emit(1, ", align 1");
 			}
 		} else {
@@ -193,7 +193,7 @@ void Interpreter::visitSDecls(SDecls *sdecls)
 				emit(1, ", align 4");
 			} else if (sdecls->type_->getType() == "double") {
 				emit(1, ", align 8");
-			} else if (sdelcs->type_->getType() == "bool") {
+			} else if (sdecls->type_->getType() == "bool") {
 				emit(1, ", align 1");
 			}
 		}

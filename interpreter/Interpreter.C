@@ -124,16 +124,16 @@ void Interpreter::visitDFun(DFun *dfun)
 	emit (1, output);
 	for (it = dfun->listarg_->begin(); it != dfun->listarg_->end(); ++it) {
 		emit(0, "%" + newTemporary() + " = alloca " + (*it)->getType()->getLLVMType());
-		if ((*it)->getType()->getLLVMType() == "int") {
+		if ((*it)->getType()->getType() == "int") {
 			emit(1, ", align 4");
-		} else if ((*it)->getType()->getLLVMType() == "double") {
+		} else if ((*it)->getType()->getType() == "double") {
 			emit(1, ", align 8");
 		}
 		emit(0, "store " + (*it)->getType()->getLLVMType() + " %" + (*it)->getId() + ", " + (*it)->getType()->getLLVMType() + "* %" + 
 			getTemporary());
-		if ((*it)->getType()->getLLVMType() == "int") {
+		if ((*it)->getType()->getType() == "int") {
 			emit(1, ", align 4");
-		} else if ((*it)->getType()->getLLVMType() == "double") {
+		} else if ((*it)->getType()->getType() == "double") {
 			emit(1, ", align 8");
 		}
 		argmap.insert(std::pair<std::string, std::string>((*it)->getId(), getTemporary()));
