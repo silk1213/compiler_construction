@@ -1001,7 +1001,7 @@ void Interpreter::visitEOr(EOr *eor)
 void Interpreter::visitEAss(EAss *eass)
 {
 	std::string exp2;
-	//eass->exp_1->accept(this);
+	eass->exp_1->accept(this);
   	eass->exp_2->accept(this);
   	exp2 = eass->exp_2->temporary;
 

@@ -3,15 +3,12 @@ int main () {
 	int b = 0;
 	bool g = true;
 	
-	if (g) {
-		a = 7;
-		g = false;
-	} else {}
-
-	if (a<1 && b == 0) {
-		a++;
-	} else {
-		a--;
+	while (g) {
+		if ( a > 7) {
+			g = false;
+		} else {
+			a++;
+		}
 	}
 	
 	return a;

@@ -1016,6 +1016,8 @@ void Interpreter::visitEAss(EAss *eass)
 		emit(1, 0, ", align 4");
 	} else if (eass->exp_1->type == "double") {
 		emit(1, 0, ", align 8");
+	} else if (eass->exp_1->type == "bool") {
+		emit(1, 0, ", align 1");
 	}
 }
 
