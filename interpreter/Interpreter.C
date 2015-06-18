@@ -289,7 +289,7 @@ void Interpreter::visitSReturn(SReturn *sreturn)
 {
 	ret_flag = 1;
   	sreturn->exp_->accept(this);
-	if (ret_exp == 0) {
+	/*if (ret_exp == 0) {
 		if (sreturn->exp_->type == "int") {
 			std::string ret_int;
 			std::ostringstream convert;
@@ -308,7 +308,9 @@ void Interpreter::visitSReturn(SReturn *sreturn)
 	} else {
 		std::string exp = getLLVMType(sreturn->exp_->type) + " %" + getTemporary();
 		emit (1, 1, "ret "+ exp + " ");
-	}
+	}*/
+	
+	emit(1, 1, "ret " + getLLVMType(sreturn->exp_->type) + " " + sreturn->exp_->temporary + " ");
 	
 	ret_flag = 0;
 	ret_exp = 0;
@@ -427,6 +429,13 @@ void Interpreter::visitEDouble(EDouble *edouble)
 	convert << edouble->double_;
 	edouble->temporary = convert.str();
 	store = false;
+
+	int tmp1 = edouble->double_;
+	double tmp2 = tmp1;
+	if (tmp2 == edouble->double_) {
+		edouble->temporary += ".0";
+	}	
+
 	if (ret_flag == 1) {
 		return_double = edouble->double_;
 	}
@@ -716,7 +725,7 @@ void Interpreter::visitEDiv(EDiv *ediv)
 	std::string output;
 
   	if (ediv->exp_1->type == "int" && ediv->exp_2->type == "int") {
-  		output = "%" + newTemporary() + " = sdiv nsw " + getLLVMType(ediv->exp_1->type) + " " + exp1 + ", " + exp2;
+  		output = "%" + newTemporary() + " = sdiv " + getLLVMType(ediv->exp_1->type) + " " + exp1 + ", " + exp2;
 	} else if(ediv->exp_1->type == "double" && ediv->exp_2->type == "int") {
 		emit(1, 1, "%" + newTemporary() + " = sitofp i32 " + exp2 + " to double");
 		exp2 = "%" + getTemporary();
