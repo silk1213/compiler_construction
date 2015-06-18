@@ -429,6 +429,10 @@ void Interpreter::visitEId(EId *eid)
 	std::pair<Type*,int> var = env_->lookupVarIp(eid->id_);
 	std::string output;
 
+	if (ret_flag == 1) {
+		ret_exp = 1; 
+	}
+
 	if(var.second == 0) {
 
 		std::map<std::string, std::string>::iterator arg = argmap.find(eid->id_);

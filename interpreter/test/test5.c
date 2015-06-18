@@ -17,7 +17,7 @@ int main (){
 	f = 0.0;
 	double k = f + b;
 	
-	while (b > 0) {
+	while (b > b) {
 		test(b);
 		int c = b--;
 		b = c;
