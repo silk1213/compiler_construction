@@ -1,21 +1,11 @@
 int main () {
-	int a = 1;
-	int b = 0;
-	bool g = true;
-	
-	while (g) {
-		if ( a > 7) {
-			g = false;
-		} else {
-			a++;
-		}
-	}
+	bool a, b, c, d, e, f;
+	a = b = c = d = e = f = true;
+	int h = 0;	
 
-	if (a<1 && b == 0) {
-		a++;
-	} else {
-		a--;
+	while (a && b && c && d && e || f ) {
+		h++;
 	}
 	
-	return a;
+	return h;
 }

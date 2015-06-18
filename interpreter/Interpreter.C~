@@ -322,6 +322,12 @@ void Interpreter::visitSWhile(SWhile *swhile)
 	label = "label" + newLabel();
 	truelabel = "label" + newLabel();
 	falselabel = "label" + newLabel();
+	std::string tmp, truetmp, falsetmp;
+
+	tmp = label;
+	truetmp = truelabel;
+	falsetmp = falselabel;
+
 	emit (1, 1, "br label %" + label);
 	emit (1, 1, " ");
     emit (1, 1, label + ":");
@@ -331,16 +337,18 @@ void Interpreter::visitSWhile(SWhile *swhile)
 	if (multicondition == 0) {
 		emit (0, 1, "br i1 %" + getTemporary());
 		std::string output_while = ", label %" + truelabel + ", label %" + falselabel;
-		emit (1, 0, output_while);
+		emit (1, 0, output_while);		
 	}
+	
+	multicondition = 0;
 	emit (1, 1, " ");
 	emit (1, 1, truelabel + ":");
   	swhile->stm_->accept(this);
-	emit (1, 1, "br label %" + label);
+	emit (1, 1, "br label %" + tmp);
 	emit (1, 1, " ");
-	emit (1, 1, falselabel + ":");
+	emit (1, 1, falsetmp + ":");
 
-	multicondition = 0;
+	
 }
 
 void Interpreter::visitSBlock(SBlock *sblock)
@@ -357,22 +365,30 @@ void Interpreter::visitSIfElse(SIfElse *sifelse)
 	falselabel = "label" + newLabel();
 	nextlabel = "label" + newLabel();
 
+	std::string tmp, truetmp, falsetmp, nexttmp;
+
+	tmp = label;
+	truetmp = truelabel;
+	falsetmp = falselabel;
+	nexttmp = nextlabel;
+
 	sifelse->exp_->accept(this);
 
 	if (multicondition == 0) {
-		emit (1, 1, "br i1 " + sifelse->exp_->temporary + ", label %" + truelabel + ", label %" + falselabel);
+		emit (1, 1, "br i1 " + sifelse->exp_->temporary + ", label %" + truelabel + ", label %" + falselabel);		
 	}
+	multicondition = 0;
 	emit (1, 1, " ");
 	emit (1, 1, truelabel + ":");
   	sifelse->stm_1->accept(this);
-	emit (1, 1, "br label %" + nextlabel);
+	emit (1, 1, "br label %" + nexttmp);
 	emit (1, 1, " ");
-	emit (1, 1, falselabel + ":");
+	emit (1, 1, falsetmp + ":");
   	sifelse->stm_2->accept(this);
-	emit (1, 1, "br label %" + nextlabel);
+	emit (1, 1, "br label %" + nexttmp);
 	emit (1, 1, " ");
-	emit (1, 1, nextlabel + ":");
-	multicondition = 0;
+	emit (1, 1, nexttmp + ":");
+	
 }
 
 void Interpreter::visitETrue(ETrue *etrue)
@@ -962,53 +978,71 @@ void Interpreter::visitENEq(ENEq *eneq)
 
 void Interpreter::visitEAnd(EAnd *eand)
 {
-	multicondition = 1;
 	std::string exp1, exp2;
 
     std::string andtruelabel = "label" + newLabel();
+	std::string truetmp = truelabel;
+	truelabel = andtruelabel;
 
     eand->exp_1->accept(this);
 
-    exp1 = eand->exp_1->temporary;
-    emit (1, 1, "br i1 " + exp1 + ", label %" + andtruelabel + ", label %" + falselabel);
+	if (multicondition == 0) {
+    	exp1 = eand->exp_1->temporary;
+    	emit (1, 1, "br i1 " + exp1 + ", label %" + andtruelabel + ", label %" + falselabel);
+	}
 
 	emit (1, 1, " ");
     emit (1, 1, andtruelabel + ":");
     eand->exp_2->accept(this);
     exp2 = eand->exp_2->temporary;
-    emit (1, 1, "br i1 " + exp2 + ", label %" + truelabel + ", label %" + falselabel);
+    emit (1, 1, "br i1 " + exp2 + ", label %" + truetmp + ", label %" + falselabel);
+	
+	truelabel = truetmp;	
+	multicondition = 1;
 }
 
 void Interpreter::visitEOr(EOr *eor)
 {
-	multicondition = 1;
+	
 
   	std::string orfalselabel = "label" + newLabel();
   	std::string exp1, exp2;
+	std::string falsetmp = falselabel;
+	falselabel = orfalselabel;
 
   	eor->exp_1->accept(this);
 
-  	exp1 = eor->exp_1->temporary;
-  	emit (1, 1, "br i1 " + exp1 + ", label %" + truelabel + ", label %" + orfalselabel);
+	if (multicondition == 0) {
+  		exp1 = eor->exp_1->temporary;
+  		emit (1, 1, "br i1 " + exp1 + ", label %" + truelabel + ", label %" + orfalselabel);
+	}
+
+	falselabel = falsetmp;
 
 	emit (1, 1, " ");
   	emit (1, 1, orfalselabel + ":");
+
   	eor->exp_2->accept(this);
   	exp2 = eor->exp_2->temporary;
+	
   	emit (1, 1, "br i1 " + exp2 + ", label %" + truelabel + ", label %" + falselabel);
+	multicondition = 1;
 }
 
 void Interpreter::visitEAss(EAss *eass)
 {
 	std::string exp2;
+	eass->exp_2->accept(this);
 	eass->exp_1->accept(this);
-  	eass->exp_2->accept(this);
+  	
   	exp2 = eass->exp_2->temporary;
 
 	if (getLLVMType(eass->exp_2->type) == "double" && eass->exp_2->temporary == "0") {
 		emit(0, 1, "store " + getLLVMType(eass->exp_2->type)+ " " + "0.0" );
+		eass->temporary = "0.0";
 	} else {
 		emit (0, 1, "store " + getLLVMType(eass->exp_2->type)+ " " + eass->exp_2->temporary);
+		eass->exp_2->temporary;
 	}
   	
   	emit(0, 0, ", " + getLLVMType(eass->exp_1->type) + "* %" + latestFunc);
@@ -1016,6 +1050,8 @@ void Interpreter::visitEAss(EAss *eass)
 		emit(1, 0, ", align 4");
 	} else if (eass->exp_1->type == "double") {
 		emit(1, 0, ", align 8");
+	} else if (eass->exp_1->type == "bool") {
+		emit(1, 0, ", align 1");
 	}
 }
 

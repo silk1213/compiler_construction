@@ -8,17 +8,21 @@ main:                                   # @main
 # BB#0:
 	movl	$1, -4(%rsp)
 	movl	$0, -8(%rsp)
-	cmpl	$0, -4(%rsp)
-	jle	.LBB0_2
-# BB#1:                                 # %label4
+	movl	$1, -12(%rsp)
+	jmp	.LBB0_1
+	.align	16, 0x90
+.LBB0_2:                                # %label1
+                                        #   in Loop: Header=BB0_1 Depth=1
+	incl	-4(%rsp)
+.LBB0_1:                                # %label0
+                                        # =>This Inner Loop Header: Depth=1
+	cmpl	$1, -12(%rsp)
+	sete	%al
 	cmpl	$0, -8(%rsp)
+	sete	%cl
+	xorb	%al, %cl
 	je	.LBB0_2
 # BB#3:                                 # %label2
-	decl	-4(%rsp)
-	movl	-4(%rsp), %eax
-	ret
-.LBB0_2:                                # %label1
-	incl	-4(%rsp)
 	movl	-4(%rsp), %eax
 	ret
 .Ltmp0:
