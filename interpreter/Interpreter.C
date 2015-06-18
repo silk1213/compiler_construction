@@ -441,6 +441,8 @@ void Interpreter::visitEId(EId *eid)
 				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + " , align 4";
 			} else if (var.first->getType() == "double") {
 				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + " , align 8";
+			} else if (var.first->getType() == "bool") {
+				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + " , align 1";
 			}
 			latestFunc = eid->id_;
 		} else {
@@ -448,6 +450,8 @@ void Interpreter::visitEId(EId *eid)
 				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + arg->second + " , align 4";
 			} else if (var.first->getType() == "double") {
 				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + arg->second + " , align 8";
+			} else if (var.first->getType() == "bool") {
+				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + arg->second + " , align 1";
 			}
 			latestFunc = arg->second;
 		}
@@ -460,6 +464,8 @@ void Interpreter::visitEId(EId *eid)
 			output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + temporary + " , align 4";
 		} else if (var.first->getType() == "double") {
 			output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + temporary + " , align 8";
+		} else if (var.first->getType() == "bool") {
+			output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + temporary + " , align 1";
 		}
 		latestFunc = eid->id_ + temporary;
 	}

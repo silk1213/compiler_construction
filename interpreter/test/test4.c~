@@ -4,7 +4,7 @@ int main () {
 	bool g = true;
 	
 	if (g) {
-		a = 7;
+		a++;
 		g = false;
 	} else {}
 

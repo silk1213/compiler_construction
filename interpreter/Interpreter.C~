@@ -429,6 +429,10 @@ void Interpreter::visitEId(EId *eid)
 	std::pair<Type*,int> var = env_->lookupVarIp(eid->id_);
 	std::string output;
 
+	if (ret_flag == 1) {
+		ret_exp = 1; 
+	}
+
 	if(var.second == 0) {
 
 		std::map<std::string, std::string>::iterator arg = argmap.find(eid->id_);
@@ -437,6 +441,8 @@ void Interpreter::visitEId(EId *eid)
 				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + " , align 4";
 			} else if (var.first->getType() == "double") {
 				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + " , align 8";
+			} else if (var.first->getType() == "bool") {
+				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + " , align 1";
 			}
 			latestFunc = eid->id_;
 		} else {
@@ -444,6 +450,8 @@ void Interpreter::visitEId(EId *eid)
 				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + arg->second + " , align 4";
 			} else if (var.first->getType() == "double") {
 				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + arg->second + " , align 8";
+			} else if (var.first->getType() == "bool") {
+				output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + arg->second + " , align 1";
 			}
 			latestFunc = arg->second;
 		}
@@ -456,6 +464,8 @@ void Interpreter::visitEId(EId *eid)
 			output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + temporary + " , align 4";
 		} else if (var.first->getType() == "double") {
 			output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + temporary + " , align 8";
+		} else if (var.first->getType() == "bool") {
+			output = "%" + newTemporary() + " = load " + var.first->getLLVMType() + "* %" + eid->id_ + temporary + " , align 1";
 		}
 		latestFunc = eid->id_ + temporary;
 	}
@@ -991,7 +1001,7 @@ void Interpreter::visitEOr(EOr *eor)
 void Interpreter::visitEAss(EAss *eass)
 {
 	std::string exp2;
-	eass->exp_1->accept(this);
+	//eass->exp_1->accept(this);
   	eass->exp_2->accept(this);
   	exp2 = eass->exp_2->temporary;
 
