@@ -20,6 +20,7 @@ Interpreter::Interpreter() {
 	return_int = 0;
 	return_double = 0;
 	ret_exp = 0;
+	store = false;
 
 	if (remove("output.ll")) {
 		std::cout << "Failed to delete File"<< std::endl;
@@ -395,12 +396,14 @@ void Interpreter::visitETrue(ETrue *etrue)
 {
 	etrue->type = "bool";
 	etrue->temporary = "1";
+	store = false;
 }
 
 void Interpreter::visitEFalse(EFalse *efalse)
 {
 	efalse->type = "bool";
 	efalse->temporary = "0";
+	store = false;
 }
 
 void Interpreter::visitEInt(EInt *eint)
@@ -409,7 +412,7 @@ void Interpreter::visitEInt(EInt *eint)
 	std::ostringstream convert;
 	convert << eint->integer_;
 	eint->temporary = convert.str();
-
+	store = false;
 	if (ret_flag == 1) {
 		return_int = eint->integer_;
 	}
@@ -423,7 +426,7 @@ void Interpreter::visitEDouble(EDouble *edouble)
 	std::ostringstream convert;
 	convert << edouble->double_;
 	edouble->temporary = convert.str();
-
+	store = false;
 	if (ret_flag == 1) {
 		return_double = edouble->double_;
 	}
@@ -441,7 +444,7 @@ void Interpreter::visitEString(EString *estring)
 void Interpreter::visitEId(EId *eid)
 {
   	visitId(eid->id_);
-	
+	store = true;
 	std::pair<Type*,int> var = env_->lookupVarIp(eid->id_);
 	std::string output;
 
@@ -495,7 +498,7 @@ void Interpreter::visitEApp(EApp *eapp)
 	if (ret_flag ==1) {
 		ret_exp = 1;
 	}
-
+	store = false;
   	visitId(eapp->id_);
  
 	std::pair<ListArg*,Type*> func = env_->lookupFun (eapp->id_);
@@ -532,7 +535,7 @@ void Interpreter::visitEPIncr(EPIncr *eincr)
 	if (ret_flag ==1) {
 		ret_exp = 1;
 	}
-
+	
 	eincr->type = eincr->exp_->type;
 
 	std::string exp1;
@@ -547,15 +550,19 @@ void Interpreter::visitEPIncr(EPIncr *eincr)
 	} else if (eincr->exp_->type == "double") {
 		output = "%" + newTemporary() + " = fadd " + getLLVMType(eincr->exp_->type) + " " + exp1 + ", 1.0";
 	}
+
   	emit(1, 1, output);
-	std::string tmp = getTemporary();
-	std::string output1 = "store " + getLLVMType(eincr->exp_->type) + " %" + tmp + ", " + getLLVMType(eincr->exp_->type) + "* %" + latestFunc;
-	if (eincr->exp_->type == "int") {
-		output1 += ", align 4";
-	} else if (eincr->exp_->type == "double") {
-		output1 += ", align 8";
+	if(store) {
+		std::string tmp = getTemporary();
+		std::string output1 = "store " + getLLVMType(eincr->exp_->type) + " %" + tmp + ", " + getLLVMType(eincr->exp_->type) + "* %" + latestFunc;
+
+		if (eincr->exp_->type == "int") {
+			output1 += ", align 4";
+		} else if (eincr->exp_->type == "double") {
+			output1 += ", align 8";
+		}
+		emit(1, 1, output1);
 	}
-	emit(1, 1, output1);
 	eincr->temporary = "%" + getTemporary();
 }
 
@@ -580,14 +587,16 @@ void Interpreter::visitEPDecr(EPDecr *edecr)
 		output = "%" + newTemporary() + " = fadd " + getLLVMType(edecr->exp_->type) + " " + exp1 + ", -1.0";
 	}
   	emit(1, 1, output);
-	std::string tmp = getTemporary();
-	std::string output1 = "store " + getLLVMType(edecr->exp_->type) + " %" + tmp + ", " + getLLVMType(edecr->exp_->type) + "* %" + latestFunc;
-	if (edecr->exp_->type == "int") {
-		output1 += ", align 4";
-	} else if (edecr->exp_->type == "double") {
-		output1 += ", align 8";
-	}	
-	emit(1, 1, output1);
+	if (store) {
+		std::string tmp = getTemporary();
+		std::string output1 = "store " + getLLVMType(edecr->exp_->type) + " %" + tmp + ", " + getLLVMType(edecr->exp_->type) + "* %" + latestFunc;
+		if (edecr->exp_->type == "int") {
+			output1 += ", align 4";
+		} else if (edecr->exp_->type == "double") {
+			output1 += ", align 8";
+		}	
+		emit(1, 1, output1);
+	}
 	edecr->temporary = "%" + getTemporary();
 }
 
@@ -612,14 +621,16 @@ void Interpreter::visitEIncr(EIncr *eincr)
 		output = "%" + newTemporary() + " = fadd " + getLLVMType(eincr->exp_->type) + " " + exp1 + ", 1.0";
 	}
   	emit(1, 1, output);
-	std::string tmp = getTemporary();
-	std::string output1 = "store " + getLLVMType(eincr->exp_->type) + " %" + tmp + ", " + getLLVMType(eincr->exp_->type) + "* %" + latestFunc;
-	if (eincr->exp_->type == "int") {
-		output1 += ", align 4";
-	} else if (eincr->exp_->type == "double") {
-		output1 += ", align 8";
+	if (store) {
+		std::string tmp = getTemporary();
+		std::string output1 = "store " + getLLVMType(eincr->exp_->type) + " %" + tmp + ", " + getLLVMType(eincr->exp_->type) + "* %" + latestFunc;
+		if (eincr->exp_->type == "int") {
+			output1 += ", align 4";
+		} else if (eincr->exp_->type == "double") {
+			output1 += ", align 8";
+		}
+		emit(1, 1, output1);
 	}
-	emit(1, 1, output1);
 	eincr->temporary = "%" + getTemporary();
 }
 
@@ -644,14 +655,16 @@ void Interpreter::visitEDecr(EDecr *edecr)
 		output = "%" + newTemporary() + " = fadd " + getLLVMType(edecr->exp_->type) + " " + exp1 + ", -1.0";
 	}
   	emit(1, 1, output);
-	std::string tmp = getTemporary();
-	std::string output1 = "store " + getLLVMType(edecr->exp_->type) + " %" + tmp + ", " + getLLVMType(edecr->exp_->type) + "* %" + latestFunc;
-	if (edecr->exp_->type == "int") {
-		output1 += ", align 4";
-	} else if (edecr->exp_->type == "double") {
-		output1 += ", align 8";
-	}	
-	emit(1, 1, output1);
+	if (store) {
+		std::string tmp = getTemporary();
+		std::string output1 = "store " + getLLVMType(edecr->exp_->type) + " %" + tmp + ", " + getLLVMType(edecr->exp_->type) + "* %" + latestFunc;
+		if (edecr->exp_->type == "int") {
+			output1 += ", align 4";
+		} else if (edecr->exp_->type == "double") {
+			output1 += ", align 8";
+		}	
+		emit(1, 1, output1);
+	}
 	edecr->temporary = "%" + getTemporary();
 }
 

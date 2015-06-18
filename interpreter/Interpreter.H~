@@ -9,7 +9,7 @@ class Interpreter : public Visitor
 		  Id latestFunc;
 		  Interpreter();
 		  ~Interpreter();
-		  void emit (bool b, std::string str);
+		  void emit (bool b, bool a, std::string str);
           std::string newTemporary ();
           std::string getTemporary ();
 		  std::string newLabel();
@@ -83,4 +83,13 @@ class Interpreter : public Visitor
 		std::ofstream out;
 		int labelcounter;
 		std::map<std::string, std::string> argmap;
+		int multicondition;
+		std::string label;
+		std::string truelabel;
+		std::string falselabel;
+		std::string nextlabel;
+		int ret_flag;
+		int return_int;
+		double return_double;
+		int ret_exp;
 } ;

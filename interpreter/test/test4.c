@@ -1,11 +1,13 @@
-int main () {
-	bool a, b, c, d, e, f;
-	a = b = c = d = e = f = true;
-	int h = 0;	
+int plus(int a, int b) {
+	return a + b;
+}
 
-	while (a && b && c && d || e || f ) {
-		h++;
-	}
+int main () {
+	int h = 0;
+	int a;	
 	
+	a = plus(h,1)++;
+a++;
+	int c = h/a;
 	return h;
 }

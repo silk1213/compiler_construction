@@ -92,4 +92,5 @@ class Interpreter : public Visitor
 		int return_int;
 		double return_double;
 		int ret_exp;
+		bool store;
 } ;
