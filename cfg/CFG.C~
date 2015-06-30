@@ -12,7 +12,6 @@
 CFG::CFG() {
 	if (remove("graph.gv")) {
 		std::cout << "ERROR: Failed to delete File"<< std::endl;
-		exit(1);
 	}
 }
 
@@ -82,7 +81,8 @@ void CFG::visitSExp(SExp *sexp)
   /* Code For SExp Goes Here */
 
   sexp->exp_->accept(this);
-
+	emit(true, false, " -> \"" + sexp->exp_->temporary + "\";");
+	emit(false, false, "\"" + sexp->exp_->temporary + "\"");
 }
 
 void CFG::visitSDecls(SDecls *sdecls)
@@ -96,7 +96,7 @@ void CFG::visitSDecls(SDecls *sdecls)
 
 	for (ListId::iterator i = sdecls->listid_->begin() ; i != sdecls->listid_->end() ; ++i)
   {
-    if(i != sdecls->listid_->end()){
+    if((i+1) != sdecls->listid_->end()){
 			tmp += *i + ", ";
 		} else {
 			tmp += *i;
@@ -115,8 +115,8 @@ void CFG::visitSInit(SInit *sinit)
   visitId(sinit->id_);
   sinit->exp_->accept(this);
 
-	emit(true, false, " -> Initialization " + sinit->id_ + ";");
-	emit(false, false, "Initialization " + sinit->id_);
+	emit(true, false, " -> Initialization_" + sinit->id_ + ";");
+	emit(false, false, "Initialization_" + sinit->id_);
 }
 
 void CFG::visitSReturn(SReturn *sreturn)
@@ -140,13 +140,13 @@ void CFG::visitSWhile(SWhile *swhile)
 	
   swhile->exp_->accept(this);
 	
-	std::string tmp = "branch " + swhile->exp_->temporary;
-	emit(true, false, " -> " + tmp + "[label=\"true\"]");
+	std::string tmp = "\"branch " + swhile->exp_->temporary + "\"";
+	emit(true, false, " -> " + tmp + "[label=\"true\"];");
 	emit(false, false, tmp);
 
   swhile->stm_->accept(this);
 
-	emit(true, false, " -> " + tmp);
+	emit(true, false, " -> " + tmp + ";");
 	emit(false, false, tmp);
 }
 
@@ -164,13 +164,13 @@ void CFG::visitSIfElse(SIfElse *sifelse)
 
   sifelse->exp_->accept(this);
 
-	std::string tmp = "branch " + sifelse->exp_->temporary;
+	std::string tmp = "branch\"" + sifelse->exp_->temporary + "\"";
 
-	emit(true, false, " -> " + tmp + "[label=\"true\"]");
+	emit(true, false, " -> " + tmp + "[label=\"true\"];");
 	emit(false, false, tmp);
 	sifelse->stm_1->accept(this);
 	
-	emit(true, false, " -> " + tmp + "[label=\"false\"]");
+	emit(true, false, " -> " + tmp + "[label=\"false\"];");
 	emit(false, false, tmp);
   sifelse->stm_2->accept(this);
 }
@@ -272,7 +272,7 @@ void CFG::visitETimes(ETimes *etimes)
 
   etimes->exp_1->accept(this);
   etimes->exp_2->accept(this);
-	etimes->temporary = etimes->exp_1->temporary + " * " + etimes->exp_2->temporary;
+	etimes->temporary = etimes->exp_1->temporary + "*" + etimes->exp_2->temporary;
 }
 
 void CFG::visitEDiv(EDiv *ediv)
@@ -281,7 +281,7 @@ void CFG::visitEDiv(EDiv *ediv)
 
   ediv->exp_1->accept(this);
   ediv->exp_2->accept(this);
-	ediv->temporary = ediv->exp_1->temporary + " / " + ediv->exp_2->temporary;
+	ediv->temporary = ediv->exp_1->temporary + "/" + ediv->exp_2->temporary;
 }
 
 void CFG::visitEPlus(EPlus *eplus)
@@ -290,7 +290,7 @@ void CFG::visitEPlus(EPlus *eplus)
 
   eplus->exp_1->accept(this);
   eplus->exp_2->accept(this);
-	eplus->temporary = eplus->exp_1->temporary + " + " + eplus->exp_2->temporary;
+	eplus->temporary = eplus->exp_1->temporary + "+" + eplus->exp_2->temporary;
 }
 
 void CFG::visitEMinus(EMinus *eminus)
@@ -299,7 +299,7 @@ void CFG::visitEMinus(EMinus *eminus)
 
   eminus->exp_1->accept(this);
   eminus->exp_2->accept(this);
-	eminus->temporary = eminus->exp_1->temporary + " - " + eminus->exp_2->temporary;
+	eminus->temporary = eminus->exp_1->temporary + "-" + eminus->exp_2->temporary;
 }
 
 void CFG::visitELt(ELt *elt)
@@ -308,7 +308,7 @@ void CFG::visitELt(ELt *elt)
 
   elt->exp_1->accept(this);
   elt->exp_2->accept(this);
-	elt->temporary = elt->exp_1->temporary + " < " + elt->exp_2->temporary;
+	elt->temporary = elt->exp_1->temporary + "<" + elt->exp_2->temporary;
 }
 
 void CFG::visitEGt(EGt *egt)
@@ -317,7 +317,7 @@ void CFG::visitEGt(EGt *egt)
 
   egt->exp_1->accept(this);
   egt->exp_2->accept(this);
-	egt->temporary = egt->exp_1->temporary + " > " + egt->exp_2->temporary;
+	egt->temporary = egt->exp_1->temporary + ">" + egt->exp_2->temporary;
 }
 
 void CFG::visitELtEq(ELtEq *elteq)
@@ -326,7 +326,7 @@ void CFG::visitELtEq(ELtEq *elteq)
 
   elteq->exp_1->accept(this);
   elteq->exp_2->accept(this);
-	elteq->temporary = elteq->exp_1->temporary + " <= " + elteq->exp_2->temporary;
+	elteq->temporary = elteq->exp_1->temporary + "<=" + elteq->exp_2->temporary;
 }
 
 void CFG::visitEGtEq(EGtEq *egteq)
@@ -335,7 +335,7 @@ void CFG::visitEGtEq(EGtEq *egteq)
 
   egteq->exp_1->accept(this);
   egteq->exp_2->accept(this);
-	egteq->temporary = egteq->exp_1->temporary + " >= " + egteq->exp_2->temporary;
+	egteq->temporary = egteq->exp_1->temporary + ">=" + egteq->exp_2->temporary;
 }
 
 void CFG::visitEEq(EEq *eeq)
@@ -344,7 +344,7 @@ void CFG::visitEEq(EEq *eeq)
 
   eeq->exp_1->accept(this);
   eeq->exp_2->accept(this);
-	eeq->temporary = eeq->exp_1->temporary + " == " + eeq->exp_2->temporary;
+	eeq->temporary = eeq->exp_1->temporary + "==" + eeq->exp_2->temporary;
 }
 
 void CFG::visitENEq(ENEq *eneq)
@@ -353,7 +353,7 @@ void CFG::visitENEq(ENEq *eneq)
 
   eneq->exp_1->accept(this);
   eneq->exp_2->accept(this);
-	eneq->temporary = eneq->exp_1->temporary + " != " + eneq->exp_2->temporary;
+	eneq->temporary = eneq->exp_1->temporary + "!=" + eneq->exp_2->temporary;
 }
 
 void CFG::visitEAnd(EAnd *eand)
@@ -362,7 +362,7 @@ void CFG::visitEAnd(EAnd *eand)
 
   eand->exp_1->accept(this);
   eand->exp_2->accept(this);
-	eand->temporary = eand->exp_1->temporary + " && " + eand->exp_2->temporary;
+	eand->temporary = eand->exp_1->temporary + "&&" + eand->exp_2->temporary;
 }
 
 void CFG::visitEOr(EOr *eor)
@@ -371,7 +371,7 @@ void CFG::visitEOr(EOr *eor)
 
   eor->exp_1->accept(this);
   eor->exp_2->accept(this);
-	eor->temporary = eor->exp_1->temporary + " || " + eor->exp_2->temporary;
+	eor->temporary = eor->exp_1->temporary + "||" + eor->exp_2->temporary;
 }
 
 void CFG::visitEAss(EAss *eass)
@@ -380,7 +380,7 @@ void CFG::visitEAss(EAss *eass)
 
   eass->exp_1->accept(this);
   eass->exp_2->accept(this);
-	eass->temporary = eass->exp_1->temporary + " = " + eass->exp_2->temporary;
+	eass->temporary = eass->exp_1->temporary + "=" + eass->exp_2->temporary;
 }
 
 void CFG::visitETyped(ETyped *etyped)

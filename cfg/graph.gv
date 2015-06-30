@@ -1,35 +1,7 @@
-Digraph plus {
-Start -> End;
-}
-Digraph asd {
-Start -> End;
-}
 Digraph main {
-Start -> Declaration a, b, ;
-Declaration a, b,  -> Declaration c, d, ;
-Declaration c, d,  -> branch a == b[label="true"]
-branch a == b -> branch a == b[label="false"]
-branch a == b -> branch a != b[label="true"]
-branch a != b -> branch a != b[label="false"]
-branch a != b -> branch a >= b[label="true"]
-branch a >= b -> branch a >= b[label="false"]
-branch a >= b -> branch a <= b[label="true"]
-branch a <= b -> branch a <= b[label="false"]
-branch a <= b -> branch a < b[label="true"]
-branch a < b -> branch a < b[label="false"]
-branch a < b -> branch a > b[label="true"]
-branch a > b -> branch a > b[label="false"]
-branch a > b -> branch c == d[label="true"]
-branch c == d -> branch c == d[label="false"]
-branch c == d -> branch c != d[label="true"]
-branch c != d -> branch c != d[label="false"]
-branch c != d -> branch c >= d[label="true"]
-branch c >= d -> branch c >= d[label="false"]
-branch c >= d -> branch c <= d[label="true"]
-branch c <= d -> branch c <= d[label="false"]
-branch c <= d -> branch c < d[label="true"]
-branch c < d -> branch c < d[label="false"]
-branch c < d -> branch c > d[label="true"]
-branch c > d -> branch c > d[label="false"]
-branch c > d -> End;
+Start -> Initialization_a;
+Initialization_a -> "branch a<1";
+"branch a<1" -> "a++";
+"a++" -> "branch a<1";
+"branch a<1" -> End;
 }
