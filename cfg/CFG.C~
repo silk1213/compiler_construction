@@ -1,0 +1,451 @@
+/*** BNFC-Generated Visitor Design Pattern CFG. ***/
+/* This implements the common visitor design pattern.
+   Note that this method uses Visitor-traversal of lists, so
+   List->accept() does NOT traverse the list. This allows different
+   algorithms to use context information differently. */
+
+#include "CFG.H"
+#include <iostream>
+
+
+
+void CFG::visitProgram(Program* t) {} //abstract class
+void CFG::visitDef(Def* t) {} //abstract class
+void CFG::visitArg(Arg* t) {} //abstract class
+void CFG::visitStm(Stm* t) {} //abstract class
+void CFG::visitExp(Exp* t) {} //abstract class
+void CFG::visitType(Type* t) {} //abstract class
+
+void CFG::visitPDefs(PDefs *pdefs)
+{
+  /* Code For PDefs Goes Here */
+
+  pdefs->listdef_->accept(this);
+
+	ListDef::iterator tmp;
+
+	for (ListDef::iterator i = pdefs->listdef_->begin() ; i != pdefs->listdef_->end() ; ++i)
+  {
+    if ((*i)->id_ != "main"){
+			(*i)->accept(this);
+		} else {
+			tmp = i;
+		}
+  }
+	
+	(*tmp)->accept(this);
+}
+
+void CFG::visitDFun(DFun *dfun)
+{
+  /* Code For DFun Goes Here */
+
+  dfun->type_->accept(this);
+  visitId(dfun->id_);
+  dfun->listarg_->accept(this);
+  dfun->liststm_->accept(this);
+	
+	std::cout << dfun->line_ << std::endl;
+
+}
+
+void CFG::visitADecl(ADecl *adecl)
+{
+  /* Code For ADecl Goes Here */
+
+  adecl->type_->accept(this);
+  visitId(adecl->id_);
+
+}
+
+void CFG::visitSExp(SExp *sexp)
+{
+  /* Code For SExp Goes Here */
+
+  sexp->exp_->accept(this);
+
+}
+
+void CFG::visitSDecls(SDecls *sdecls)
+{
+  /* Code For SDecls Goes Here */
+
+  sdecls->type_->accept(this);
+  sdecls->listid_->accept(this);
+
+}
+
+void CFG::visitSInit(SInit *sinit)
+{
+  /* Code For SInit Goes Here */
+
+  sinit->type_->accept(this);
+  visitId(sinit->id_);
+  sinit->exp_->accept(this);
+
+}
+
+void CFG::visitSReturn(SReturn *sreturn)
+{
+  /* Code For SReturn Goes Here */
+
+  sreturn->exp_->accept(this);
+
+}
+
+void CFG::visitSReturnVoid(SReturnVoid *sreturnvoid)
+{
+  /* Code For SReturnVoid Goes Here */
+
+
+}
+
+void CFG::visitSWhile(SWhile *swhile)
+{
+  /* Code For SWhile Goes Here */
+
+  swhile->exp_->accept(this);
+  swhile->stm_->accept(this);
+
+}
+
+void CFG::visitSBlock(SBlock *sblock)
+{
+  /* Code For SBlock Goes Here */
+
+  sblock->liststm_->accept(this);
+
+}
+
+void CFG::visitSIfElse(SIfElse *sifelse)
+{
+  /* Code For SIfElse Goes Here */
+
+  sifelse->exp_->accept(this);
+  sifelse->stm_1->accept(this);
+  sifelse->stm_2->accept(this);
+
+}
+
+void CFG::visitETrue(ETrue *etrue)
+{
+  /* Code For ETrue Goes Here */
+
+
+}
+
+void CFG::visitEFalse(EFalse *efalse)
+{
+  /* Code For EFalse Goes Here */
+
+
+}
+
+void CFG::visitEInt(EInt *eint)
+{
+  /* Code For EInt Goes Here */
+
+  visitInteger(eint->integer_);
+
+}
+
+void CFG::visitEDouble(EDouble *edouble)
+{
+  /* Code For EDouble Goes Here */
+
+  visitDouble(edouble->double_);
+
+}
+
+void CFG::visitEString(EString *estring)
+{
+  /* Code For EString Goes Here */
+
+  visitString(estring->string_);
+
+}
+
+void CFG::visitEId(EId *eid)
+{
+  /* Code For EId Goes Here */
+
+  visitId(eid->id_);
+
+}
+
+void CFG::visitEApp(EApp *eapp)
+{
+  /* Code For EApp Goes Here */
+
+  visitId(eapp->id_);
+  eapp->listexp_->accept(this);
+
+}
+
+void CFG::visitEPIncr(EPIncr *epincr)
+{
+  /* Code For EPIncr Goes Here */
+
+  epincr->exp_->accept(this);
+
+}
+
+void CFG::visitEPDecr(EPDecr *epdecr)
+{
+  /* Code For EPDecr Goes Here */
+
+  epdecr->exp_->accept(this);
+
+}
+
+void CFG::visitEIncr(EIncr *eincr)
+{
+  /* Code For EIncr Goes Here */
+
+  eincr->exp_->accept(this);
+
+}
+
+void CFG::visitEDecr(EDecr *edecr)
+{
+  /* Code For EDecr Goes Here */
+
+  edecr->exp_->accept(this);
+
+}
+
+void CFG::visitETimes(ETimes *etimes)
+{
+  /* Code For ETimes Goes Here */
+
+  etimes->exp_1->accept(this);
+  etimes->exp_2->accept(this);
+
+}
+
+void CFG::visitEDiv(EDiv *ediv)
+{
+  /* Code For EDiv Goes Here */
+
+  ediv->exp_1->accept(this);
+  ediv->exp_2->accept(this);
+
+}
+
+void CFG::visitEPlus(EPlus *eplus)
+{
+  /* Code For EPlus Goes Here */
+
+  eplus->exp_1->accept(this);
+  eplus->exp_2->accept(this);
+
+}
+
+void CFG::visitEMinus(EMinus *eminus)
+{
+  /* Code For EMinus Goes Here */
+
+  eminus->exp_1->accept(this);
+  eminus->exp_2->accept(this);
+
+}
+
+void CFG::visitELt(ELt *elt)
+{
+  /* Code For ELt Goes Here */
+
+  elt->exp_1->accept(this);
+  elt->exp_2->accept(this);
+
+}
+
+void CFG::visitEGt(EGt *egt)
+{
+  /* Code For EGt Goes Here */
+
+  egt->exp_1->accept(this);
+  egt->exp_2->accept(this);
+
+}
+
+void CFG::visitELtEq(ELtEq *elteq)
+{
+  /* Code For ELtEq Goes Here */
+
+  elteq->exp_1->accept(this);
+  elteq->exp_2->accept(this);
+
+}
+
+void CFG::visitEGtEq(EGtEq *egteq)
+{
+  /* Code For EGtEq Goes Here */
+
+  egteq->exp_1->accept(this);
+  egteq->exp_2->accept(this);
+
+}
+
+void CFG::visitEEq(EEq *eeq)
+{
+  /* Code For EEq Goes Here */
+
+  eeq->exp_1->accept(this);
+  eeq->exp_2->accept(this);
+
+}
+
+void CFG::visitENEq(ENEq *eneq)
+{
+  /* Code For ENEq Goes Here */
+
+  eneq->exp_1->accept(this);
+  eneq->exp_2->accept(this);
+
+}
+
+void CFG::visitEAnd(EAnd *eand)
+{
+  /* Code For EAnd Goes Here */
+
+  eand->exp_1->accept(this);
+  eand->exp_2->accept(this);
+
+}
+
+void CFG::visitEOr(EOr *eor)
+{
+  /* Code For EOr Goes Here */
+
+  eor->exp_1->accept(this);
+  eor->exp_2->accept(this);
+
+}
+
+void CFG::visitEAss(EAss *eass)
+{
+  /* Code For EAss Goes Here */
+
+  eass->exp_1->accept(this);
+  eass->exp_2->accept(this);
+
+}
+
+void CFG::visitETyped(ETyped *etyped)
+{
+  /* Code For ETyped Goes Here */
+
+  etyped->exp_->accept(this);
+  etyped->type_->accept(this);
+
+}
+
+void CFG::visitType_bool(Type_bool *type_bool)
+{
+  /* Code For Type_bool Goes Here */
+
+
+}
+
+void CFG::visitType_int(Type_int *type_int)
+{
+  /* Code For Type_int Goes Here */
+
+
+}
+
+void CFG::visitType_double(Type_double *type_double)
+{
+  /* Code For Type_double Goes Here */
+
+
+}
+
+void CFG::visitType_void(Type_void *type_void)
+{
+  /* Code For Type_void Goes Here */
+
+
+}
+
+void CFG::visitType_string(Type_string *type_string)
+{
+  /* Code For Type_string Goes Here */
+
+
+}
+
+
+void CFG::visitListDef(ListDef* listdef)
+{
+  for (ListDef::iterator i = listdef->begin() ; i != listdef->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
+void CFG::visitListArg(ListArg* listarg)
+{
+  for (ListArg::iterator i = listarg->begin() ; i != listarg->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
+void CFG::visitListStm(ListStm* liststm)
+{
+  for (ListStm::iterator i = liststm->begin() ; i != liststm->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
+void CFG::visitListExp(ListExp* listexp)
+{
+  for (ListExp::iterator i = listexp->begin() ; i != listexp->end() ; ++i)
+  {
+    (*i)->accept(this);
+  }
+}
+
+void CFG::visitListId(ListId* listid)
+{
+  for (ListId::iterator i = listid->begin() ; i != listid->end() ; ++i)
+  {
+    visitId(*i) ;
+  }
+}
+
+
+void CFG::visitId(Id x)
+{
+  /* Code for Id Goes Here */
+}
+
+void CFG::visitInteger(Integer x)
+{
+  /* Code for Integer Goes Here */
+}
+
+void CFG::visitChar(Char x)
+{
+  /* Code for Char Goes Here */
+}
+
+void CFG::visitDouble(Double x)
+{
+  /* Code for Double Goes Here */
+}
+
+void CFG::visitString(String x)
+{
+  /* Code for String Goes Here */
+}
+
+void CFG::visitIdent(Ident x)
+{
+  /* Code for Ident Goes Here */
+}
+
+
+
