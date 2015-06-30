@@ -3,11 +3,13 @@
 /* You might want to change the above name. */
 
 #include "Absyn.H"
+#include <fstream>
 
 
 class CFG : public Visitor
 {
 public:
+	void emit(bool b, bool a, std::string str);
   void visitProgram(Program* p);
   void visitDef(Def* p);
   void visitArg(Arg* p);
@@ -68,6 +70,9 @@ public:
   void visitString(String x);
   void visitIdent(Ident x);
 
+	CFG();
+private:
+	std::ofstream out;
 };
 
 

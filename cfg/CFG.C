@@ -6,8 +6,36 @@
 
 #include "CFG.H"
 #include <iostream>
+#include <stdlib.h>
+#include <sstream>
 
+CFG::CFG() {
+	if (remove("graph.gv")) {
+		std::cout << "ERROR: Failed to delete File"<< std::endl;
+	}
+}
 
+void CFG::emit(bool b, bool a, std::string str) {
+	out.open ("graph.gv", std::ios::app);
+	if (b) {
+		if (a) {
+			out << "  " + str + "\n";
+			std::cout << "  " + str << std::endl;
+		} else {
+			out << str + "\n";
+			std::cout << str << std::endl;
+		}
+	} else {
+		if (a) {
+			out << "  " + str;
+			std::cout << "  " + str;
+		} else {
+			out << str;
+			std::cout << str;
+		}
+	}
+	out.close();
+}
 
 void CFG::visitProgram(Program* t) {} //abstract class
 void CFG::visitDef(Def* t) {} //abstract class
@@ -19,21 +47,8 @@ void CFG::visitType(Type* t) {} //abstract class
 void CFG::visitPDefs(PDefs *pdefs)
 {
   /* Code For PDefs Goes Here */
-
-  pdefs->listdef_->accept(this);
-
-	ListDef::iterator tmp;
-
-	for (ListDef::iterator i = pdefs->listdef_->begin() ; i != pdefs->listdef_->end() ; ++i)
-  {
-    if ((*i)->getId() != "main"){
-			(*i)->accept(this);
-		} else {
-			tmp = i;
-		}
-  }
 	
-	(*tmp)->accept(this);
+  pdefs->listdef_->accept(this);
 }
 
 void CFG::visitDFun(DFun *dfun)
@@ -43,10 +58,13 @@ void CFG::visitDFun(DFun *dfun)
   dfun->type_->accept(this);
   visitId(dfun->id_);
   dfun->listarg_->accept(this);
-  dfun->liststm_->accept(this);
-	
-	std::cout << dfun->line_ << std::endl;
 
+	emit(true, false, "Digraph " + dfun->id_+ " {");
+	emit(false, false, "Start");
+	
+  dfun->liststm_->accept(this);
+
+	emit(true, false, "}");
 }
 
 void CFG::visitADecl(ADecl *adecl)
@@ -73,6 +91,19 @@ void CFG::visitSDecls(SDecls *sdecls)
   sdecls->type_->accept(this);
   sdecls->listid_->accept(this);
 
+	std::string tmp;
+
+	for (ListId::iterator i = sdecls->listid_->begin() ; i != sdecls->listid_->end() ; ++i)
+  {
+    if(i != sdecls->listid_->end()){
+			tmp += *i + ", ";
+		} else {
+			tmp += *i;
+		}
+  }
+
+	emit(true, false, " -> Declaration " + tmp + ";");
+	emit(false, false, "Declaration " + tmp);
 }
 
 void CFG::visitSInit(SInit *sinit)
@@ -83,6 +114,8 @@ void CFG::visitSInit(SInit *sinit)
   visitId(sinit->id_);
   sinit->exp_->accept(this);
 
+	emit(true, false, " -> Initialization " + sinit->id_ + ";");
+	emit(false, false, "Initialization " + sinit->id_);
 }
 
 void CFG::visitSReturn(SReturn *sreturn)
@@ -90,23 +123,30 @@ void CFG::visitSReturn(SReturn *sreturn)
   /* Code For SReturn Goes Here */
 
   sreturn->exp_->accept(this);
-
+	emit(true, false, " -> End;");
 }
 
 void CFG::visitSReturnVoid(SReturnVoid *sreturnvoid)
 {
   /* Code For SReturnVoid Goes Here */
 
-
+	emit(true, false, " -> End;");
 }
 
 void CFG::visitSWhile(SWhile *swhile)
 {
   /* Code For SWhile Goes Here */
-
+	
   swhile->exp_->accept(this);
+	
+	std::string tmp = "branch " + swhile->exp_->temporary;
+	emit(true, false, " -> " + tmp + "[label=\"true\"]");
+	emit(false, false, tmp);
+
   swhile->stm_->accept(this);
 
+	emit(true, false, " -> " + tmp);
+	emit(false, false, tmp);
 }
 
 void CFG::visitSBlock(SBlock *sblock)
@@ -122,23 +162,30 @@ void CFG::visitSIfElse(SIfElse *sifelse)
   /* Code For SIfElse Goes Here */
 
   sifelse->exp_->accept(this);
-  sifelse->stm_1->accept(this);
-  sifelse->stm_2->accept(this);
 
+	std::string tmp = "branch " + sifelse->exp_->temporary;
+
+	emit(true, false, " -> " + tmp + "[label=\"true\"]");
+	emit(false, false, tmp);
+	sifelse->stm_1->accept(this);
+	
+	emit(true, false, " -> " + tmp + "[label=\"false\"]");
+	emit(false, false, tmp);
+  sifelse->stm_2->accept(this);
 }
 
 void CFG::visitETrue(ETrue *etrue)
 {
   /* Code For ETrue Goes Here */
-
-
+	
+	etrue->temporary = "true";
 }
 
 void CFG::visitEFalse(EFalse *efalse)
 {
   /* Code For EFalse Goes Here */
 
-
+	efalse->temporary = "false";
 }
 
 void CFG::visitEInt(EInt *eint)
@@ -146,7 +193,9 @@ void CFG::visitEInt(EInt *eint)
   /* Code For EInt Goes Here */
 
   visitInteger(eint->integer_);
-
+	std::ostringstream convert;
+	convert << eint->integer_;
+	eint->temporary = convert.str();
 }
 
 void CFG::visitEDouble(EDouble *edouble)
@@ -154,7 +203,9 @@ void CFG::visitEDouble(EDouble *edouble)
   /* Code For EDouble Goes Here */
 
   visitDouble(edouble->double_);
-
+	std::ostringstream convert;
+	convert << edouble->double_;
+	edouble->temporary = convert.str();
 }
 
 void CFG::visitEString(EString *estring)
@@ -162,7 +213,7 @@ void CFG::visitEString(EString *estring)
   /* Code For EString Goes Here */
 
   visitString(estring->string_);
-
+	estring->temporary = estring->string_;
 }
 
 void CFG::visitEId(EId *eid)
@@ -170,7 +221,7 @@ void CFG::visitEId(EId *eid)
   /* Code For EId Goes Here */
 
   visitId(eid->id_);
-
+	eid->temporary = eid->id_;
 }
 
 void CFG::visitEApp(EApp *eapp)
@@ -187,7 +238,7 @@ void CFG::visitEPIncr(EPIncr *epincr)
   /* Code For EPIncr Goes Here */
 
   epincr->exp_->accept(this);
-
+	epincr->temporary = epincr->exp_->temporary + "++";
 }
 
 void CFG::visitEPDecr(EPDecr *epdecr)
@@ -195,7 +246,7 @@ void CFG::visitEPDecr(EPDecr *epdecr)
   /* Code For EPDecr Goes Here */
 
   epdecr->exp_->accept(this);
-
+	epdecr->temporary = epdecr->exp_->temporary + "--";
 }
 
 void CFG::visitEIncr(EIncr *eincr)
@@ -203,7 +254,7 @@ void CFG::visitEIncr(EIncr *eincr)
   /* Code For EIncr Goes Here */
 
   eincr->exp_->accept(this);
-
+	eincr->temporary = eincr->exp_->temporary + "++";
 }
 
 void CFG::visitEDecr(EDecr *edecr)
@@ -211,7 +262,7 @@ void CFG::visitEDecr(EDecr *edecr)
   /* Code For EDecr Goes Here */
 
   edecr->exp_->accept(this);
-
+	edecr->temporary = edecr->exp_->temporary + "--";
 }
 
 void CFG::visitETimes(ETimes *etimes)
@@ -220,7 +271,7 @@ void CFG::visitETimes(ETimes *etimes)
 
   etimes->exp_1->accept(this);
   etimes->exp_2->accept(this);
-
+	etimes->temporary = etimes->exp_1->temporary + " * " + etimes->exp_2->temporary;
 }
 
 void CFG::visitEDiv(EDiv *ediv)
@@ -229,7 +280,7 @@ void CFG::visitEDiv(EDiv *ediv)
 
   ediv->exp_1->accept(this);
   ediv->exp_2->accept(this);
-
+	ediv->temporary = ediv->exp_1->temporary + " / " + ediv->exp_2->temporary;
 }
 
 void CFG::visitEPlus(EPlus *eplus)
@@ -238,7 +289,7 @@ void CFG::visitEPlus(EPlus *eplus)
 
   eplus->exp_1->accept(this);
   eplus->exp_2->accept(this);
-
+	eplus->temporary = eplus->exp_1->temporary + " + " + eplus->exp_2->temporary;
 }
 
 void CFG::visitEMinus(EMinus *eminus)
@@ -247,7 +298,7 @@ void CFG::visitEMinus(EMinus *eminus)
 
   eminus->exp_1->accept(this);
   eminus->exp_2->accept(this);
-
+	eminus->temporary = eminus->exp_1->temporary + " - " + eminus->exp_2->temporary;
 }
 
 void CFG::visitELt(ELt *elt)
@@ -256,7 +307,7 @@ void CFG::visitELt(ELt *elt)
 
   elt->exp_1->accept(this);
   elt->exp_2->accept(this);
-
+	elt->temporary = elt->exp_1->temporary + " < " + elt->exp_2->temporary;
 }
 
 void CFG::visitEGt(EGt *egt)
@@ -265,7 +316,7 @@ void CFG::visitEGt(EGt *egt)
 
   egt->exp_1->accept(this);
   egt->exp_2->accept(this);
-
+	egt->temporary = egt->exp_1->temporary + " > " + egt->exp_2->temporary;
 }
 
 void CFG::visitELtEq(ELtEq *elteq)
@@ -274,7 +325,7 @@ void CFG::visitELtEq(ELtEq *elteq)
 
   elteq->exp_1->accept(this);
   elteq->exp_2->accept(this);
-
+	elteq->temporary = elteq->exp_1->temporary + " <= " + elteq->exp_2->temporary;
 }
 
 void CFG::visitEGtEq(EGtEq *egteq)
@@ -283,7 +334,7 @@ void CFG::visitEGtEq(EGtEq *egteq)
 
   egteq->exp_1->accept(this);
   egteq->exp_2->accept(this);
-
+	egteq->temporary = egteq->exp_1->temporary + " >= " + egteq->exp_2->temporary;
 }
 
 void CFG::visitEEq(EEq *eeq)
@@ -292,7 +343,7 @@ void CFG::visitEEq(EEq *eeq)
 
   eeq->exp_1->accept(this);
   eeq->exp_2->accept(this);
-
+	eeq->temporary = eeq->exp_1->temporary + " == " + eeq->exp_2->temporary;
 }
 
 void CFG::visitENEq(ENEq *eneq)
@@ -301,7 +352,7 @@ void CFG::visitENEq(ENEq *eneq)
 
   eneq->exp_1->accept(this);
   eneq->exp_2->accept(this);
-
+	eneq->temporary = eneq->exp_1->temporary + " != " + eneq->exp_2->temporary;
 }
 
 void CFG::visitEAnd(EAnd *eand)
@@ -310,7 +361,7 @@ void CFG::visitEAnd(EAnd *eand)
 
   eand->exp_1->accept(this);
   eand->exp_2->accept(this);
-
+	eand->temporary = eand->exp_1->temporary + " && " + eand->exp_2->temporary;
 }
 
 void CFG::visitEOr(EOr *eor)
@@ -319,7 +370,7 @@ void CFG::visitEOr(EOr *eor)
 
   eor->exp_1->accept(this);
   eor->exp_2->accept(this);
-
+	eor->temporary = eor->exp_1->temporary + " || " + eor->exp_2->temporary;
 }
 
 void CFG::visitEAss(EAss *eass)
@@ -328,7 +379,7 @@ void CFG::visitEAss(EAss *eass)
 
   eass->exp_1->accept(this);
   eass->exp_2->accept(this);
-
+	eass->temporary = eass->exp_1->temporary + " = " + eass->exp_2->temporary;
 }
 
 void CFG::visitETyped(ETyped *etyped)

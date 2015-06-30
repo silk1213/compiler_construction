@@ -235,7 +235,7 @@ public:
 	ListArg* getArg();
   DFun(const DFun &);
   DFun &operator=(const DFun &);
-  DFun(Type *p1, Id p2, ListArg *p3, ListStm *p4, int Line);
+  DFun(Type *p1, Id p2, ListArg *p3, ListStm *p4);
   ~DFun();
   virtual void accept(Visitor *v);
   virtual DFun *clone() const;

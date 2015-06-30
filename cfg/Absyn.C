@@ -50,14 +50,12 @@ PDefs *PDefs::clone() const
 
 
 /********************   DFun    ********************/
-DFun::DFun(Type *p1, Id p2, ListArg *p3, ListStm *p4, int Line)
+DFun::DFun(Type *p1, Id p2, ListArg *p3, ListStm *p4)
 {
   type_ = p1;
   id_ = p2;
   listarg_ = p3;
   liststm_ = p4;
-	line_ = Line;
-
 }
 
 Type* DFun::getType() {
