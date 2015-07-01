@@ -47,8 +47,10 @@ int main(int argc, char ** argv)
 	/*Interpreter* ip = new Interpreter();
 	parse_tree->accept(ip);
 	delete ip;*/
-	CFG cfg* = new CFG();
+	CFG* cfg = new CFG();
 	parse_tree->accept(cfg);
+	delete cfg;
+	system("dot -Tps graph.gv -o graph.ps");
     return 0;
   }
   return 1;

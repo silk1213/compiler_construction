@@ -5,6 +5,7 @@
 /*                                                                          */
 /****************************************************************************/
 #include <stdio.h>
+#include <stdlib.h>
 #include "Parser.H"
 #include "Printer.H"
 #include "Absyn.H"
@@ -49,6 +50,8 @@ int main(int argc, char ** argv)
 	delete ip;*/
 	CFG* cfg = new CFG();
 	parse_tree->accept(cfg);
+	delete cfg;
+	system("dot -Tps graph.gv -o graph.ps");
     return 0;
   }
   return 1;

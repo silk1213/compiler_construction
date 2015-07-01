@@ -9,9 +9,31 @@
 #include <stdlib.h>
 #include <sstream>
 
+
 CFG::CFG() {
 	if (remove("graph.gv")) {
 		std::cout << "ERROR: Failed to delete File"<< std::endl;
+	}
+	tmpcounter = 0;
+	switcher = 0;
+	blockcounter = blockcolor = 0;
+}
+
+std::string CFG::getTMP() {
+	std::ostringstream convert;
+	convert << tmpcounter;
+	std::string result = "tmp_" + convert.str();
+	tmpcounter++;
+	return result;
+}
+
+void CFG::switchform(std::string output) {
+	switch (switcher) {
+		case 0:	emit(true, false, "\"" + temporary1 + "\" -> \"" + output + "\";"); break;
+		case 1: emit(true, false, "\"" + temporary1 + "\" -> \"" + output + "\";"); emit(true, false, "\"" + temporary2 + "\" -> \"" + output + "\";"); switcher = 0; break;
+		case 2: emit(true, false, "\"" + temporary1 + "\":se -> \"" + output + "\":n[label=\"false\",weight=10];"); switcher = 0; break;
+		case 3: emit(true, false, "\"" + temporary1 + "\":sw -> \"" + output + "\":n[label=\"true\",weight=10];"); switcher = 0;	break;
+		default: switcher = 0; break;
 	}
 }
 
@@ -55,15 +77,24 @@ void CFG::visitDFun(DFun *dfun)
 {
   /* Code For DFun Goes Here */
 
+	switcher = 0;
+	ret = false;
+
   dfun->type_->accept(this);
   visitId(dfun->id_);
   dfun->listarg_->accept(this);
 
 	emit(true, false, "Digraph " + dfun->id_+ " {");
-	emit(false, false, "Start");
+	emit(true, false, "label = \"function: " + dfun->id_ + "\";");
+	emit(true, false, "clusterrank = sink;");
+	emit(true, false, "rankdir = LR;");
+	temporary1 = "Start";
 	
   dfun->liststm_->accept(this);
 
+	if(!ret && dfun->type_->getType() == "void") {
+		switchform("End");
+	}
 	emit(true, false, "}");
 }
 
@@ -80,9 +111,11 @@ void CFG::visitSExp(SExp *sexp)
 {
   /* Code For SExp Goes Here */
 
-  sexp->exp_->accept(this);
-	emit(true, false, " -> \"" + sexp->exp_->temporary + "\";");
-	emit(false, false, "\"" + sexp->exp_->temporary + "\"");
+	sexp->exp_->accept(this);
+
+	switchform(sexp->exp_->temporary);
+  
+	temporary1 = sexp->exp_->temporary;
 }
 
 void CFG::visitSDecls(SDecls *sdecls)
@@ -103,8 +136,8 @@ void CFG::visitSDecls(SDecls *sdecls)
 		}
   }
 
-	emit(true, false, " -> Declaration " + tmp + ";");
-	emit(false, false, "Declaration " + tmp);
+	switchform("Declaration " + tmp);
+	temporary1 = "Declaration " + tmp;
 }
 
 void CFG::visitSInit(SInit *sinit)
@@ -115,8 +148,8 @@ void CFG::visitSInit(SInit *sinit)
   visitId(sinit->id_);
   sinit->exp_->accept(this);
 
-	emit(true, false, " -> Initialization_" + sinit->id_ + ";");
-	emit(false, false, "Initialization_" + sinit->id_);
+	switchform("Initialization " + sinit->id_);
+	temporary1 = "Initialization " + sinit->id_;
 }
 
 void CFG::visitSReturn(SReturn *sreturn)
@@ -124,14 +157,20 @@ void CFG::visitSReturn(SReturn *sreturn)
   /* Code For SReturn Goes Here */
 
   sreturn->exp_->accept(this);
-	emit(true, false, " -> End;");
+	switchform("return " + sreturn->exp_->temporary);
+	emit(true, false, "\"return " + sreturn->exp_->temporary + "\" -> End;");
+
+	switcher = 4;
+	ret = true;
 }
 
 void CFG::visitSReturnVoid(SReturnVoid *sreturnvoid)
 {
   /* Code For SReturnVoid Goes Here */
 
-	emit(true, false, " -> End;");
+	switchform("End");
+	switcher = 4;
+	ret = true;
 }
 
 void CFG::visitSWhile(SWhile *swhile)
@@ -139,23 +178,52 @@ void CFG::visitSWhile(SWhile *swhile)
   /* Code For SWhile Goes Here */
 	
   swhile->exp_->accept(this);
-	
-	std::string tmp = "\"branch " + swhile->exp_->temporary + "\"";
-	emit(true, false, " -> " + tmp + "[label=\"true\"];");
-	emit(false, false, tmp);
 
+	std::string output = "Branch " + swhile->exp_->temporary;
+	switchform(output);
+	temporary1 = output;
+
+	switcher = 3;
   swhile->stm_->accept(this);
 
-	emit(true, false, " -> " + tmp + ";");
-	emit(false, false, tmp);
+	switchform(output);
+	//emit(false, false, "\"" + output + "\"");
+
+	switcher = 2;
+	ret = false;
+	temporary1 = output;
 }
 
 void CFG::visitSBlock(SBlock *sblock)
 {
   /* Code For SBlock Goes Here */
 
-  sblock->liststm_->accept(this);
+	blockcounter++;
+	blockcolor++;
+	std::ostringstream convert;
+	convert << blockcounter;
+	std::string counter = convert.str();
 
+	if (!sblock->liststm_->empty()) {
+		emit(true, false, "subgraph cluster" + counter + " {");
+		emit(true, false, "label = \"block #" + counter + "\"");
+		emit(true, false, "clusterrank = sink;");
+		emit(true, false, "labelloc = b;");
+		//emit(true, false, "rank = min;");
+
+		if(blockcolor % 2 == 1 ){
+			emit(true, false, "node [style=filled,color=white,rank=sink];");
+			emit(true, false, "style=filled;");
+			emit(true, false, "color=grey;");
+		}	else {
+			emit(true, false, "node [style=filled,color=grey,rank=sink];");
+			emit(true, false, "style=filled;");
+			emit(true, false, "color=white;");
+		}
+  	sblock->liststm_->accept(this);
+		emit(true, false, "}");
+	} 
+	blockcolor--;
 }
 
 void CFG::visitSIfElse(SIfElse *sifelse)
@@ -163,16 +231,37 @@ void CFG::visitSIfElse(SIfElse *sifelse)
   /* Code For SIfElse Goes Here */
 
   sifelse->exp_->accept(this);
-
-	std::string tmp = "branch\"" + sifelse->exp_->temporary + "\"";
-
-	emit(true, false, " -> " + tmp + "[label=\"true\"];");
-	emit(false, false, tmp);
-	sifelse->stm_1->accept(this);
 	
-	emit(true, false, " -> " + tmp + "[label=\"false\"];");
-	emit(false, false, tmp);
+	bool rettmp = ret;
+	bool ret1, ret2;
+	ret1 = ret2 = false;
+
+	std::string output = "branch " + sifelse->exp_->temporary;
+
+	switchform(output);
+	//emit(false, false, "\"" + output + "\"");
+
+	temporary1 = output;
+	switcher = 3;
+	sifelse->stm_1->accept(this);
+	temporary2 = temporary1;
+	
+	if(!rettmp){
+		ret1 = ret;
+		ret = false;
+	}
+
+	switcher = 2;
+	temporary1 = output;
+	//emit(false, false, "\"" + output + "\"");
   sifelse->stm_2->accept(this);
+	
+	if(!rettmp){
+		ret2 = ret;
+		ret = ret1 && ret2;
+	}
+
+	switcher = 1;
 }
 
 void CFG::visitETrue(ETrue *etrue)
@@ -230,8 +319,17 @@ void CFG::visitEApp(EApp *eapp)
   /* Code For EApp Goes Here */
 
   visitId(eapp->id_);
-  eapp->listexp_->accept(this);
-
+  std::string tmp = "";
+	for (ListExp::iterator i = eapp->listexp_->begin() ; i != eapp->listexp_->end() ; ++i)
+  {
+    (*i)->accept(this);
+		if ((i+1) != eapp->listexp_->end()) {
+			tmp += (*i)->temporary + ", ";
+		} else {
+			tmp += (*i)->temporary;
+		}
+  }
+	eapp->temporary = eapp->id_ + "(" + tmp + ")";
 }
 
 void CFG::visitEPIncr(EPIncr *epincr)
@@ -272,7 +370,7 @@ void CFG::visitETimes(ETimes *etimes)
 
   etimes->exp_1->accept(this);
   etimes->exp_2->accept(this);
-	etimes->temporary = etimes->exp_1->temporary + "*" + etimes->exp_2->temporary;
+	etimes->temporary = etimes->exp_1->temporary + " * " + etimes->exp_2->temporary;
 }
 
 void CFG::visitEDiv(EDiv *ediv)
@@ -281,7 +379,7 @@ void CFG::visitEDiv(EDiv *ediv)
 
   ediv->exp_1->accept(this);
   ediv->exp_2->accept(this);
-	ediv->temporary = ediv->exp_1->temporary + "/" + ediv->exp_2->temporary;
+	ediv->temporary = ediv->exp_1->temporary + " / " + ediv->exp_2->temporary;
 }
 
 void CFG::visitEPlus(EPlus *eplus)
@@ -290,7 +388,7 @@ void CFG::visitEPlus(EPlus *eplus)
 
   eplus->exp_1->accept(this);
   eplus->exp_2->accept(this);
-	eplus->temporary = eplus->exp_1->temporary + "+" + eplus->exp_2->temporary;
+	eplus->temporary = eplus->exp_1->temporary + " + " + eplus->exp_2->temporary;
 }
 
 void CFG::visitEMinus(EMinus *eminus)
@@ -299,7 +397,7 @@ void CFG::visitEMinus(EMinus *eminus)
 
   eminus->exp_1->accept(this);
   eminus->exp_2->accept(this);
-	eminus->temporary = eminus->exp_1->temporary + "-" + eminus->exp_2->temporary;
+	eminus->temporary = eminus->exp_1->temporary + " - " + eminus->exp_2->temporary;
 }
 
 void CFG::visitELt(ELt *elt)
@@ -308,7 +406,7 @@ void CFG::visitELt(ELt *elt)
 
   elt->exp_1->accept(this);
   elt->exp_2->accept(this);
-	elt->temporary = elt->exp_1->temporary + "<" + elt->exp_2->temporary;
+	elt->temporary = elt->exp_1->temporary + " < " + elt->exp_2->temporary;
 }
 
 void CFG::visitEGt(EGt *egt)
@@ -317,7 +415,7 @@ void CFG::visitEGt(EGt *egt)
 
   egt->exp_1->accept(this);
   egt->exp_2->accept(this);
-	egt->temporary = egt->exp_1->temporary + ">" + egt->exp_2->temporary;
+	egt->temporary = egt->exp_1->temporary + " > " + egt->exp_2->temporary;
 }
 
 void CFG::visitELtEq(ELtEq *elteq)
@@ -326,7 +424,7 @@ void CFG::visitELtEq(ELtEq *elteq)
 
   elteq->exp_1->accept(this);
   elteq->exp_2->accept(this);
-	elteq->temporary = elteq->exp_1->temporary + "<=" + elteq->exp_2->temporary;
+	elteq->temporary = elteq->exp_1->temporary + " <= " + elteq->exp_2->temporary;
 }
 
 void CFG::visitEGtEq(EGtEq *egteq)
@@ -335,7 +433,7 @@ void CFG::visitEGtEq(EGtEq *egteq)
 
   egteq->exp_1->accept(this);
   egteq->exp_2->accept(this);
-	egteq->temporary = egteq->exp_1->temporary + ">=" + egteq->exp_2->temporary;
+	egteq->temporary = egteq->exp_1->temporary + " >= " + egteq->exp_2->temporary;
 }
 
 void CFG::visitEEq(EEq *eeq)
@@ -344,7 +442,7 @@ void CFG::visitEEq(EEq *eeq)
 
   eeq->exp_1->accept(this);
   eeq->exp_2->accept(this);
-	eeq->temporary = eeq->exp_1->temporary + "==" + eeq->exp_2->temporary;
+	eeq->temporary = eeq->exp_1->temporary + " == " + eeq->exp_2->temporary;
 }
 
 void CFG::visitENEq(ENEq *eneq)
@@ -353,7 +451,7 @@ void CFG::visitENEq(ENEq *eneq)
 
   eneq->exp_1->accept(this);
   eneq->exp_2->accept(this);
-	eneq->temporary = eneq->exp_1->temporary + "!=" + eneq->exp_2->temporary;
+	eneq->temporary = eneq->exp_1->temporary + " != " + eneq->exp_2->temporary;
 }
 
 void CFG::visitEAnd(EAnd *eand)
@@ -362,7 +460,7 @@ void CFG::visitEAnd(EAnd *eand)
 
   eand->exp_1->accept(this);
   eand->exp_2->accept(this);
-	eand->temporary = eand->exp_1->temporary + "&&" + eand->exp_2->temporary;
+	eand->temporary = eand->exp_1->temporary + " && " + eand->exp_2->temporary;
 }
 
 void CFG::visitEOr(EOr *eor)
@@ -371,7 +469,7 @@ void CFG::visitEOr(EOr *eor)
 
   eor->exp_1->accept(this);
   eor->exp_2->accept(this);
-	eor->temporary = eor->exp_1->temporary + "||" + eor->exp_2->temporary;
+	eor->temporary = eor->exp_1->temporary + " || " + eor->exp_2->temporary;
 }
 
 void CFG::visitEAss(EAss *eass)
@@ -380,7 +478,7 @@ void CFG::visitEAss(EAss *eass)
 
   eass->exp_1->accept(this);
   eass->exp_2->accept(this);
-	eass->temporary = eass->exp_1->temporary + "=" + eass->exp_2->temporary;
+	eass->temporary = eass->exp_1->temporary + " = " + eass->exp_2->temporary;
 }
 
 void CFG::visitETyped(ETyped *etyped)

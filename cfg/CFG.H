@@ -10,6 +10,9 @@ class CFG : public Visitor
 {
 public:
 	void emit(bool b, bool a, std::string str);
+	std::string getTMP();
+	void switchform(std::string output);
+
   void visitProgram(Program* p);
   void visitDef(Def* p);
   void visitArg(Arg* p);
@@ -73,6 +76,11 @@ public:
 	CFG();
 private:
 	std::ofstream out;
+	int tmpcounter;
+	std::string temporary1, temporary2;
+	int switcher; //0 - nothing, 1 - temp, 2 - falselabel, 3 - truelabel
+	bool ret;
+	int blockcounter, blockcolor;
 };
 
 

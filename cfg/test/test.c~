@@ -1,39 +1,18 @@
-int square (int a) {
-	if (a == 0) {
-		a++;
-	} else {
-		a--;
-	}
-	double y = 0.1;
-	int b = 0;
-        b = a - b;
-	return a*b;
-}
+void main() {
 
-void test(int a, int b) {
-	int c = a;
-	int x = 1;
+	int a = 0;
+	int b = 1;
 	
-	return ;
-}
+	double f = 1.1;
+	double k = 5.8;
 
-int main () {
-	int a = 1;
-	int b = 2;
-	
-	{
-		int a;
-		a++;
-		int c;
-		test(a,b);
+	while (a!=b && f!=k) {
+		int x;
 	}
-	{
-		int a1;
-		int b;
-		int c;
-	}
-	a++;
 
+	while (a!=b) {
+		int z;
+	}
 	
-	return a;
+	return void;
 }
