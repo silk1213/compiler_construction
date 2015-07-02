@@ -1,37 +1,32 @@
-Digraph test {
-label = "function: test";
-clusterrank = sink;
-"Start" -> "Initialization b";
-"Initialization b" -> "return b";
-"return b" -> End;
-}
-Digraph test2 {
-label = "function: test2";
-clusterrank = sink;
-"Start" -> "End";
-}
 Digraph main {
 label = "function: main";
-clusterrank = sink;
-"Start" -> "Initialization b";
-"Initialization b" -> "Initialization a";
-"Initialization a" -> "test2(b)";
-"test2(b)" -> "Initialization f";
-"Initialization f" -> "f = 0";
-"f = 0" -> "Initialization k";
-"Initialization k" -> "Branch b > b";
+node [rank=sink];
+compound = true;
+"Start" -> "0.  Declaration a";
+"0.  Declaration a" -> "1.  Initialization b";
+"1.  Initialization b" -> "2.  Initialization f";
+"2.  Initialization f" -> "3.  Initialization k";
+"3.  Initialization k" -> "4.  branch f < k";
+"4.  branch f < k":sw -> "5.  Declaration a"[label="true",weight=10];
+"4.  branch f < k":se -> "6.  Declaration a"[label="false",weight=10];
+"6.  Declaration a" -> "7.  return 8";
+"6.  Declaration a" -> "8.  return 0";
+"5.  Declaration a" -> "8.  return 0";
 subgraph cluster1 {
-label = "block #1"
-clusterrank = sink;
+label = "block #1";
 labelloc = b;
 node [style=filled,color=white,rank=sink];
 style=filled;
 color=grey;
-"Branch b > b":sw -> "test(b)":n[label="true",weight=10];
-"test(b)" -> "Initialization c";
-"Initialization c" -> "b = a";
+  "5.  Declaration a";
 }
-"b = a" -> "Branch b > b";
-"Branch b > b":se -> "return a":n[label="false",weight=10];
-"return a" -> End;
+subgraph cluster2 {
+label = "block #2";
+labelloc = b;
+node [style=filled,color=white,rank=sink];
+style=filled;
+color=grey;
+  "6.  Declaration a";
+  "7.  return 8";
+}
 }

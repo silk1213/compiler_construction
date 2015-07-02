@@ -1,0 +1,20 @@
+Digraph main {
+label = "function: main";
+node [rank=sink];
+compound = true;
+"Start" -> "Initialization a";
+"Initialization a" -> "Initialization b";
+"Initialization b" -> "Initialization f";
+"Initialization f" -> "Initialization k";
+"Initialization k" -> "Branch f < k";
+"Branch f < k":sw -> "End":n[label="true",weight=10];
+"Branch f < k"":se -> "End":n[label="false",weight=10];
+subgraph cluster1 {
+label = "block #1";
+labelloc = b;
+node [style=filled,color=white,rank=sink];
+style=filled;
+color=grey;
+  "End";
+}
+}

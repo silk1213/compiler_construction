@@ -19,8 +19,8 @@ int main (){
 	
 	while (b > b) {
 		test(b);
-		
-			int c = b;
+		{
+			int c = b;}
 		b = a;
 	}
 	return a;

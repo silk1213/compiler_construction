@@ -8,6 +8,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <sstream>
+#include <iterator>
+#include <utility>
 
 
 CFG::CFG() {
@@ -16,24 +18,90 @@ CFG::CFG() {
 	}
 	tmpcounter = 0;
 	switcher = 0;
-	blockcounter = blockcolor = 0;
+	blockcounter = 0;
+	block = false;
+	empty1 = empty2 = false;
+	instcounter = 0;
 }
 
-std::string CFG::getTMP() {
+std::string CFG::convert(int i) {
 	std::ostringstream convert;
-	convert << tmpcounter;
-	std::string result = "tmp_" + convert.str();
-	tmpcounter++;
+	convert << i;
+	std::string result = convert.str();
 	return result;
 }
 
+std::string CFG::countinst() {
+	std::ostringstream convert;
+	convert << instcounter;
+	instcounter++;
+	return convert.str();
+}
+
 void CFG::switchform(std::string output) {
+	if(ret1 && ret2) {
+		switcher = 4;
+	} else if (ret2) {
+		switcher = 0;
+	}
 	switch (switcher) {
-		case 0:	emit(true, false, "\"" + temporary1 + "\" -> \"" + output + "\";"); break;
-		case 1: emit(true, false, "\"" + temporary1 + "\" -> \"" + output + "\";"); emit(true, false, "\"" + temporary2 + "\" -> \"" + output + "\";"); switcher = 0; break;
-		case 2: emit(true, false, "\"" + temporary1 + "\":se -> \"" + output + "\":n[label=\"false\",weight=10];"); switcher = 0; break;
-		case 3: emit(true, false, "\"" + temporary1 + "\":sw -> \"" + output + "\":n[label=\"true\",weight=10];"); switcher = 0;	break;
-		default: switcher = 0; break;
+		case 0:	{
+			emit(true, false, "\"" + temporary1 + "\" -> \"" + output + "\";"); 
+			if(block) {
+				std::map<int, std::list<std::string>* >::iterator i = blockmap.find(blocknumber);
+				i->second->push_back(output);
+			}
+			break;
+		}
+		case 1: {
+			if(empty1) {
+				emit(true, false, "\"" + temporary1 + "\":se -> \"" + output + "\"[label=false];"); 
+			} else {
+				emit(true, false, "\"" + temporary1 + "\" -> \"" + output + "\";"); 
+			}
+			if (empty2) {
+				emit(true, false, "\"" + temporary2 + "\":sw -> \"" + output + "\"[label=true];"); 
+			} else {
+				emit(true, false, "\"" + temporary2 + "\" -> \"" + output + "\";"); 
+			}
+			switcher = 0; 		
+			if(block) {
+				std::map<int, std::list<std::string>* >::iterator i = blockmap.find(blocknumber);
+				i->second->push_back(output);
+			}
+			break;
+		}
+		case 2: {
+			emit(true, false, "\"" + temporary1 + "\":se -> \"" + output + "\"[label=\"false\",weight=10];"); 
+			switcher = 0;
+			if(block) {
+				std::map<int, std::list<std::string>* >::iterator i = blockmap.find(blocknumber);
+				i->second->push_back(output);
+			} 
+			break;
+		}
+		case 3: {
+			emit(true, false, "\"" + temporary1 + "\":sw -> \"" + output + "\"[label=\"true\",weight=10];"); 
+			switcher = 0;		
+			if(block) {
+				std::map<int, std::list<std::string>* >::iterator i = blockmap.find(blocknumber);
+				i->second->push_back(output);
+			}
+			break;
+		}
+		case 4: {
+			temporary1 = output; 
+			switcher = 0; 
+			if(block) {
+				std::map<int, std::list<std::string>* >::iterator i = blockmap.find(blocknumber);
+				i->second->push_back(output);
+			}
+			break;
+		}
+		default: {
+			switcher = 0; 
+			break;
+		}
 	}
 }
 
@@ -77,8 +145,12 @@ void CFG::visitDFun(DFun *dfun)
 {
   /* Code For DFun Goes Here */
 
+	tmpcounter = 0;
 	switcher = 0;
-	ret = false;
+	blockcounter = 0;
+	block = false;
+	empty1 = empty2 = false;
+	instcounter = 0;
 
   dfun->type_->accept(this);
   visitId(dfun->id_);
@@ -86,13 +158,47 @@ void CFG::visitDFun(DFun *dfun)
 
 	emit(true, false, "Digraph " + dfun->id_+ " {");
 	emit(true, false, "label = \"function: " + dfun->id_ + "\";");
-	emit(true, false, "clusterrank = sink;");
+	emit(true, false, "node [rank=sink];");
+	emit(true, false, "compound = true;");
 	temporary1 = "Start";
 	
   dfun->liststm_->accept(this);
 
-	if(!ret && dfun->type_->getType() == "void") {
+	if(!(ret1 && ret2) && dfun->type_->getType() == "void") {
 		switchform("End");
+	}
+
+	/*
+		
+		emit(true, false, "rank = sink;");
+		
+		emit(true, false, "size = \".1,.1\";");
+		//emit(true, false, "rank = min;");
+
+		if(blockcolor % 2 == 1 ){
+			
+		}	else {
+			emit(true, false, "node [style=filled,color=grey,rank=sink];");
+			emit(true, false, "style=filled;");
+			emit(true, false, "color=white;");
+		}
+  	sblock->liststm_->accept(this);
+		emit(true, false, "}");*/
+
+	std::string number;
+
+	for(std::map<int, std::list<std::string>* >::iterator i = blockmap.begin(); i != blockmap.end(); i++) {
+		number = convert(i->first);
+		emit(true, false, "subgraph cluster" + number + " {");
+		emit(true, false, "label = \"block #" + number + "\";");
+		emit(true, false, "labelloc = b;");
+		emit(true, false, "node [style=filled,color=white,rank=sink];");
+		emit(true, false, "style=filled;");
+		emit(true, false, "color=grey;");
+		for(std::list<std::string>::iterator iter = i->second->begin(); iter != i->second->end(); iter++) {
+			emit(true, true, "\"" + *iter + "\";");
+		}
+		emit(true, false, "}");
 	}
 	emit(true, false, "}");
 }
@@ -112,9 +218,11 @@ void CFG::visitSExp(SExp *sexp)
 
 	sexp->exp_->accept(this);
 
-	switchform(sexp->exp_->temporary);
+	std::string tmp = countinst();
+
+	switchform(tmp + sexp->exp_->temporary);
   
-	temporary1 = sexp->exp_->temporary;
+	temporary1 = tmp + sexp->exp_->temporary;
 }
 
 void CFG::visitSDecls(SDecls *sdecls)
@@ -125,6 +233,7 @@ void CFG::visitSDecls(SDecls *sdecls)
   sdecls->listid_->accept(this);
 
 	std::string tmp;
+	std::string count = countinst();
 
 	for (ListId::iterator i = sdecls->listid_->begin() ; i != sdecls->listid_->end() ; ++i)
   {
@@ -135,8 +244,8 @@ void CFG::visitSDecls(SDecls *sdecls)
 		}
   }
 
-	switchform("Declaration " + tmp);
-	temporary1 = "Declaration " + tmp;
+	switchform(count + ".  Declaration " + tmp);
+	temporary1 = count + ".  Declaration " + tmp;
 }
 
 void CFG::visitSInit(SInit *sinit)
@@ -146,9 +255,10 @@ void CFG::visitSInit(SInit *sinit)
   sinit->type_->accept(this);
   visitId(sinit->id_);
   sinit->exp_->accept(this);
+	std::string count = countinst();
 
-	switchform("Initialization " + sinit->id_);
-	temporary1 = "Initialization " + sinit->id_;
+	switchform(count + ".  Initialization " + sinit->id_);
+	temporary1 = count + ".  Initialization " + sinit->id_;
 }
 
 void CFG::visitSReturn(SReturn *sreturn)
@@ -156,20 +266,23 @@ void CFG::visitSReturn(SReturn *sreturn)
   /* Code For SReturn Goes Here */
 
   sreturn->exp_->accept(this);
-	switchform("return " + sreturn->exp_->temporary);
-	emit(true, false, "\"return " + sreturn->exp_->temporary + "\" -> End;");
+	std::string count = countinst();
+
+	switchform(count + ".  return " + sreturn->exp_->temporary);
+	//emit(true, false, "\"" + count + ".  return " + sreturn->exp_->temporary + "\" -> End;");
 
 	switcher = 4;
-	ret = true;
+	ret1 = true;
 }
 
 void CFG::visitSReturnVoid(SReturnVoid *sreturnvoid)
 {
   /* Code For SReturnVoid Goes Here */
+	std::string count = countinst();
 
-	switchform("End");
+	switchform(count + ".  return");
 	switcher = 4;
-	ret = true;
+	ret1 = true;
 }
 
 void CFG::visitSWhile(SWhile *swhile)
@@ -177,8 +290,9 @@ void CFG::visitSWhile(SWhile *swhile)
   /* Code For SWhile Goes Here */
 	
   swhile->exp_->accept(this);
+	std::string count = countinst();
 
-	std::string output = "Branch " + swhile->exp_->temporary;
+	std::string output = count + ".  Branch " + swhile->exp_->temporary;
 	switchform(output);
 	temporary1 = output;
 
@@ -189,7 +303,7 @@ void CFG::visitSWhile(SWhile *swhile)
 	//emit(false, false, "\"" + output + "\"");
 
 	switcher = 2;
-	ret = false;
+	ret1 = false;
 	temporary1 = output;
 }
 
@@ -197,32 +311,30 @@ void CFG::visitSBlock(SBlock *sblock)
 {
   /* Code For SBlock Goes Here */
 
-	blockcounter++;
-	blockcolor++;
-	std::ostringstream convert;
-	convert << blockcounter;
-	std::string counter = convert.str();
+	bool tmp = false;
 
 	if (!sblock->liststm_->empty()) {
-		emit(true, false, "subgraph cluster" + counter + " {");
-		emit(true, false, "label = \"block #" + counter + "\"");
-		emit(true, false, "clusterrank = sink;");
-		emit(true, false, "labelloc = b;");
-		//emit(true, false, "rank = min;");
-
-		if(blockcolor % 2 == 1 ){
-			emit(true, false, "node [style=filled,color=white,rank=sink];");
-			emit(true, false, "style=filled;");
-			emit(true, false, "color=grey;");
-		}	else {
-			emit(true, false, "node [style=filled,color=grey,rank=sink];");
-			emit(true, false, "style=filled;");
-			emit(true, false, "color=white;");
+		blockcounter++;
+		blocknumber++;
+		if (block == true) {
+			tmp = true;
+		} else {
+			block = true;
 		}
-  	sblock->liststm_->accept(this);
-		emit(true, false, "}");
-	} 
-	blockcolor--;
+		blockmap.insert(std::pair<int, std::list<std::string>* >(blockcounter, new std::list<std::string>()));
+
+		int tmpnr = blocknumber;
+		blocknumber = blockcounter;
+		sblock->liststm_->accept(this);
+		blocknumber = tmpnr;
+
+		if(!tmp) {
+			block = false;
+		}
+		blocknumber--;
+	} else {
+		empty1 = true;
+	}
 }
 
 void CFG::visitSIfElse(SIfElse *sifelse)
@@ -231,11 +343,11 @@ void CFG::visitSIfElse(SIfElse *sifelse)
 
   sifelse->exp_->accept(this);
 	
-	bool rettmp = ret;
-	bool ret1, ret2;
-	ret1 = ret2 = false;
+	//bool rettmp = ret;
+	
+	std::string count = countinst();
 
-	std::string output = "branch " + sifelse->exp_->temporary;
+	std::string output = count + ".  branch " + sifelse->exp_->temporary;
 
 	switchform(output);
 	//emit(false, false, "\"" + output + "\"");
@@ -244,21 +356,23 @@ void CFG::visitSIfElse(SIfElse *sifelse)
 	switcher = 3;
 	sifelse->stm_1->accept(this);
 	temporary2 = temporary1;
-	
-	if(!rettmp){
+	ret2 = ret1;
+	empty2 = empty1;
+	empty1 = false;
+	/*if(!rettmp){
 		ret1 = ret;
 		ret = false;
-	}
+	}*/
 
 	switcher = 2;
 	temporary1 = output;
 	//emit(false, false, "\"" + output + "\"");
   sifelse->stm_2->accept(this);
 	
-	if(!rettmp){
+	/*if(!rettmp){
 		ret2 = ret;
 		ret = ret1 && ret2;
-	}
+	}*/
 
 	switcher = 1;
 }

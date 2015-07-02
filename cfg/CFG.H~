@@ -4,14 +4,17 @@
 
 #include "Absyn.H"
 #include <fstream>
+#include <map>
+#include <list>
 
 
 class CFG : public Visitor
 {
 public:
 	void emit(bool b, bool a, std::string str);
-	std::string getTMP();
 	void switchform(std::string output);
+	std::string countinst();
+	std::string convert(int i);
 
   void visitProgram(Program* p);
   void visitDef(Def* p);
@@ -80,6 +83,12 @@ private:
 	std::string temporary1, temporary2;
 	int switcher; //0 - nothing, 1 - temp, 2 - falselabel, 3 - truelabel
 	bool ret;
+	int blockcounter, blocknumber;
+	bool empty1, empty2;
+	bool block;
+	std::map<int, std::list<std::string>* > blockmap;
+	int instcounter;
+	std::string inst, inst1, inst2;
 };
 
 
