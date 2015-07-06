@@ -2,23 +2,13 @@ Digraph main {
 label = "function: main";
 node [rank=sink];
 compound = true;
-"Start" -> "0.  Declaration a";
-"0.  Declaration a" -> "1.  Initialization b";
-"1.  Initialization b" -> "2.  Initialization f";
-"2.  Initialization f" -> "3.  Initialization k";
-"3.  Initialization k" -> "4.  branch f < k";
-"4.  branch f < k":sw -> "5.  Declaration a"[label="true",weight=10];
-"4.  branch f < k":se -> "6.  Declaration a"[label="false",weight=10];
-"6.  Declaration a" -> "7.  return 8";
-"6.  Declaration a" -> "8.  return 0";
-"5.  Declaration a" -> "8.  return 0";
 subgraph cluster1 {
 label = "block #1";
 labelloc = b;
 node [style=filled,color=white,rank=sink];
 style=filled;
 color=grey;
-  "5.  Declaration a";
+"5.  branch true";
 }
 subgraph cluster2 {
 label = "block #2";
@@ -26,7 +16,38 @@ labelloc = b;
 node [style=filled,color=white,rank=sink];
 style=filled;
 color=grey;
-  "6.  Declaration a";
-  "7.  return 8";
+"6.  Declaration a";
+"7. get1()";
+"8.  return a";
 }
+subgraph cluster3 {
+label = "block #3";
+labelloc = b;
+node [style=filled,color=white,rank=sink];
+style=filled;
+color=grey;
+"9.  Declaration b";
+"10.  return b";
+}
+"Start" -> "0.  Declaration a";
+"0.  Declaration a" -> "1.  Initialization b = 1";
+"1.  Initialization b = 1" -> "2.  Initialization f = 1.1";
+"2.  Initialization f = 1.1" -> "3.  Initialization k = 5.8";
+"3.  Initialization k = 5.8" -> "4.  Branch f < k";
+"4.  Branch f < k":sw -> "5.  branch true"[label="true"];
+"5.  branch true":sw -> "6.  Declaration a"[label="true"];
+"6.  Declaration a" -> "7. get1()";
+"7. get1()" -> "8.  return a";
+"5.  branch true":se -> "9.  Declaration b"[label="false"];
+"9.  Declaration b" -> "10.  return b";
+"4.  Branch f < k":se -> "11.  return 0"[label="false"];
+
+}
+Digraph get1 {
+label = "function: get1";
+node [rank=sink];
+compound = true;
+"Start" -> "0.  Initialization a = 1";
+"0.  Initialization a = 1" -> "1.  return a";
+
 }

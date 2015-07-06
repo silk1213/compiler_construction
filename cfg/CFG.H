@@ -88,6 +88,7 @@ private:
 	bool block;
 	std::map<int, std::list<std::string>* > blockmap;
 	int instcounter;
+	std::string finalout;
 };
 
 

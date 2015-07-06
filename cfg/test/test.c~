@@ -1,4 +1,4 @@
-void main() {
+int main() {
 
 	int a;
 	int b = 1;
@@ -6,12 +6,19 @@ void main() {
 	double f = 1.1;
 	double k = 5.8;
 
-	if ( f < k) {
-		int a;
-	} else {
-		int a;
-		return;
-}
+	while ( f < k) {
+		if(true) {
+			int a;
+			return a; }
+		else {
+			int b;
+			return b;}
+	} 
 	
-	return ;
+	return 0;
+}
+
+int get1() {
+	int a = 1;
+	return a;
 }

@@ -16,12 +16,6 @@ CFG::CFG() {
 	if (remove("graph.gv")) {
 		std::cout << "ERROR: Failed to delete File"<< std::endl;
 	}
-	tmpcounter = 0;
-	switcher = 0;
-	blockcounter = 0;
-	block = false;
-	empty1 = empty2 = false;
-	instcounter = 0;
 }
 
 std::string CFG::convert(int i) {
@@ -41,12 +35,11 @@ std::string CFG::countinst() {
 void CFG::switchform(std::string output) {
 	if(ret1 && ret2) {
 		switcher = 4;
-	} else if (ret2) {
-		switcher = 0;
-	}
+	} 
 	switch (switcher) {
 		case 0:	{
-			emit(true, false, "\"" + temporary1 + "\" -> \"" + output + "\";"); 
+			//emit(true, false, "\"" + temporary1 + "\" -> \"" + output + "\";"); 
+			finalout += "\"" + temporary1 + "\" -> \"" + output + "\";\n";
 			if(block) {
 				std::map<int, std::list<std::string>* >::iterator i = blockmap.find(blocknumber);
 				i->second->push_back(output);
@@ -54,15 +47,23 @@ void CFG::switchform(std::string output) {
 			break;
 		}
 		case 1: {
-			if(empty1) {
-				emit(true, false, "\"" + temporary1 + "\":se -> \"" + output + "\"[label=false];"); 
-			} else {
-				emit(true, false, "\"" + temporary1 + "\" -> \"" + output + "\";"); 
+			if(!ret1) {
+				if(empty1) {
+					//emit(true, false, "\"" + temporary1 + "\":se -> \"" + output + "\"[label=false];"); 
+					finalout += "\"" + temporary1 + "\":se -> \"" + output + "\"[label=false];\n";
+				} else {
+					//emit(true, false, "\"" + temporary1 + "\" -> \"" + output + "\";"); 
+					finalout += "\"" + temporary1 + "\" -> \"" + output + "\";\n";
+				}
 			}
-			if (empty2) {
-				emit(true, false, "\"" + temporary2 + "\":sw -> \"" + output + "\"[label=true];"); 
-			} else {
-				emit(true, false, "\"" + temporary2 + "\" -> \"" + output + "\";"); 
+			if (!ret2) {
+				if (empty2) {
+					//emit(true, false, "\"" + temporary2 + "\":sw -> \"" + output + "\"[label=true];"); 
+					finalout += "\"" + temporary2 + "\":sw -> \"" + output + "\"[label=true];\n";
+				} else {
+					//emit(true, false, "\"" + temporary2 + "\" -> \"" + output + "\";"); 
+					finalout += "\"" + temporary2 + "\" -> \"" + output + "\";\n";
+				}
 			}
 			switcher = 0; 		
 			if(block) {
@@ -72,7 +73,8 @@ void CFG::switchform(std::string output) {
 			break;
 		}
 		case 2: {
-			emit(true, false, "\"" + temporary1 + "\":se -> \"" + output + "\"[label=\"false\",weight=10];"); 
+			//emit(true, false, "\"" + temporary1 + "\":se -> \"" + output + "\"[label=\"false\",weight=10];"); 
+			finalout += "\"" + temporary1 + "\":se -> \"" + output + "\"[label=\"false\"];\n";
 			switcher = 0;
 			if(block) {
 				std::map<int, std::list<std::string>* >::iterator i = blockmap.find(blocknumber);
@@ -81,7 +83,8 @@ void CFG::switchform(std::string output) {
 			break;
 		}
 		case 3: {
-			emit(true, false, "\"" + temporary1 + "\":sw -> \"" + output + "\"[label=\"true\",weight=10];"); 
+			//emit(true, false, "\"" + temporary1 + "\":sw -> \"" + output + "\"[label=\"true\",weight=10];"); 
+			finalout += "\"" + temporary1 + "\":sw -> \"" + output + "\"[label=\"true\"];\n";
 			switcher = 0;		
 			if(block) {
 				std::map<int, std::list<std::string>* >::iterator i = blockmap.find(blocknumber);
@@ -150,6 +153,9 @@ void CFG::visitDFun(DFun *dfun)
 	blockcounter = 0;
 	block = false;
 	empty1 = empty2 = false;
+	finalout = "";
+	ret1 = ret2 = false;
+	blockmap.erase(blockmap.begin(), blockmap.end());
 	instcounter = 0;
 
   dfun->type_->accept(this);
@@ -168,23 +174,6 @@ void CFG::visitDFun(DFun *dfun)
 		switchform("End");
 	}
 
-	/*
-		
-		emit(true, false, "rank = sink;");
-		
-		emit(true, false, "size = \".1,.1\";");
-		//emit(true, false, "rank = min;");
-
-		if(blockcolor % 2 == 1 ){
-			
-		}	else {
-			emit(true, false, "node [style=filled,color=grey,rank=sink];");
-			emit(true, false, "style=filled;");
-			emit(true, false, "color=white;");
-		}
-  	sblock->liststm_->accept(this);
-		emit(true, false, "}");*/
-
 	std::string number;
 
 	for(std::map<int, std::list<std::string>* >::iterator i = blockmap.begin(); i != blockmap.end(); i++) {
@@ -196,10 +185,11 @@ void CFG::visitDFun(DFun *dfun)
 		emit(true, false, "style=filled;");
 		emit(true, false, "color=grey;");
 		for(std::list<std::string>::iterator iter = i->second->begin(); iter != i->second->end(); iter++) {
-			emit(true, true, "\"" + *iter + "\";");
+			emit(true, false, "\"" + *iter + "\";");
 		}
 		emit(true, false, "}");
 	}
+	emit(true, false, finalout);
 	emit(true, false, "}");
 }
 
@@ -220,9 +210,9 @@ void CFG::visitSExp(SExp *sexp)
 
 	std::string tmp = countinst();
 
-	switchform(tmp + sexp->exp_->temporary);
+	switchform(tmp + ". " + sexp->exp_->temporary);
   
-	temporary1 = tmp + sexp->exp_->temporary;
+	temporary1 = tmp + ". " + sexp->exp_->temporary;
 }
 
 void CFG::visitSDecls(SDecls *sdecls)
@@ -257,8 +247,8 @@ void CFG::visitSInit(SInit *sinit)
   sinit->exp_->accept(this);
 	std::string count = countinst();
 
-	switchform(count + ".  Initialization " + sinit->id_);
-	temporary1 = count + ".  Initialization " + sinit->id_;
+	switchform(count + ".  Initialization " + sinit->id_ + " = " + sinit->exp_->temporary);
+	temporary1 = count + ".  Initialization " + sinit->id_ + " = " + sinit->exp_->temporary;
 }
 
 void CFG::visitSReturn(SReturn *sreturn)
@@ -359,6 +349,7 @@ void CFG::visitSIfElse(SIfElse *sifelse)
 	ret2 = ret1;
 	empty2 = empty1;
 	empty1 = false;
+	ret1 = false;
 	/*if(!rettmp){
 		ret1 = ret;
 		ret = false;

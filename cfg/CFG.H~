@@ -82,13 +82,12 @@ private:
 	int tmpcounter;
 	std::string temporary1, temporary2;
 	int switcher; //0 - nothing, 1 - temp, 2 - falselabel, 3 - truelabel
-	bool ret;
+	bool ret1, ret2;
 	int blockcounter, blocknumber;
 	bool empty1, empty2;
 	bool block;
 	std::map<int, std::list<std::string>* > blockmap;
 	int instcounter;
-	std::string inst, inst1, inst2;
 };
 
 
